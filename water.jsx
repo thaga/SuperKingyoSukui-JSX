@@ -109,6 +109,7 @@ class Water {
 		if (!this._next_step_time) this._next_step_time = t;
 		if (t < this._next_step_time) return;
 		this._next_step_time += Water.time_step;
+		if (this._next_step_time < t) this._next_step_time = t;
 
 		var gl = Water.gl;
 
