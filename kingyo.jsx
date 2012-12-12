@@ -169,8 +169,8 @@ class Kingyo {
 		for (var i = 0; i < Kingyo.all.length; ++i) {
 			var k = Kingyo.all[i];
 			if (k._state != 'swimming') continue;
-			var dx = k._pos.x() - x;
-			var dy = k._pos.y() - y;
+			var dx = k._pos.x - x;
+			var dy = k._pos.y - y;
 			var r = Math.sqrt(dx*dx + dy*dy);
 			if (r < 2) h.push(k);
 		}
@@ -233,7 +233,7 @@ class Kingyo {
 
 	function _fished() : void {
 		this._state = 'flying';
-		this._pos.z(2);
+		this._pos.z = 2;
 		this._vz = 150 + Math.random() * 50;
 		this._velo = 12;
 		this._spinMat.setIdentity();
@@ -247,21 +247,21 @@ class Kingyo {
 		default:
 			break;
 		case 'swimming':
-			var x = this._pos.x() + Math.cos(this._vangle) * this._velo * dt;
-			var y = this._pos.y() + Math.sin(this._vangle) * this._velo * dt;
+			var x = this._pos.x + Math.cos(this._vangle) * this._velo * dt;
+			var y = this._pos.y + Math.sin(this._vangle) * this._velo * dt;
 			var b = Kingyo.bound;
 			if (x < -b) {x = -b; this._setRandom();}
 			if (y < -b) {y = -b; this._setRandom();}
 			if (x > b) {x = b; this._setRandom();}
 			if (y > b) {y = b; this._setRandom();}
-			this._pos.x(x);
-			this._pos.y(y);
+			this._pos.x = x;
+			this._pos.y = y;
 			break;
 		case 'flying':
 			this._vz -= 300 * dt;
-			this._pos.z(this._pos.z() + this._vz * dt);
+			this._pos.z = this._pos.z + this._vz * dt;
 			this._spinMat.mul(new M44.setRotate(dt * this._spinSpeed, this._spinAxis));
-			if (this._pos.z() >= 2) break;
+			if (this._pos.z >= 2) break;
 			var num_listed = 0; for (var i = 0; i < Kingyo.all.length; ++i) if (Kingyo.all[i]._state == 'listed') ++num_listed;
 			this._pos.set(num_listed * 1.5 - Kingyo.bound - 4.25, 3 + Kingyo.bound, 2);
 			this._vangle = Math.PI / 2;

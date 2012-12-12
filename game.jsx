@@ -110,8 +110,8 @@ class Game {
 			// pointer direction
 			var pdir = new V3(Game.fovh * wx, Game.fovv * wy, -1).transformBy(new M33.setRotateX(Game.viewLean)).normalize();
 			// hit position
-			var hpos = pdir.clone().mul(epos.z() / -pdir.z()).add(epos);
-			return [hpos.x(), hpos.y()];
+			var hpos = pdir.clone().mul(epos.z / -pdir.z).add(epos);
+			return [hpos.x, hpos.y];
 		};
 
 		var touchStart = function(e:Event) : void {
