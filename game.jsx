@@ -205,25 +205,6 @@ class Game {
 
 		Game.renderTex = new RenderTexture(canvas.width, canvas.height);
 
-		var getRequestAnimationFrame = function() : function(tick : (number)->void) : void {
-			if(js.global["requestAnimationFrame"] != null) {
-				return function( tick:(number)->void ) :void {dom.window.requestAnimationFrame(tick);};
-			}
-			else if(js.global["webkitRequestAnimationFrame"] != null) {
-				return function( tick:(number)->void ) :void {dom.window.webkitRequestAnimationFrame(tick);};
-			}
-			else if(js.global["mozRequestAnimationFrame"] != null) {
-				return function( tick:(number)->void ) :void {dom.window.mozRequestAnimationFrame(tick);};
-			}
-			else {
-				return function( tick:(number)->void ) :void {dom.window.setTimeout(function():void {tick(0);}, 1000/60);};
-			}
-		};
-
-		// init RAF
-		var w = dom.window as variant;
-		w['requestAnimationFrame'] = getRequestAnimationFrame();
-
 
 		function update() : void {
 			var t = Date.now() / 1000;
@@ -307,7 +288,7 @@ class Game {
 			update();
 			render();
 
-			dom.window.requestAnimationFrame(update_render);
+			Timer.requestAnimationFrame(update_render);
 		}
 
 		update_render(0);

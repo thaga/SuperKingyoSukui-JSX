@@ -1,3 +1,4 @@
+// generatedy by JSX compiler 0.9.4 (2013-02-01 15:36:58 +0900; 586ca84ff65e48b8e38268e9e1ed9e4aadf86a7b)
 var JSX = {};
 (function () {
 
@@ -83,6 +84,13 @@ JSX.postProfileResults = function (url) {
 		throw new Error("profiler has not been turned on");
 	return $__jsx_profiler.postResults(url);
 };
+
+JSX.resetProfileResults = function () {
+	if ($__jsx_profiler.resetResults == null)
+		throw new Error("profiler has not been turned on");
+	return $__jsx_profiler.resetResults();
+};
+JSX.DEBUG = false;
 /**
  * class Game extends Object
  * @constructor
@@ -112,32 +120,38 @@ Game.main$SS = function (canvas_id, life_id) {
 	var wh;
 	/** @type {!number} */
 	var canvas_size;
-	/** @type {!string} */
+	/** @type {undefined|!string} */
 	var lbw;
 	/** @type {WebGLRenderingContext} */
 	var gl;
+	/** @type {*} */
 	var playSound;
+	/** @type {*} */
 	var getPoint;
 	/** @type {Array.<undefined|!number>} */
 	var lastTouchPos;
-	var calcMousePosOnXYPlane;
-	var touchStart;
-	var touchEnd;
-	var touchMove;
-	var getRequestAnimationFrame;
 	/** @type {*} */
-	var w;
+	var calcMousePosOnXYPlane;
+	/** @type {*} */
+	var touchStart;
+	/** @type {*} */
+	var touchEnd;
+	/** @type {*} */
+	var touchMove;
+	/** @type {*} */
 	var update;
+	/** @type {*} */
 	var render;
+	/** @type {*} */
 	var update_render;
-	canvas = (function (o) { return o instanceof HTMLCanvasElement ? o : null; })(dom$id$S(canvas_id));
+	canvas = dom.document.getElementById(canvas_id);
 	ww = dom.window.innerWidth;
 	wh = dom.window.innerHeight;
-	canvas_size = Math.min(ww, wh);
-	canvas.width = (canvas_size | 0);
-	canvas.height = (canvas_size | 0);
-	Game.status_text = (function (o) { return o instanceof HTMLDivElement ? o : null; })(dom$id$S('status'));
-	Game.life_bar = (function (o) { return o instanceof HTMLDivElement ? o : null; })(dom$id$S(life_id));
+	canvas_size = (ww <= wh ? ww : wh);
+	canvas.width = canvas_size;
+	canvas.height = canvas_size;
+	Game.status_text = dom.document.getElementById('status');
+	Game.life_bar = dom.document.getElementById(life_id);
 	lbw = Game.life_bar.style.width;
 	Game.life_bar_width = lbw.substring(0, lbw.length - 2) | 0;
 	gl = Util$getWebGL$S(canvas_id);
@@ -145,8 +159,8 @@ Game.main$SS = function (canvas_id, life_id) {
 	Poi$initWithGL$LWebGLRenderingContext$(gl);
 	Kingyo$initWithGL$LWebGLRenderingContext$(gl);
 	Water$initWithGL$LWebGLRenderingContext$(gl);
-	RenderTexture$initWithGL$LWebGLRenderingContext$(gl);
-	Game.poi = new Poi$();
+	RenderTexture.gl = gl;
+	Game.poi = {_x: 0, _y: 0, _z: 1, _down: false, _live: true};
 	Kingyo$init$I(20);
 	Game.water = new Water$();
 	Game.bltProg = Util$getProgram$SS('vt.vs', 'vt.fs');
@@ -158,7 +172,7 @@ Game.main$SS = function (canvas_id, life_id) {
 	playSound = (function (url) {
 		/** @type {HTMLAudioElement} */
 		var s;
-		s = (function (o) { return o instanceof HTMLAudioElement ? o : null; })(dom.window.document.createElement('audio'));
+		s = dom.window.document.createElement('audio');
 		s.src = url;
 		s.play();
 	});
@@ -174,12 +188,12 @@ Game.main$SS = function (canvas_id, life_id) {
 		px = 0;
 		py = 0;
 		if (e instanceof MouseEvent) {
-			me = (function (o) { return o instanceof MouseEvent ? o : null; })(e);
+			me = e;
 			px = me.clientX;
 			py = me.clientY;
 		} else {
 			if (e instanceof TouchEvent) {
-				te = (function (o) { return o instanceof TouchEvent ? o : null; })(e);
+				te = e;
 				px = te.touches[0].pageX;
 				py = te.touches[0].pageY;
 			}
@@ -198,85 +212,82 @@ Game.main$SS = function (canvas_id, life_id) {
 		var pdir;
 		/** @type {V3} */
 		var hpos;
-		wx = (function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[game.jsx:106] null access");
-			}
-			return v;
-		}(p[0])) / canvas.width * 2 - 1;
+		/** @type {V3} */
+		var this$0;
+		/** @type {!number} */
+		var l$0;
+		/** @type {Float32Array} */
+		var _$0;
+		wx = p[0] / canvas.width * 2 - 1;
 		wy = - p[1] / canvas.height * 2 + 1;
-		epos = new V3$NNN(0, 0, Game.viewDistance).transformBy$LM33$(new M33$().setRotateX$N(Game.viewLean));
-		pdir = new V3$NNN(Game.fovh * wx, Game.fovv * wy, - 1).transformBy$LM33$(new M33$().setRotateX$N(Game.viewLean)).normalize$();
-		hpos = pdir.clone$().mul$N(epos.z$() / - pdir.z$()).add$LV3$(epos);
-		return [ hpos.x$(), hpos.y$() ];
+		epos = V3$transformBy$LV3$LM33$(new V3$NNN(0, 0, 80), M33$setRotateX$LM33$N({_: new Float32Array(9)}, 0.2));
+		this$0 = V3$transformBy$LV3$LM33$(new V3$NNN(0.2 * wx, 0.2 * wy, -1), M33$setRotateX$LM33$N({_: new Float32Array(9)}, 0.2));
+		l$0 = Math.sqrt(V3$len2$LV3$(this$0));
+		pdir = (l$0 > 0 ? V3$mul$LV3$N(this$0, 1 / l$0) : this$0);
+		hpos = V3$add$LV3$LV3$(V3$mul$LV3$N(new V3$LV3$(pdir), epos._[2] / - pdir._[2]), epos);
+		return [ (_$0 = hpos._)[0], _$0[1] ];
 	});
 	touchStart = (function (e) {
 		/** @type {Array.<undefined|!number>} */
 		var pos;
 		/** @type {Array.<undefined|Kingyo>} */
 		var hit;
+		/** @type {Poi} */
+		var this$0;
+		/** @type {!number} */
+		var x$0;
+		/** @type {!number} */
+		var y$0;
+		/** @type {Poi} */
+		var this$1;
+		/** @type {Poi} */
+		var this$2;
+		/** @type {Poi} */
+		var this$3;
+		/** @type {Water} */
+		var this$4;
+		/** @type {!number} */
+		var x$1;
+		/** @type {!number} */
+		var y$1;
 		e.preventDefault();
 		lastTouchPos = getPoint(e);
 		pos = calcMousePosOnXYPlane(lastTouchPos);
-		Game.poi.setPosition$NN((function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[game.jsx:121] null access");
-			}
-			return v;
-		}(pos[0])), (function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[game.jsx:121] null access");
-			}
-			return v;
-		}(pos[1])));
-		if (Game.poi.tearing$() || Kingyo$numRests$() === 0) {
+		this$0 = Game.poi;
+		x$0 = pos[0];
+		y$0 = pos[1];
+		this$0._x = x$0;
+		this$0._y = y$0;
+		if (Poi$tearing$LPoi$(Game.poi) || Kingyo$numRests$() === 0) {
 			Game.life = 1;
 			Game.life_bar.style.width = Game.life_bar_width.toString() + "px";
-			Game.poi.tear$B(false);
+			this$1 = Game.poi;
+			this$1._live = ! false;
 			Kingyo$reset$();
 			Game.status_text.innerHTML = 'click to start';
 		} else {
-			if (! Game.poi.tearing$()) {
-				Game.poi.down$B(true);
+			if (! Poi$tearing$LPoi$(Game.poi)) {
+				this$2 = Game.poi;
+				this$2._down = true;
 				Game.poi_down_time = Date.now() / 1000;
 				if (Game.startTime === 0) {
 					Game.startTime = Date.now();
 				}
 			}
-			hit = Kingyo$hit$NN((function (v) {
-				if (! (v != null)) {
-					debugger;
-					throw new Error("[game.jsx:136] null access");
-				}
-				return v;
-			}(pos[0])), (function (v) {
-				if (! (v != null)) {
-					debugger;
-					throw new Error("[game.jsx:136] null access");
-				}
-				return v;
-			}(pos[1])));
+			hit = Kingyo$hit$NN(pos[0], pos[1]);
 			if (hit.length > 0) {
-				Game.poi.tear$B(true);
+				this$3 = Game.poi;
+				this$3._live = ! true;
 				playSound('tear.mp3');
 				Game.startTime = 0;
 			}
-			Game.water.setImpulse$NNNN((function (v) {
-				if (! (v != null)) {
-					debugger;
-					throw new Error("[game.jsx:144] null access");
-				}
-				return v;
-			}(pos[0])) / 40 + 0.5, (function (v) {
-				if (! (v != null)) {
-					debugger;
-					throw new Error("[game.jsx:145] null access");
-				}
-				return v;
-			}(pos[1])) / 40 + 0.5, 0.03, 0);
+			this$4 = Game.water;
+			x$1 = pos[0] / 40 + 0.5;
+			y$1 = pos[1] / 40 + 0.5;
+			this$4._ix = x$1;
+			this$4._iy = y$1;
+			this$4._ir = 0.03;
+			this$4._iz = 0;
 		}
 	});
 	canvas.addEventListener("mousedown", touchStart);
@@ -286,39 +297,36 @@ Game.main$SS = function (canvas_id, life_id) {
 		var pos;
 		/** @type {Array.<undefined|Kingyo>} */
 		var hit;
+		/** @type {Poi} */
+		var this$0;
+		/** @type {!number} */
+		var x$0;
+		/** @type {!number} */
+		var y$0;
+		/** @type {Poi} */
+		var this$1;
+		/** @type {Water} */
+		var this$2;
+		/** @type {!number} */
+		var x$1;
+		/** @type {!number} */
+		var y$1;
+		/** @type {Poi} */
+		var this$3;
 		e.preventDefault();
 		if (e instanceof MouseEvent) {
 			lastTouchPos = getPoint(e);
 		}
 		pos = calcMousePosOnXYPlane(lastTouchPos);
-		Game.poi.setPosition$NN((function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[game.jsx:158] null access");
-			}
-			return v;
-		}(pos[0])), (function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[game.jsx:158] null access");
-			}
-			return v;
-		}(pos[1])));
-		if (Game.poi.down$()) {
-			if (! Game.poi.tearing$()) {
-				hit = Kingyo$hit$NN((function (v) {
-					if (! (v != null)) {
-						debugger;
-						throw new Error("[game.jsx:161] null access");
-					}
-					return v;
-				}(pos[0])), (function (v) {
-					if (! (v != null)) {
-						debugger;
-						throw new Error("[game.jsx:161] null access");
-					}
-					return v;
-				}(pos[1])));
+		this$0 = Game.poi;
+		x$0 = pos[0];
+		y$0 = pos[1];
+		this$0._x = x$0;
+		this$0._y = y$0;
+		this$1 = Game.poi;
+		if (this$1._down) {
+			if (! Poi$tearing$LPoi$(Game.poi)) {
+				hit = Kingyo$hit$NN(pos[0], pos[1]);
 				Kingyo$fish$ALKingyo$(hit);
 				if (hit.length > 0) {
 					playSound('fish.mp3');
@@ -327,57 +335,53 @@ Game.main$SS = function (canvas_id, life_id) {
 					Game.startTime = 0;
 				}
 			}
-			Game.water.setImpulse$NNNN((function (v) {
-				if (! (v != null)) {
-					debugger;
-					throw new Error("[game.jsx:168] null access");
-				}
-				return v;
-			}(pos[0])) / 40 + 0.5, (function (v) {
-				if (! (v != null)) {
-					debugger;
-					throw new Error("[game.jsx:169] null access");
-				}
-				return v;
-			}(pos[1])) / 40 + 0.5, 0.03, 1);
+			this$2 = Game.water;
+			x$1 = pos[0] / 40 + 0.5;
+			y$1 = pos[1] / 40 + 0.5;
+			this$2._ix = x$1;
+			this$2._iy = y$1;
+			this$2._ir = 0.03;
+			this$2._iz = 1;
 		}
-		Game.poi.down$B(false);
+		this$3 = Game.poi;
+		this$3._down = false;
 	});
 	canvas.addEventListener("mouseup", touchEnd);
 	canvas.addEventListener("touchend", touchEnd);
 	touchMove = (function (e) {
 		/** @type {Array.<undefined|!number>} */
 		var pos;
+		/** @type {Poi} */
+		var this$0;
+		/** @type {!number} */
+		var x$0;
+		/** @type {!number} */
+		var y$0;
+		/** @type {Poi} */
+		var this$1;
+		/** @type {Water} */
+		var this$2;
+		/** @type {!number} */
+		var x$1;
+		/** @type {!number} */
+		var y$1;
 		e.preventDefault();
 		lastTouchPos = getPoint(e);
 		pos = calcMousePosOnXYPlane(lastTouchPos);
-		Game.poi.setPosition$NN((function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[game.jsx:183] null access");
-			}
-			return v;
-		}(pos[0])), (function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[game.jsx:183] null access");
-			}
-			return v;
-		}(pos[1])));
-		if (Game.poi.down$()) {
-			Game.water.setImpulse$NNNN((function (v) {
-				if (! (v != null)) {
-					debugger;
-					throw new Error("[game.jsx:187] null access");
-				}
-				return v;
-			}(pos[0])) / 40 + 0.5, (function (v) {
-				if (! (v != null)) {
-					debugger;
-					throw new Error("[game.jsx:188] null access");
-				}
-				return v;
-			}(pos[1])) / 40 + 0.5, 0.02, 0.2);
+		this$0 = Game.poi;
+		x$0 = pos[0];
+		y$0 = pos[1];
+		this$0._x = x$0;
+		this$0._y = y$0;
+		this$1 = Game.poi;
+		if (this$1._down) {
+			this$2 = Game.water;
+			x$1 = pos[0] / 40 + 0.5;
+			y$1 = pos[1] / 40 + 0.5;
+			this$2._ix = x$1;
+			this$2._iy = y$1;
+			this$2._ir = 0.02;
+			this$2._iz = 0.2;
 		}
 	});
 	canvas.addEventListener("mousemove", touchMove);
@@ -385,21 +389,22 @@ Game.main$SS = function (canvas_id, life_id) {
 	canvas.onmouseout = (function (e) {
 		/** @type {Array.<undefined|!number>} */
 		var pos;
+		/** @type {Poi} */
+		var this$0;
+		/** @type {!number} */
+		var x$0;
+		/** @type {!number} */
+		var y$0;
+		/** @type {Poi} */
+		var this$1;
 		pos = calcMousePosOnXYPlane(getPoint(e));
-		Game.poi.setPosition$NN((function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[game.jsx:198] null access");
-			}
-			return v;
-		}(pos[0])), (function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[game.jsx:198] null access");
-			}
-			return v;
-		}(pos[1])));
-		Game.poi.down$B(false);
+		this$0 = Game.poi;
+		x$0 = pos[0];
+		y$0 = pos[1];
+		this$0._x = x$0;
+		this$0._y = y$0;
+		this$1 = Game.poi;
+		this$1._down = false;
 	});
 	canvas.oncontextmenu = (function (e) {
 		e.preventDefault();
@@ -407,45 +412,24 @@ Game.main$SS = function (canvas_id, life_id) {
 	canvas.style.cursor = 'none';
 	Game.canvas = canvas;
 	Game.renderTex = new RenderTexture$II(canvas.width, canvas.height);
-	getRequestAnimationFrame = (function () {
-		if (js.global.requestAnimationFrame != null) {
-			return (function (tick) {
-				dom.window.requestAnimationFrame(tick);
-			});
-		} else {
-			if (js.global.webkitRequestAnimationFrame != null) {
-				return (function (tick) {
-					dom.window.webkitRequestAnimationFrame(tick);
-				});
-			} else {
-				if (js.global.mozRequestAnimationFrame != null) {
-					return (function (tick) {
-						dom.window.mozRequestAnimationFrame(tick);
-					});
-				} else {
-					return (function (tick) {
-						dom.window.setTimeout((function () {
-							tick(0);
-						}), 1000 / 60);
-					});
-				}
-			}
-		}
-	});
-	w = dom.window;
-	w.requestAnimationFrame = getRequestAnimationFrame();
 	update = (function () {
 		/** @type {!number} */
 		var t;
+		/** @type {Poi} */
+		var this$0;
+		/** @type {Poi} */
+		var this$1;
 		t = Date.now() / 1000;
 		Kingyo$update$N(t);
 		Game.water.step$N(t);
-		if (Game.poi.down$()) {
-			Game.life -= (t - Game.poi_down_time) * Game.damage_per_second;
+		this$0 = Game.poi;
+		if (this$0._down) {
+			Game.life -= (t - Game.poi_down_time) * 0.5;
 			Game.poi_down_time = t;
-			if (Game.life < 0 && ! Game.poi.tearing$()) {
+			if (Game.life < 0 && ! Poi$tearing$LPoi$(Game.poi)) {
 				Game.life = 0;
-				Game.poi.tear$B(true);
+				this$1 = Game.poi;
+				this$1._live = ! true;
 				playSound('tear.mp3');
 				Game.startTime = 0;
 			}
@@ -460,6 +444,14 @@ Game.main$SS = function (canvas_id, life_id) {
 		var gl;
 		/** @type {!number} */
 		var err;
+		/** @type {Poi} */
+		var this$0;
+		/** @type {RenderTexture} */
+		var this$1;
+		/** @type {WebGLRenderingContext} */
+		var gl$0;
+		/** @type {Int32Array} */
+		var vp$0;
 		update();
 		gl = Game.gl;
 		Game.renderTex.begin$();
@@ -469,10 +461,15 @@ Game.main$SS = function (canvas_id, life_id) {
 		gl.enable(gl.BLEND);
 		gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE);
 		Kingyo$drawUnderWater$LM44$LM44$(Game.projMat, Game.viewMat);
-		if (Game.poi.down$()) {
-			Game.poi.draw$LM44$LM44$(Game.projMat, Game.viewMat);
+		this$0 = Game.poi;
+		if (this$0._down) {
+			Poi$draw$LPoi$LM44$LM44$(Game.poi, Game.projMat, Game.viewMat);
 		}
-		Game.renderTex.end$();
+		this$1 = Game.renderTex;
+		gl$0 = RenderTexture.gl;
+		gl$0.bindFramebuffer(gl$0.FRAMEBUFFER, null);
+		vp$0 = this$1._viewport;
+		gl$0.viewport(vp$0[0], vp$0[1], vp$0[2], vp$0[3]);
 		gl.clear(gl.DEPTH_BUFFER_BIT);
 		gl.useProgram(Game.bltProg);
 		gl.bindTexture(gl.TEXTURE_2D, Game.renderTex.texture$());
@@ -481,69 +478,31 @@ Game.main$SS = function (canvas_id, life_id) {
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 		gl.uniform1i(Game.bltULocs.texture, 0);
-		gl.uniformMatrix4fv(Game.bltULocs.projectionMatrix, false, new M44$().setOrtho$NNNNNN(0, 1, 0, 1, - 1, 0).array$());
-		gl.uniformMatrix4fv(Game.bltULocs.modelviewMatrix, false, new M44$().setIdentity$().array$());
+		gl.uniformMatrix4fv(Game.bltULocs.projectionMatrix, false, M44$array$LM44$(M44$setOrtho$LM44$NNNNNN({_: new Float32Array(16)}, 0, 1, 0, 1, -1, 0)));
+		gl.uniformMatrix4fv(Game.bltULocs.modelviewMatrix, false, M44$array$LM44$(M44$setIdentity$LM44$({_: new Float32Array(16)})));
 		gl.bindBuffer(gl.ARRAY_BUFFER, Game.bltVTBuf);
-		gl.vertexAttribPointer((function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[game.jsx:287] null access");
-			}
-			return v;
-		}(Game.bltALocs.vertex)), 2, gl.FLOAT, false, 0, 0);
-		gl.vertexAttribPointer((function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[game.jsx:288] null access");
-			}
-			return v;
-		}(Game.bltALocs.texcoord)), 2, gl.FLOAT, false, 0, 0);
-		gl.enableVertexAttribArray((function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[game.jsx:289] null access");
-			}
-			return v;
-		}(Game.bltALocs.vertex)));
-		gl.enableVertexAttribArray((function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[game.jsx:290] null access");
-			}
-			return v;
-		}(Game.bltALocs.texcoord)));
+		gl.vertexAttribPointer(Game.bltALocs.vertex, 2, gl.FLOAT, false, 0, 0);
+		gl.vertexAttribPointer(Game.bltALocs.texcoord, 2, gl.FLOAT, false, 0, 0);
+		gl.enableVertexAttribArray(Game.bltALocs.vertex);
+		gl.enableVertexAttribArray(Game.bltALocs.texcoord);
 		gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
-		gl.disableVertexAttribArray((function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[game.jsx:294] null access");
-			}
-			return v;
-		}(Game.bltALocs.vertex)));
-		gl.disableVertexAttribArray((function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[game.jsx:295] null access");
-			}
-			return v;
-		}(Game.bltALocs.texcoord)));
+		gl.disableVertexAttribArray(Game.bltALocs.vertex);
+		gl.disableVertexAttribArray(Game.bltALocs.texcoord);
 		Game.water.draw$LM44$LM44$LWebGLTexture$NN(Game.projMat, Game.viewMat, Game.renderTex.texture$(), Game.canvas.offsetWidth, Game.canvas.offsetHeight);
 		Kingyo$drawAboveWater$LM44$LM44$(Game.projMat, Game.viewMat);
-		if (! Game.poi.down$()) {
-			Game.poi.draw$LM44$LM44$(Game.projMat, Game.viewMat);
+		if (! Poi$down$LPoi$(Game.poi)) {
+			Poi$draw$LPoi$LM44$LM44$(Game.poi, Game.projMat, Game.viewMat);
 		}
 		err = gl.getError();
 		if (err !== 0) {
-			console.log('GL_ERROR: ' + err.toString());
 		}
 	});
 	update_render = (function (time) {
 		update();
 		render();
-		dom.window.requestAnimationFrame(update_render);
+		Timer._requestAnimationFrame(update_render);
 	});
 	update_render(0);
-	console.log('game start!');
 };
 
 var Game$main$SS = Game.main$SS;
@@ -585,7 +544,7 @@ dom$.prototype = new dom;
  * @return {HTMLElement}
  */
 dom.id$S = function (id) {
-	return (function (o) { return o instanceof HTMLElement ? o : null; })(dom.document.getElementById(id));
+	return dom.document.getElementById(id);
 };
 
 var dom$id$S = dom.id$S;
@@ -595,7 +554,7 @@ var dom$id$S = dom.id$S;
  * @return {HTMLElement}
  */
 dom.getElementById$S = function (id) {
-	return (function (o) { return o instanceof HTMLElement ? o : null; })(dom.document.getElementById(id));
+	return dom.document.getElementById(id);
 };
 
 var dom$getElementById$S = dom.getElementById$S;
@@ -605,13 +564,7 @@ var dom$getElementById$S = dom.getElementById$S;
  * @return {HTMLElement}
  */
 dom.createElement$S = function (tag) {
-	return (function (v) {
-		if (! (v == null || v instanceof HTMLElement)) {
-			debugger;
-			throw new Error("[/Users/haga.takeshi/Documents/JSX/lib/js/js/web.jsx:30] detected invalid cast, value is not an instance of the designated type or null");
-		}
-		return v;
-	}(dom.document.createElement(tag)));
+	return dom.document.createElement(tag);
 };
 
 var dom$createElement$S = dom.createElement$S;
@@ -633,17 +586,12 @@ function Timer$() {
 Timer$.prototype = new Timer;
 
 /**
+ * @param {*} callback
  * @param {!number} intervalMS
  * @return {TimerHandle}
  */
 Timer.setTimeout$F$V$N = function (callback, intervalMS) {
-	return (function (v) {
-		if (! (v == null || typeof v === "function")) {
-			debugger;
-			throw new Error("[/Users/haga.takeshi/Documents/JSX/lib/js/timer.jsx:27] detected invalid cast, value is not a function or null");
-		}
-		return v;
-	}(js.global.setTimeout))(callback, intervalMS);
+	return js.global.setTimeout(callback, intervalMS);
 };
 
 var Timer$setTimeout$F$V$N = Timer.setTimeout$F$V$N;
@@ -652,29 +600,18 @@ var Timer$setTimeout$F$V$N = Timer.setTimeout$F$V$N;
  * @param {TimerHandle} timer
  */
 Timer.clearTimeout$LTimerHandle$ = function (timer) {
-	(function (v) {
-		if (! (v == null || typeof v === "function")) {
-			debugger;
-			throw new Error("[/Users/haga.takeshi/Documents/JSX/lib/js/timer.jsx:31] detected invalid cast, value is not a function or null");
-		}
-		return v;
-	}(js.global.clearTimeout))(timer);
+	js.global.clearTimeout(timer);
 };
 
 var Timer$clearTimeout$LTimerHandle$ = Timer.clearTimeout$LTimerHandle$;
 
 /**
+ * @param {*} callback
  * @param {!number} intervalMS
  * @return {TimerHandle}
  */
 Timer.setInterval$F$V$N = function (callback, intervalMS) {
-	return (function (v) {
-		if (! (v == null || typeof v === "function")) {
-			debugger;
-			throw new Error("[/Users/haga.takeshi/Documents/JSX/lib/js/timer.jsx:35] detected invalid cast, value is not a function or null");
-		}
-		return v;
-	}(js.global.setInterval))(callback, intervalMS);
+	return js.global.setInterval(callback, intervalMS);
 };
 
 var Timer$setInterval$F$V$N = Timer.setInterval$F$V$N;
@@ -683,18 +620,13 @@ var Timer$setInterval$F$V$N = Timer.setInterval$F$V$N;
  * @param {TimerHandle} timer
  */
 Timer.clearInterval$LTimerHandle$ = function (timer) {
-	(function (v) {
-		if (! (v == null || typeof v === "function")) {
-			debugger;
-			throw new Error("[/Users/haga.takeshi/Documents/JSX/lib/js/timer.jsx:39] detected invalid cast, value is not a function or null");
-		}
-		return v;
-	}(js.global.clearInterval))(timer);
+	js.global.clearInterval(timer);
 };
 
 var Timer$clearInterval$LTimerHandle$ = Timer.clearInterval$LTimerHandle$;
 
 /**
+ * @param {*} callback
  * @return {TimerHandle}
  */
 Timer.requestAnimationFrame$F$NV$ = function (callback) {
@@ -724,6 +656,7 @@ var Timer$useNativeRAF$B = Timer.useNativeRAF$B;
 
 /**
  * @param {!boolean} useNativeImpl
+ * @return {*}
  */
 Timer._getRequestAnimationFrameImpl$B = function (useNativeImpl) {
 	/** @type {!number} */
@@ -731,57 +664,27 @@ Timer._getRequestAnimationFrameImpl$B = function (useNativeImpl) {
 	if (useNativeImpl) {
 		if (js.global.requestAnimationFrame) {
 			return (function (callback) {
-				return (function (v) {
-					if (! (v == null || typeof v === "function")) {
-						debugger;
-						throw new Error("[/Users/haga.takeshi/Documents/JSX/lib/js/timer.jsx:65] detected invalid cast, value is not a function or null");
-					}
-					return v;
-				}(js.global.requestAnimationFrame))(callback);
+				return js.global.requestAnimationFrame(callback);
 			});
 		} else {
 			if (js.global.webkitRequestAnimationFrame) {
 				return (function (callback) {
-					return (function (v) {
-						if (! (v == null || typeof v === "function")) {
-							debugger;
-							throw new Error("[/Users/haga.takeshi/Documents/JSX/lib/js/timer.jsx:71] detected invalid cast, value is not a function or null");
-						}
-						return v;
-					}(js.global.webkitRequestAnimationFrame))(callback);
+					return js.global.webkitRequestAnimationFrame(callback);
 				});
 			} else {
 				if (js.global.mozRequestAnimationFrame) {
 					return (function (callback) {
-						return (function (v) {
-							if (! (v == null || typeof v === "function")) {
-								debugger;
-								throw new Error("[/Users/haga.takeshi/Documents/JSX/lib/js/timer.jsx:77] detected invalid cast, value is not a function or null");
-							}
-							return v;
-						}(js.global.mozRequestAnimationFrame))(callback);
+						return js.global.mozRequestAnimationFrame(callback);
 					});
 				} else {
 					if (js.global.oRequestAnimationFrame) {
 						return (function (callback) {
-							return (function (v) {
-								if (! (v == null || typeof v === "function")) {
-									debugger;
-									throw new Error("[/Users/haga.takeshi/Documents/JSX/lib/js/timer.jsx:83] detected invalid cast, value is not a function or null");
-								}
-								return v;
-							}(js.global.oRequestAnimationFrame))(callback);
+							return js.global.oRequestAnimationFrame(callback);
 						});
 					} else {
 						if (js.global.msRequestAnimationFrame) {
 							return (function (callback) {
-								return (function (v) {
-									if (! (v == null || typeof v === "function")) {
-										debugger;
-										throw new Error("[/Users/haga.takeshi/Documents/JSX/lib/js/timer.jsx:89] detected invalid cast, value is not a function or null");
-									}
-									return v;
-								}(js.global.msRequestAnimationFrame))(callback);
+								return js.global.msRequestAnimationFrame(callback);
 							});
 						}
 					}
@@ -795,10 +698,13 @@ Timer._getRequestAnimationFrameImpl$B = function (useNativeImpl) {
 		var now;
 		/** @type {!number} */
 		var timeToCall;
+		/** @type {!number} */
+		var value2$0;
 		now = Date.now();
-		timeToCall = Math.max(0, 16 - (now - lastTime));
+		value2$0 = 16 - (now - lastTime);
+		timeToCall = (0 >= value2$0 ? 0 : value2$0);
 		lastTime = now + timeToCall;
-		return Timer$setTimeout$F$V$N((function () {
+		return js.global.setTimeout((function () {
 			callback(now + timeToCall);
 		}), timeToCall);
 	});
@@ -808,62 +714,33 @@ var Timer$_getRequestAnimationFrameImpl$B = Timer._getRequestAnimationFrameImpl$
 
 /**
  * @param {!boolean} useNativeImpl
+ * @return {*}
  */
 Timer._getCancelAnimationFrameImpl$B = function (useNativeImpl) {
 	if (useNativeImpl) {
 		if (js.global.cancelAnimationFrame) {
 			return (function (timer) {
-				(function (v) {
-					if (! (v == null || typeof v === "function")) {
-						debugger;
-						throw new Error("[/Users/haga.takeshi/Documents/JSX/lib/js/timer.jsx:112] detected invalid cast, value is not a function or null");
-					}
-					return v;
-				}(js.global.cancelAnimationFrame))(timer);
+				js.global.cancelAnimationFrame(timer);
 			});
 		} else {
 			if (js.global.webkitCancelAnimationFrame) {
 				return (function (timer) {
-					(function (v) {
-						if (! (v == null || typeof v === "function")) {
-							debugger;
-							throw new Error("[/Users/haga.takeshi/Documents/JSX/lib/js/timer.jsx:118] detected invalid cast, value is not a function or null");
-						}
-						return v;
-					}(js.global.webkitCancelAnimationFrame))(timer);
+					js.global.webkitCancelAnimationFrame(timer);
 				});
 			} else {
 				if (js.global.mozCancelAnimationFrame) {
 					return (function (timer) {
-						(function (v) {
-							if (! (v == null || typeof v === "function")) {
-								debugger;
-								throw new Error("[/Users/haga.takeshi/Documents/JSX/lib/js/timer.jsx:124] detected invalid cast, value is not a function or null");
-							}
-							return v;
-						}(js.global.mozCancelAnimationFrame))(timer);
+						js.global.mozCancelAnimationFrame(timer);
 					});
 				} else {
 					if (js.global.oCancelAnimationFrame) {
 						return (function (timer) {
-							(function (v) {
-								if (! (v == null || typeof v === "function")) {
-									debugger;
-									throw new Error("[/Users/haga.takeshi/Documents/JSX/lib/js/timer.jsx:130] detected invalid cast, value is not a function or null");
-								}
-								return v;
-							}(js.global.oCancelAnimationFrame))(timer);
+							js.global.oCancelAnimationFrame(timer);
 						});
 					} else {
 						if (js.global.msCancelAnimationFrame) {
 							return (function (timer) {
-								(function (v) {
-									if (! (v == null || typeof v === "function")) {
-										debugger;
-										throw new Error("[/Users/haga.takeshi/Documents/JSX/lib/js/timer.jsx:136] detected invalid cast, value is not a function or null");
-									}
-									return v;
-								}(js.global.msCancelAnimationFrame))(timer);
+								js.global.msCancelAnimationFrame(timer);
 							});
 						}
 					}
@@ -924,18 +801,12 @@ Util.getWebGL$S = function (canvas_id) {
 	if (Util.gl) {
 		return Util.gl;
 	}
-	canvas = (function (o) { return o instanceof HTMLCanvasElement ? o : null; })(dom$id$S(canvas_id));
+	canvas = dom.document.getElementById(canvas_id);
 	ctx_names = [ 'webgl', 'experimental-webgl', 'moz-webgl', 'webkit-3d' ];
 	ctx = null;
 	for (ni in ctx_names) {
 		try {
-			ctx = (function (o) { return o instanceof WebGLRenderingContext ? o : null; })(canvas.getContext((function (v) {
-				if (! (v != null)) {
-					debugger;
-					throw new Error("[webgl-util.jsx:16] null access");
-				}
-				return v;
-			}(ctx_names[ni]))));
+			ctx = canvas.getContext(ctx_names[ni]);
 		} catch ($__jsx_catch_0) {
 			if ($__jsx_catch_0 instanceof DOMException) {
 				continue;
@@ -978,7 +849,6 @@ Util.checkGLError$ = function () {
 	gl = Util.gl;
 	err = gl.getError();
 	if (err) {
-		console.log('GL ERROR! :' + err.toString());
 	}
 };
 
@@ -996,16 +866,17 @@ Util.getShader$SI = function (url, type) {
 	var src;
 	/** @type {WebGLShader} */
 	var shader;
+	/** @type {XMLHttpRequest} */
+	var xhr$0;
 	gl = Util.gl;
-	src = Util$getFile$S(url);
+	xhr$0 = new XMLHttpRequest();
+	xhr$0.open("GET", url, false);
+	xhr$0.send();
+	src = xhr$0.responseText;
 	shader = gl.createShader(type);
 	gl.shaderSource(shader, src);
 	gl.compileShader(shader);
-	if (! (!! gl.getShaderParameter(shader, gl.COMPILE_STATUS))) {
-		console.log(gl.getShaderInfoLog(shader));
-		return null;
-	}
-	return shader;
+	return (! (!! gl.getShaderParameter(shader, gl.COMPILE_STATUS)) ? null : shader);
 };
 
 var Util$getShader$SI = Util.getShader$SI;
@@ -1034,11 +905,7 @@ Util.getProgram$SS = function (vs_url, fs_url) {
 	gl.attachShader(program, vs);
 	gl.attachShader(program, fs);
 	gl.linkProgram(program);
-	if (! (!! gl.getProgramParameter(program, gl.LINK_STATUS))) {
-		console.log(gl.getProgramInfoLog(program));
-		return null;
-	}
-	return program;
+	return (! (!! gl.getProgramParameter(program, gl.LINK_STATUS)) ? null : program);
 };
 
 var Util$getProgram$SS = Util.getProgram$SS;
@@ -1088,7 +955,7 @@ Util.getAttribLocations$LWebGLProgram$ = function (prog) {
 	alocs = {  };
 	for ((ai = 0, na = gl.getProgramParameter(prog, gl.ACTIVE_ATTRIBUTES) | 0); ai < na; ++ ai) {
 		attr = gl.getActiveAttrib(prog, ai);
-		alocs[attr.name] = gl.getAttribLocation(prog, attr.name);
+		alocs[attr.name] = (gl.getAttribLocation(prog, attr.name) | 0);
 	}
 	return alocs;
 };
@@ -1133,8 +1000,10 @@ V2$.prototype = new V2;
  * @param {V2} v
  */
 function V2$LV2$(v) {
-	this._ = new Float32Array(2);
-	this.set$LV2$(v);
+	/** @type {Float32Array} */
+	var _$0;
+	_$0 = this._ = new Float32Array(2);
+	_$0.set(v._);
 };
 
 V2$LV2$.prototype = new V2;
@@ -1144,8 +1013,10 @@ V2$LV2$.prototype = new V2;
  * @param {Array.<undefined|!number>} v
  */
 function V2$AN(v) {
-	this._ = new Float32Array(2);
-	this.set$AN(v);
+	/** @type {Float32Array} */
+	var _$0;
+	_$0 = this._ = new Float32Array(2);
+	_$0.set(v);
 };
 
 V2$AN.prototype = new V2;
@@ -1155,8 +1026,10 @@ V2$AN.prototype = new V2;
  * @param {Float32Array} v
  */
 function V2$LFloat32Array$(v) {
-	this._ = new Float32Array(2);
-	this.set$LFloat32Array$(v);
+	/** @type {Float32Array} */
+	var _$0;
+	_$0 = this._ = new Float32Array(2);
+	_$0.set(v);
 };
 
 V2$LFloat32Array$.prototype = new V2;
@@ -1168,7 +1041,8 @@ V2$LFloat32Array$.prototype = new V2;
  */
 function V2$NN(x, y) {
 	this._ = new Float32Array(2);
-	this.set$NN(x, y);
+	this._[0] = x;
+	this._[1] = y;
 };
 
 V2$NN.prototype = new V2;
@@ -1179,7 +1053,7 @@ V2$NN.prototype = new V2;
  */
 function V2$LV3$(v) {
 	this._ = new Float32Array(2);
-	this.set$LV3$(v);
+	V2$set$LV2$LV3$(this, v);
 };
 
 V2$LV3$.prototype = new V2;
@@ -1190,663 +1064,594 @@ V2$LV3$.prototype = new V2;
  */
 function V2$LV4$(v) {
 	this._ = new Float32Array(2);
-	this.set$LV4$(v);
+	V2$set$LV2$LV4$(this, v);
 };
 
 V2$LV4$.prototype = new V2;
 
 /**
+ * @param {V2} $this
  * @return {Float32Array}
  */
-V2.prototype.array$ = function () {
-	return this._;
+V2.array$LV2$ = function ($this) {
+	return $this._;
 };
 
+var V2$array$LV2$ = V2.array$LV2$;
+
 /**
+ * @param {V2} $this
  * @param {!number} z
  * @return {V3}
  */
-V2.prototype.v3$N = function (z) {
-	return new V3$LV2$N(this, z);
+V2.v3$LV2$N = function ($this, z) {
+	return new V3$LV2$N($this, z);
 };
 
+var V2$v3$LV2$N = V2.v3$LV2$N;
+
 /**
+ * @param {V2} $this
  * @param {!number} z
  * @param {!number} w
  * @return {V4}
  */
-V2.prototype.v4$NN = function (z, w) {
-	return new V4$LV2$NN(this, z, w);
+V2.v4$LV2$NN = function ($this, z, w) {
+	return new V4$LV2$NN($this, z, w);
 };
 
+var V2$v4$LV2$NN = V2.v4$LV2$NN;
+
 /**
+ * @param {V2} $this
  * @param {V3} v
  * @return {V2}
  */
-V2.prototype.set$LV3$ = function (v) {
-	return this.set$NN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:23] null access");
-		}
-		return v;
-	}(v._[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:23] null access");
-		}
-		return v;
-	}(v._[1])));
+V2.set$LV2$LV3$ = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	/** @type {Float32Array} */
+	var _$0;
+	x$0 = (_$0 = v._)[0];
+	y$0 = _$0[1];
+	$this._[0] = x$0;
+	$this._[1] = y$0;
+	return $this;
 };
 
+var V2$set$LV2$LV3$ = V2.set$LV2$LV3$;
+
 /**
+ * @param {V2} $this
  * @param {V4} v
  * @return {V2}
  */
-V2.prototype.set$LV4$ = function (v) {
-	return this.set$NN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:24] null access");
-		}
-		return v;
-	}(v._[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:24] null access");
-		}
-		return v;
-	}(v._[1])));
+V2.set$LV2$LV4$ = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	/** @type {Float32Array} */
+	var _$0;
+	x$0 = (_$0 = v._)[0];
+	y$0 = _$0[1];
+	$this._[0] = x$0;
+	$this._[1] = y$0;
+	return $this;
 };
 
+var V2$set$LV2$LV4$ = V2.set$LV2$LV4$;
+
 /**
+ * @param {V2} $this
  * @return {V2}
  */
-V2.prototype.clone$ = function () {
-	return new V2$LV2$(this);
+V2.clone$LV2$ = function ($this) {
+	return new V2$LV2$($this);
 };
 
+var V2$clone$LV2$ = V2.clone$LV2$;
+
 /**
+ * @param {V2} $this
  * @return {V2}
  */
-V2.prototype.clear$ = function () {
-	return this.set$NN(0, 0);
+V2.clear$LV2$ = function ($this) {
+	$this._[0] = 0;
+	$this._[1] = 0;
+	return $this;
 };
 
+var V2$clear$LV2$ = V2.clear$LV2$;
+
 /**
+ * @param {V2} $this
  * @param {!number} x
  * @param {!number} y
  * @return {V2}
  */
-V2.prototype.set$NN = function (x, y) {
-	this._[0] = x;
-	this._[1] = y;
-	return this;
+V2.set$LV2$NN = function ($this, x, y) {
+	$this._[0] = x;
+	$this._[1] = y;
+	return $this;
 };
 
+var V2$set$LV2$NN = V2.set$LV2$NN;
+
 /**
+ * @param {V2} $this
  * @param {V2} v
  * @return {V2}
  */
-V2.prototype.set$LV2$ = function (v) {
-	this._.set(v._);
-	return this;
+V2.set$LV2$LV2$ = function ($this, v) {
+	$this._.set(v._);
+	return $this;
 };
 
+var V2$set$LV2$LV2$ = V2.set$LV2$LV2$;
+
 /**
+ * @param {V2} $this
  * @param {Array.<undefined|!number>} v
  * @return {V2}
  */
-V2.prototype.set$AN = function (v) {
-	this._.set(v);
-	return this;
+V2.set$LV2$AN = function ($this, v) {
+	$this._.set(v);
+	return $this;
 };
 
+var V2$set$LV2$AN = V2.set$LV2$AN;
+
 /**
+ * @param {V2} $this
  * @param {Float32Array} v
  * @return {V2}
  */
-V2.prototype.set$LFloat32Array$ = function (v) {
-	this._.set(v);
-	return this;
+V2.set$LV2$LFloat32Array$ = function ($this, v) {
+	$this._.set(v);
+	return $this;
 };
 
+var V2$set$LV2$LFloat32Array$ = V2.set$LV2$LFloat32Array$;
+
 /**
+ * @param {V2} $this
  * @return {!number}
  */
-V2.prototype.x$ = function () {
-	return (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:37] null access");
-		}
-		return v;
-	}(this._[0]));
+V2.x$LV2$ = function ($this) {
+	return $this._[0];
 };
 
+var V2$x$LV2$ = V2.x$LV2$;
+
 /**
+ * @param {V2} $this
  * @return {!number}
  */
-V2.prototype.y$ = function () {
-	return (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:38] null access");
-		}
-		return v;
-	}(this._[1]));
+V2.y$LV2$ = function ($this) {
+	return $this._[1];
 };
 
+var V2$y$LV2$ = V2.y$LV2$;
+
 /**
+ * @param {V2} $this
  * @param {!number} val
  * @return {V2}
  */
-V2.prototype.x$N = function (val) {
-	this._[0] = val;
-	return this;
+V2.x$LV2$N = function ($this, val) {
+	$this._[0] = val;
+	return $this;
 };
 
+var V2$x$LV2$N = V2.x$LV2$N;
+
 /**
+ * @param {V2} $this
  * @param {!number} val
  * @return {V2}
  */
-V2.prototype.y$N = function (val) {
-	this._[1] = val;
-	return this;
+V2.y$LV2$N = function ($this, val) {
+	$this._[1] = val;
+	return $this;
 };
 
+var V2$y$LV2$N = V2.y$LV2$N;
+
 /**
+ * @param {V2} $this
  * @param {V2} v
  * @return {!boolean}
  */
-V2.prototype.equals$LV2$ = function (v) {
-	return this.equals$LV2$N(v, MVQ.EQUAL_EPSILON);
+V2.equals$LV2$LV2$ = function ($this, v) {
+	var $math_abs_t;
+	return (($math_abs_t = v._[0] - $this._[0]) >= 0 ? $math_abs_t : -$math_abs_t) < 0.000001 && (($math_abs_t = v._[1] - $this._[1]) >= 0 ? $math_abs_t : -$math_abs_t) < 0.000001;
 };
 
+var V2$equals$LV2$LV2$ = V2.equals$LV2$LV2$;
+
 /**
+ * @param {V2} $this
  * @param {V2} v
  * @param {!number} eps
  * @return {!boolean}
  */
-V2.prototype.equals$LV2$N = function (v, eps) {
+V2.equals$LV2$LV2$N = function ($this, v, eps) {
 	var $math_abs_t;
-	return (($math_abs_t = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:47] null access");
-		}
-		return v;
-	}(v._[0])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:47] null access");
-		}
-		return v;
-	}(this._[0]))) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:48] null access");
-		}
-		return v;
-	}(v._[1])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:48] null access");
-		}
-		return v;
-	}(this._[1]))) >= 0 ? $math_abs_t : -$math_abs_t) < eps;
+	return (($math_abs_t = v._[0] - $this._[0]) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = v._[1] - $this._[1]) >= 0 ? $math_abs_t : -$math_abs_t) < eps;
 };
 
+var V2$equals$LV2$LV2$N = V2.equals$LV2$LV2$N;
+
 /**
+ * @param {V2} $this
  * @param {!number} x
  * @param {!number} y
  * @return {V2}
  */
-V2.prototype.add$NN = function (x, y) {
-	this._[0] += x;
-	this._[1] += y;
-	return this;
+V2.add$LV2$NN = function ($this, x, y) {
+	$this._[0] += x;
+	$this._[1] += y;
+	return $this;
 };
 
+var V2$add$LV2$NN = V2.add$LV2$NN;
+
 /**
+ * @param {V2} $this
  * @param {V2} v
  * @return {V2}
  */
-V2.prototype.add$LV2$ = function (v) {
-	return this.add$NN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:55] null access");
-		}
-		return v;
-	}(v._[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:55] null access");
-		}
-		return v;
-	}(v._[1])));
+V2.add$LV2$LV2$ = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	/** @type {Float32Array} */
+	var _$0;
+	x$0 = (_$0 = v._)[0];
+	y$0 = _$0[1];
+	$this._[0] += x$0;
+	$this._[1] += y$0;
+	return $this;
 };
 
+var V2$add$LV2$LV2$ = V2.add$LV2$LV2$;
+
 /**
+ * @param {V2} $this
  * @param {Array.<undefined|!number>} v
  * @return {V2}
  */
-V2.prototype.add$AN = function (v) {
-	return this.add$NN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:56] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:56] null access");
-		}
-		return v;
-	}(v[1])));
+V2.add$LV2$AN = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	x$0 = v[0];
+	y$0 = v[1];
+	$this._[0] += x$0;
+	$this._[1] += y$0;
+	return $this;
 };
 
+var V2$add$LV2$AN = V2.add$LV2$AN;
+
 /**
+ * @param {V2} $this
  * @param {Float32Array} v
  * @return {V2}
  */
-V2.prototype.add$LFloat32Array$ = function (v) {
-	return this.add$NN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:57] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:57] null access");
-		}
-		return v;
-	}(v[1])));
+V2.add$LV2$LFloat32Array$ = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	x$0 = v[0];
+	y$0 = v[1];
+	$this._[0] += x$0;
+	$this._[1] += y$0;
+	return $this;
 };
 
+var V2$add$LV2$LFloat32Array$ = V2.add$LV2$LFloat32Array$;
+
 /**
+ * @param {V2} $this
  * @param {!number} x
  * @param {!number} y
  * @return {V2}
  */
-V2.prototype.sub$NN = function (x, y) {
-	this._[0] -= x;
-	this._[1] -= y;
-	return this;
+V2.sub$LV2$NN = function ($this, x, y) {
+	$this._[0] -= x;
+	$this._[1] -= y;
+	return $this;
 };
 
+var V2$sub$LV2$NN = V2.sub$LV2$NN;
+
 /**
+ * @param {V2} $this
  * @param {V2} v
  * @return {V2}
  */
-V2.prototype.sub$LV2$ = function (v) {
-	return this.sub$NN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:63] null access");
-		}
-		return v;
-	}(v._[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:63] null access");
-		}
-		return v;
-	}(v._[1])));
+V2.sub$LV2$LV2$ = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	/** @type {Float32Array} */
+	var _$0;
+	x$0 = (_$0 = v._)[0];
+	y$0 = _$0[1];
+	$this._[0] -= x$0;
+	$this._[1] -= y$0;
+	return $this;
 };
 
+var V2$sub$LV2$LV2$ = V2.sub$LV2$LV2$;
+
 /**
+ * @param {V2} $this
  * @param {Array.<undefined|!number>} v
  * @return {V2}
  */
-V2.prototype.sub$AN = function (v) {
-	return this.sub$NN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:64] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:64] null access");
-		}
-		return v;
-	}(v[1])));
+V2.sub$LV2$AN = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	x$0 = v[0];
+	y$0 = v[1];
+	$this._[0] -= x$0;
+	$this._[1] -= y$0;
+	return $this;
 };
 
+var V2$sub$LV2$AN = V2.sub$LV2$AN;
+
 /**
+ * @param {V2} $this
  * @param {Float32Array} v
  * @return {V2}
  */
-V2.prototype.sub$LFloat32Array$ = function (v) {
-	return this.sub$NN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:65] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:65] null access");
-		}
-		return v;
-	}(v[1])));
+V2.sub$LV2$LFloat32Array$ = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	x$0 = v[0];
+	y$0 = v[1];
+	$this._[0] -= x$0;
+	$this._[1] -= y$0;
+	return $this;
 };
 
+var V2$sub$LV2$LFloat32Array$ = V2.sub$LV2$LFloat32Array$;
+
 /**
+ * @param {V2} $this
  * @param {!number} x
  * @param {!number} y
  * @return {V2}
  */
-V2.prototype.mul$NN = function (x, y) {
-	this._[0] *= x;
-	this._[1] *= y;
-	return this;
+V2.mul$LV2$NN = function ($this, x, y) {
+	$this._[0] *= x;
+	$this._[1] *= y;
+	return $this;
 };
 
+var V2$mul$LV2$NN = V2.mul$LV2$NN;
+
 /**
+ * @param {V2} $this
  * @param {V2} v
  * @return {V2}
  */
-V2.prototype.mul$LV2$ = function (v) {
-	return this.mul$NN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:71] null access");
-		}
-		return v;
-	}(v._[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:71] null access");
-		}
-		return v;
-	}(v._[1])));
+V2.mul$LV2$LV2$ = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	/** @type {Float32Array} */
+	var _$0;
+	x$0 = (_$0 = v._)[0];
+	y$0 = _$0[1];
+	$this._[0] *= x$0;
+	$this._[1] *= y$0;
+	return $this;
 };
 
+var V2$mul$LV2$LV2$ = V2.mul$LV2$LV2$;
+
 /**
+ * @param {V2} $this
  * @param {Array.<undefined|!number>} v
  * @return {V2}
  */
-V2.prototype.mul$AN = function (v) {
-	return this.mul$NN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:72] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:72] null access");
-		}
-		return v;
-	}(v[1])));
+V2.mul$LV2$AN = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	x$0 = v[0];
+	y$0 = v[1];
+	$this._[0] *= x$0;
+	$this._[1] *= y$0;
+	return $this;
 };
 
+var V2$mul$LV2$AN = V2.mul$LV2$AN;
+
 /**
+ * @param {V2} $this
  * @param {Float32Array} v
  * @return {V2}
  */
-V2.prototype.mul$LFloat32Array$ = function (v) {
-	return this.mul$NN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:73] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:73] null access");
-		}
-		return v;
-	}(v[1])));
+V2.mul$LV2$LFloat32Array$ = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	x$0 = v[0];
+	y$0 = v[1];
+	$this._[0] *= x$0;
+	$this._[1] *= y$0;
+	return $this;
 };
 
+var V2$mul$LV2$LFloat32Array$ = V2.mul$LV2$LFloat32Array$;
+
 /**
+ * @param {V2} $this
  * @param {!number} s
  * @return {V2}
  */
-V2.prototype.mul$N = function (s) {
-	this._[0] *= s;
-	this._[1] *= s;
-	return this;
+V2.mul$LV2$N = function ($this, s) {
+	$this._[0] *= s;
+	$this._[1] *= s;
+	return $this;
 };
 
-/**
- * @return {V2}
- */
-V2.prototype.neg$ = function () {
-	return this.mul$N(- 1);
-};
+var V2$mul$LV2$N = V2.mul$LV2$N;
 
 /**
+ * @param {V2} $this
  * @return {V2}
  */
-V2.prototype.normalize$ = function () {
+V2.neg$LV2$ = function ($this) {
+	$this._[0] *= -1;
+	$this._[1] *= -1;
+	return $this;
+};
+
+var V2$neg$LV2$ = V2.neg$LV2$;
+
+/**
+ * @param {V2} $this
+ * @return {V2}
+ */
+V2.normalize$LV2$ = function ($this) {
 	/** @type {!number} */
 	var l;
-	l = this.len$();
-	if (l > 0) {
-		return this.mul$N(1 / l);
-	} else {
-		return this;
-	}
+	l = Math.sqrt(V2$len2$LV2$($this));
+	return (l > 0 ? V2$mul$LV2$N($this, 1 / l) : $this);
 };
 
+var V2$normalize$LV2$ = V2.normalize$LV2$;
+
 /**
+ * @param {V2} $this
  * @param {V2} v
  * @return {!number}
  */
-V2.prototype.cross$LV2$ = function (v) {
-	return (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:95] null access");
-		}
-		return v;
-	}(this._[0])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:95] null access");
-		}
-		return v;
-	}(v._[1])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:95] null access");
-		}
-		return v;
-	}(v._[0])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:95] null access");
-		}
-		return v;
-	}(this._[1]));
+V2.cross$LV2$LV2$ = function ($this, v) {
+	/** @type {Float32Array} */
+	var _$0;
+	/** @type {Float32Array} */
+	var _$1;
+	return (_$1 = $this._)[0] * (_$0 = v._)[1] - _$0[0] * _$1[1];
 };
 
+var V2$cross$LV2$LV2$ = V2.cross$LV2$LV2$;
+
 /**
+ * @param {V2} $this
  * @param {V2} v
  * @return {!number}
  */
-V2.prototype.dot$LV2$ = function (v) {
-	return (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:99] null access");
-		}
-		return v;
-	}(this._[0])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:99] null access");
-		}
-		return v;
-	}(v._[0])) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:99] null access");
-		}
-		return v;
-	}(this._[1])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:99] null access");
-		}
-		return v;
-	}(v._[1]));
+V2.dot$LV2$LV2$ = function ($this, v) {
+	/** @type {Float32Array} */
+	var _$0;
+	/** @type {Float32Array} */
+	var _$1;
+	return (_$0 = $this._)[0] * (_$1 = v._)[0] + _$0[1] * _$1[1];
 };
 
-/**
- * @return {!number}
- */
-V2.prototype.len$ = function () {
-	return Math.sqrt(this.len2$());
-};
+var V2$dot$LV2$LV2$ = V2.dot$LV2$LV2$;
 
 /**
+ * @param {V2} $this
  * @return {!number}
  */
-V2.prototype.len2$ = function () {
+V2.len$LV2$ = function ($this) {
+	return Math.sqrt(V2$len2$LV2$($this));
+};
+
+var V2$len$LV2$ = V2.len$LV2$;
+
+/**
+ * @param {V2} $this
+ * @return {!number}
+ */
+V2.len2$LV2$ = function ($this) {
 	/** @type {undefined|!number} */
 	var x;
 	/** @type {undefined|!number} */
 	var y;
-	(x = this._[0], y = this._[1]);
-	return (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:108] null access");
-		}
-		return v;
-	}(x)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:108] null access");
-		}
-		return v;
-	}(x)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:108] null access");
-		}
-		return v;
-	}(y)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:108] null access");
-		}
-		return v;
-	}(y));
-};
-
-/**
- * @param {V2} v
- * @return {!number}
- */
-V2.prototype.dist$LV2$ = function (v) {
-	return Math.sqrt(this.dist2$LV2$(v));
-};
-
-/**
- * @param {V2} v
- * @return {!number}
- */
-V2.prototype.dist2$LV2$ = function (v) {
-	/** @type {!number} */
-	var x;
-	/** @type {!number} */
-	var y;
-	x = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:116] null access");
-		}
-		return v;
-	}(v._[0])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:116] null access");
-		}
-		return v;
-	}(this._[0]));
-	y = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:117] null access");
-		}
-		return v;
-	}(v._[1])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:117] null access");
-		}
-		return v;
-	}(this._[1]));
+	/** @type {Float32Array} */
+	var _$0;
+	(x = (_$0 = $this._)[0], y = _$0[1]);
 	return x * x + y * y;
 };
 
+var V2$len2$LV2$ = V2.len2$LV2$;
+
 /**
+ * @param {V2} $this
+ * @param {V2} v
+ * @return {!number}
+ */
+V2.dist$LV2$LV2$ = function ($this, v) {
+	return Math.sqrt(V2$dist2$LV2$LV2$($this, v));
+};
+
+var V2$dist$LV2$LV2$ = V2.dist$LV2$LV2$;
+
+/**
+ * @param {V2} $this
+ * @param {V2} v
+ * @return {!number}
+ */
+V2.dist2$LV2$LV2$ = function ($this, v) {
+	/** @type {!number} */
+	var x;
+	/** @type {!number} */
+	var y;
+	/** @type {Float32Array} */
+	var _$0;
+	/** @type {Float32Array} */
+	var _$1;
+	x = (_$0 = v._)[0] - (_$1 = $this._)[0];
+	y = _$0[1] - _$1[1];
+	return x * x + y * y;
+};
+
+var V2$dist2$LV2$LV2$ = V2.dist2$LV2$LV2$;
+
+/**
+ * @param {V2} $this
  * @param {V2} v0
  * @param {V2} v1
  * @param {!number} ratio
  * @return {V2}
  */
-V2.prototype.lerp$LV2$LV2$N = function (v0, v1, ratio) {
-	this._[0] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:122] null access");
-		}
-		return v;
-	}(v0._[0])) + ratio * ((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:122] null access");
-		}
-		return v;
-	}(v1._[0])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:122] null access");
-		}
-		return v;
-	}(v0._[0])));
-	this._[1] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:123] null access");
-		}
-		return v;
-	}(v0._[1])) + ratio * ((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:123] null access");
-		}
-		return v;
-	}(v1._[1])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:123] null access");
-		}
-		return v;
-	}(v0._[1])));
-	return this;
+V2.lerp$LV2$LV2$LV2$N = function ($this, v0, v1, ratio) {
+	$this._[0] = v0._[0] + ratio * (v1._[0] - v0._[0]);
+	$this._[1] = v0._[1] + ratio * (v1._[1] - v0._[1]);
+	return $this;
 };
 
+var V2$lerp$LV2$LV2$LV2$N = V2.lerp$LV2$LV2$LV2$N;
+
 /**
+ * @param {V2} $this
  * @param {M22} m
  * @return {V2}
  */
-V2.prototype.transformBy$LM22$ = function (m) {
+V2.transformBy$LV2$LM22$ = function ($this, m) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
@@ -1855,66 +1660,21 @@ V2.prototype.transformBy$LM22$ = function (m) {
 	var x;
 	/** @type {undefined|!number} */
 	var y;
-	(a = this.array$(), t = m.array$());
+	(a = $this._, t = m._);
 	(x = a[0], y = a[1]);
-	a[0] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:130] null access");
-		}
-		return v;
-	}(t[0])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:130] null access");
-		}
-		return v;
-	}(x)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:130] null access");
-		}
-		return v;
-	}(t[2])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:130] null access");
-		}
-		return v;
-	}(y));
-	a[1] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:131] null access");
-		}
-		return v;
-	}(t[1])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:131] null access");
-		}
-		return v;
-	}(x)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:131] null access");
-		}
-		return v;
-	}(t[3])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:131] null access");
-		}
-		return v;
-	}(y));
-	return this;
+	a[0] = t[0] * x + t[2] * y;
+	a[1] = t[1] * x + t[3] * y;
+	return $this;
 };
 
+var V2$transformBy$LV2$LM22$ = V2.transformBy$LV2$LM22$;
+
 /**
+ * @param {V2} $this
  * @param {M33} m
  * @return {V2}
  */
-V2.prototype.transformBy$LM33$ = function (m) {
+V2.transformBy$LV2$LM33$ = function ($this, m) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
@@ -1923,72 +1683,14 @@ V2.prototype.transformBy$LM33$ = function (m) {
 	var x;
 	/** @type {undefined|!number} */
 	var y;
-	(a = this.array$(), t = m.array$());
+	(a = $this._, t = m._);
 	(x = a[0], y = a[1]);
-	a[0] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:137] null access");
-		}
-		return v;
-	}(t[0])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:137] null access");
-		}
-		return v;
-	}(x)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:137] null access");
-		}
-		return v;
-	}(t[3])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:137] null access");
-		}
-		return v;
-	}(y)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:137] null access");
-		}
-		return v;
-	}(t[6]));
-	a[1] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:138] null access");
-		}
-		return v;
-	}(t[1])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:138] null access");
-		}
-		return v;
-	}(x)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:138] null access");
-		}
-		return v;
-	}(t[4])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:138] null access");
-		}
-		return v;
-	}(y)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:138] null access");
-		}
-		return v;
-	}(t[7]));
-	return this;
+	a[0] = t[0] * x + t[3] * y + t[6];
+	a[1] = t[1] * x + t[4] * y + t[7];
+	return $this;
 };
+
+var V2$transformBy$LV2$LM33$ = V2.transformBy$LV2$LM33$;
 
 /**
  * class V3 extends Object
@@ -2012,8 +1714,10 @@ V3$.prototype = new V3;
  * @param {V3} v
  */
 function V3$LV3$(v) {
-	this._ = new Float32Array(3);
-	this.set$LV3$(v);
+	/** @type {Float32Array} */
+	var _$0;
+	_$0 = this._ = new Float32Array(3);
+	_$0.set(v._);
 };
 
 V3$LV3$.prototype = new V3;
@@ -2023,8 +1727,10 @@ V3$LV3$.prototype = new V3;
  * @param {Array.<undefined|!number>} v
  */
 function V3$AN(v) {
-	this._ = new Float32Array(3);
-	this.set$AN(v);
+	/** @type {Float32Array} */
+	var _$0;
+	_$0 = this._ = new Float32Array(3);
+	_$0.set(v);
 };
 
 V3$AN.prototype = new V3;
@@ -2034,8 +1740,10 @@ V3$AN.prototype = new V3;
  * @param {Float32Array} v
  */
 function V3$LFloat32Array$(v) {
-	this._ = new Float32Array(3);
-	this.set$LFloat32Array$(v);
+	/** @type {Float32Array} */
+	var _$0;
+	_$0 = this._ = new Float32Array(3);
+	_$0.set(v);
 };
 
 V3$LFloat32Array$.prototype = new V3;
@@ -2048,7 +1756,9 @@ V3$LFloat32Array$.prototype = new V3;
  */
 function V3$NNN(x, y, z) {
 	this._ = new Float32Array(3);
-	this.set$NNN(x, y, z);
+	this._[0] = x;
+	this._[1] = y;
+	this._[2] = z;
 };
 
 V3$NNN.prototype = new V3;
@@ -2060,7 +1770,7 @@ V3$NNN.prototype = new V3;
  */
 function V3$LV2$N(v, z) {
 	this._ = new Float32Array(3);
-	this.set$LV2$N(v, z);
+	V3$set$LV3$LV2$N(this, v, z);
 };
 
 V3$LV2$N.prototype = new V3;
@@ -2071,565 +1781,564 @@ V3$LV2$N.prototype = new V3;
  */
 function V3$LV4$(v) {
 	this._ = new Float32Array(3);
-	this.set$LV4$(v);
+	V3$set$LV3$LV4$(this, v);
 };
 
 V3$LV4$.prototype = new V3;
 
 /**
+ * @param {V3} $this
  * @return {Float32Array}
  */
-V3.prototype.array$ = function () {
-	return this._;
+V3.array$LV3$ = function ($this) {
+	return $this._;
 };
 
+var V3$array$LV3$ = V3.array$LV3$;
+
 /**
+ * @param {V3} $this
  * @return {V2}
  */
-V3.prototype.v2$ = function () {
-	return new V2$LV3$(this);
+V3.v2$LV3$ = function ($this) {
+	return new V2$LV3$($this);
 };
 
+var V3$v2$LV3$ = V3.v2$LV3$;
+
 /**
+ * @param {V3} $this
  * @param {!number} w
  * @return {V4}
  */
-V3.prototype.v4$N = function (w) {
-	return new V4$LV3$N(this, w);
+V3.v4$LV3$N = function ($this, w) {
+	return new V4$LV3$N($this, w);
 };
 
+var V3$v4$LV3$N = V3.v4$LV3$N;
+
 /**
+ * @param {V3} $this
  * @param {V2} v
  * @param {!number} z
  * @return {V3}
  */
-V3.prototype.set$LV2$N = function (v, z) {
-	return this.set$NNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:159] null access");
-		}
-		return v;
-	}(v._[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:159] null access");
-		}
-		return v;
-	}(v._[1])), z);
+V3.set$LV3$LV2$N = function ($this, v, z) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	/** @type {Float32Array} */
+	var _$0;
+	x$0 = (_$0 = v._)[0];
+	y$0 = _$0[1];
+	$this._[0] = x$0;
+	$this._[1] = y$0;
+	$this._[2] = z;
+	return $this;
 };
 
+var V3$set$LV3$LV2$N = V3.set$LV3$LV2$N;
+
 /**
+ * @param {V3} $this
  * @param {V4} v
  * @return {V3}
  */
-V3.prototype.set$LV4$ = function (v) {
-	return this.set$NNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:160] null access");
-		}
-		return v;
-	}(v._[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:160] null access");
-		}
-		return v;
-	}(v._[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:160] null access");
-		}
-		return v;
-	}(v._[2])));
+V3.set$LV3$LV4$ = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	/** @type {!number} */
+	var z$0;
+	/** @type {Float32Array} */
+	var _$0;
+	x$0 = (_$0 = v._)[0];
+	y$0 = _$0[1];
+	z$0 = _$0[2];
+	$this._[0] = x$0;
+	$this._[1] = y$0;
+	$this._[2] = z$0;
+	return $this;
 };
 
+var V3$set$LV3$LV4$ = V3.set$LV3$LV4$;
+
 /**
+ * @param {V3} $this
  * @return {V3}
  */
-V3.prototype.clone$ = function () {
-	return new V3$LV3$(this);
+V3.clone$LV3$ = function ($this) {
+	return new V3$LV3$($this);
 };
 
+var V3$clone$LV3$ = V3.clone$LV3$;
+
 /**
+ * @param {V3} $this
  * @return {V3}
  */
-V3.prototype.clear$ = function () {
-	return this.set$NNN(0, 0, 0);
+V3.clear$LV3$ = function ($this) {
+	$this._[0] = 0;
+	$this._[1] = 0;
+	$this._[2] = 0;
+	return $this;
 };
 
+var V3$clear$LV3$ = V3.clear$LV3$;
+
 /**
+ * @param {V3} $this
  * @param {!number} x
  * @param {!number} y
  * @param {!number} z
  * @return {V3}
  */
-V3.prototype.set$NNN = function (x, y, z) {
-	this._[0] = x;
-	this._[1] = y;
-	this._[2] = z;
-	return this;
+V3.set$LV3$NNN = function ($this, x, y, z) {
+	$this._[0] = x;
+	$this._[1] = y;
+	$this._[2] = z;
+	return $this;
 };
 
+var V3$set$LV3$NNN = V3.set$LV3$NNN;
+
 /**
+ * @param {V3} $this
  * @param {V3} v
  * @return {V3}
  */
-V3.prototype.set$LV3$ = function (v) {
-	this._.set(v._);
-	return this;
+V3.set$LV3$LV3$ = function ($this, v) {
+	$this._.set(v._);
+	return $this;
 };
 
+var V3$set$LV3$LV3$ = V3.set$LV3$LV3$;
+
 /**
+ * @param {V3} $this
  * @param {Array.<undefined|!number>} v
  * @return {V3}
  */
-V3.prototype.set$AN = function (v) {
-	this._.set(v);
-	return this;
+V3.set$LV3$AN = function ($this, v) {
+	$this._.set(v);
+	return $this;
 };
 
+var V3$set$LV3$AN = V3.set$LV3$AN;
+
 /**
+ * @param {V3} $this
  * @param {Float32Array} v
  * @return {V3}
  */
-V3.prototype.set$LFloat32Array$ = function (v) {
-	this._.set(v);
-	return this;
+V3.set$LV3$LFloat32Array$ = function ($this, v) {
+	$this._.set(v);
+	return $this;
 };
 
+var V3$set$LV3$LFloat32Array$ = V3.set$LV3$LFloat32Array$;
+
 /**
+ * @param {V3} $this
  * @return {!number}
  */
-V3.prototype.x$ = function () {
-	return (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:173] null access");
-		}
-		return v;
-	}(this._[0]));
+V3.x$LV3$ = function ($this) {
+	return $this._[0];
 };
 
+var V3$x$LV3$ = V3.x$LV3$;
+
 /**
+ * @param {V3} $this
  * @return {!number}
  */
-V3.prototype.y$ = function () {
-	return (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:174] null access");
-		}
-		return v;
-	}(this._[1]));
+V3.y$LV3$ = function ($this) {
+	return $this._[1];
 };
 
+var V3$y$LV3$ = V3.y$LV3$;
+
 /**
+ * @param {V3} $this
  * @return {!number}
  */
-V3.prototype.z$ = function () {
-	return (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:175] null access");
-		}
-		return v;
-	}(this._[2]));
+V3.z$LV3$ = function ($this) {
+	return $this._[2];
 };
 
+var V3$z$LV3$ = V3.z$LV3$;
+
 /**
+ * @param {V3} $this
  * @param {!number} val
  * @return {V3}
  */
-V3.prototype.x$N = function (val) {
-	this._[0] = val;
-	return this;
+V3.x$LV3$N = function ($this, val) {
+	$this._[0] = val;
+	return $this;
 };
 
+var V3$x$LV3$N = V3.x$LV3$N;
+
 /**
+ * @param {V3} $this
  * @param {!number} val
  * @return {V3}
  */
-V3.prototype.y$N = function (val) {
-	this._[1] = val;
-	return this;
+V3.y$LV3$N = function ($this, val) {
+	$this._[1] = val;
+	return $this;
 };
 
+var V3$y$LV3$N = V3.y$LV3$N;
+
 /**
+ * @param {V3} $this
  * @param {!number} val
  * @return {V3}
  */
-V3.prototype.z$N = function (val) {
-	this._[2] = val;
-	return this;
+V3.z$LV3$N = function ($this, val) {
+	$this._[2] = val;
+	return $this;
 };
 
+var V3$z$LV3$N = V3.z$LV3$N;
+
 /**
+ * @param {V3} $this
  * @param {V3} v
  * @return {!boolean}
  */
-V3.prototype.equals$LV3$ = function (v) {
-	return this.equals$LV3$N(v, MVQ.EQUAL_EPSILON);
+V3.equals$LV3$LV3$ = function ($this, v) {
+	var $math_abs_t;
+	return (($math_abs_t = v._[0] - $this._[0]) >= 0 ? $math_abs_t : -$math_abs_t) < 0.000001 && (($math_abs_t = v._[1] - $this._[1]) >= 0 ? $math_abs_t : -$math_abs_t) < 0.000001 && (($math_abs_t = v._[2] - $this._[2]) >= 0 ? $math_abs_t : -$math_abs_t) < 0.000001;
 };
 
+var V3$equals$LV3$LV3$ = V3.equals$LV3$LV3$;
+
 /**
+ * @param {V3} $this
  * @param {V3} v
  * @param {!number} eps
  * @return {!boolean}
  */
-V3.prototype.equals$LV3$N = function (v, eps) {
+V3.equals$LV3$LV3$N = function ($this, v, eps) {
 	var $math_abs_t;
-	return (($math_abs_t = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:185] null access");
-		}
-		return v;
-	}(v._[0])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:185] null access");
-		}
-		return v;
-	}(this._[0]))) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:186] null access");
-		}
-		return v;
-	}(v._[1])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:186] null access");
-		}
-		return v;
-	}(this._[1]))) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:187] null access");
-		}
-		return v;
-	}(v._[2])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:187] null access");
-		}
-		return v;
-	}(this._[2]))) >= 0 ? $math_abs_t : -$math_abs_t) < eps;
+	return (($math_abs_t = v._[0] - $this._[0]) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = v._[1] - $this._[1]) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = v._[2] - $this._[2]) >= 0 ? $math_abs_t : -$math_abs_t) < eps;
 };
 
+var V3$equals$LV3$LV3$N = V3.equals$LV3$LV3$N;
+
 /**
+ * @param {V3} $this
  * @param {!number} x
  * @param {!number} y
  * @param {!number} z
  * @return {V3}
  */
-V3.prototype.add$NNN = function (x, y, z) {
-	this._[0] += x;
-	this._[1] += y;
-	this._[2] += z;
-	return this;
+V3.add$LV3$NNN = function ($this, x, y, z) {
+	$this._[0] += x;
+	$this._[1] += y;
+	$this._[2] += z;
+	return $this;
 };
 
+var V3$add$LV3$NNN = V3.add$LV3$NNN;
+
 /**
+ * @param {V3} $this
  * @param {V3} v
  * @return {V3}
  */
-V3.prototype.add$LV3$ = function (v) {
-	return this.add$NNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:194] null access");
-		}
-		return v;
-	}(v._[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:194] null access");
-		}
-		return v;
-	}(v._[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:194] null access");
-		}
-		return v;
-	}(v._[2])));
+V3.add$LV3$LV3$ = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	/** @type {!number} */
+	var z$0;
+	/** @type {Float32Array} */
+	var _$0;
+	x$0 = (_$0 = v._)[0];
+	y$0 = _$0[1];
+	z$0 = _$0[2];
+	$this._[0] += x$0;
+	$this._[1] += y$0;
+	$this._[2] += z$0;
+	return $this;
 };
 
+var V3$add$LV3$LV3$ = V3.add$LV3$LV3$;
+
 /**
+ * @param {V3} $this
  * @param {Array.<undefined|!number>} v
  * @return {V3}
  */
-V3.prototype.add$AN = function (v) {
-	return this.add$NNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:195] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:195] null access");
-		}
-		return v;
-	}(v[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:195] null access");
-		}
-		return v;
-	}(v[2])));
+V3.add$LV3$AN = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	/** @type {!number} */
+	var z$0;
+	x$0 = v[0];
+	y$0 = v[1];
+	z$0 = v[2];
+	$this._[0] += x$0;
+	$this._[1] += y$0;
+	$this._[2] += z$0;
+	return $this;
 };
 
+var V3$add$LV3$AN = V3.add$LV3$AN;
+
 /**
+ * @param {V3} $this
  * @param {Float32Array} v
  * @return {V3}
  */
-V3.prototype.add$LFloat32Array$ = function (v) {
-	return this.add$NNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:196] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:196] null access");
-		}
-		return v;
-	}(v[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:196] null access");
-		}
-		return v;
-	}(v[2])));
+V3.add$LV3$LFloat32Array$ = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	/** @type {!number} */
+	var z$0;
+	x$0 = v[0];
+	y$0 = v[1];
+	z$0 = v[2];
+	$this._[0] += x$0;
+	$this._[1] += y$0;
+	$this._[2] += z$0;
+	return $this;
 };
 
+var V3$add$LV3$LFloat32Array$ = V3.add$LV3$LFloat32Array$;
+
 /**
+ * @param {V3} $this
  * @param {!number} x
  * @param {!number} y
  * @param {!number} z
  * @return {V3}
  */
-V3.prototype.sub$NNN = function (x, y, z) {
-	this._[0] -= x;
-	this._[1] -= y;
-	this._[2] -= z;
-	return this;
+V3.sub$LV3$NNN = function ($this, x, y, z) {
+	$this._[0] -= x;
+	$this._[1] -= y;
+	$this._[2] -= z;
+	return $this;
 };
 
+var V3$sub$LV3$NNN = V3.sub$LV3$NNN;
+
 /**
+ * @param {V3} $this
  * @param {V3} v
  * @return {V3}
  */
-V3.prototype.sub$LV3$ = function (v) {
-	return this.sub$NNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:202] null access");
-		}
-		return v;
-	}(v._[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:202] null access");
-		}
-		return v;
-	}(v._[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:202] null access");
-		}
-		return v;
-	}(v._[2])));
+V3.sub$LV3$LV3$ = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	/** @type {!number} */
+	var z$0;
+	/** @type {Float32Array} */
+	var _$0;
+	x$0 = (_$0 = v._)[0];
+	y$0 = _$0[1];
+	z$0 = _$0[2];
+	$this._[0] -= x$0;
+	$this._[1] -= y$0;
+	$this._[2] -= z$0;
+	return $this;
 };
 
+var V3$sub$LV3$LV3$ = V3.sub$LV3$LV3$;
+
 /**
+ * @param {V3} $this
  * @param {Array.<undefined|!number>} v
  * @return {V3}
  */
-V3.prototype.sub$AN = function (v) {
-	return this.sub$NNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:203] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:203] null access");
-		}
-		return v;
-	}(v[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:203] null access");
-		}
-		return v;
-	}(v[2])));
+V3.sub$LV3$AN = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	/** @type {!number} */
+	var z$0;
+	x$0 = v[0];
+	y$0 = v[1];
+	z$0 = v[2];
+	$this._[0] -= x$0;
+	$this._[1] -= y$0;
+	$this._[2] -= z$0;
+	return $this;
 };
 
+var V3$sub$LV3$AN = V3.sub$LV3$AN;
+
 /**
+ * @param {V3} $this
  * @param {Float32Array} v
  * @return {V3}
  */
-V3.prototype.sub$LFloat32Array$ = function (v) {
-	return this.sub$NNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:204] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:204] null access");
-		}
-		return v;
-	}(v[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:204] null access");
-		}
-		return v;
-	}(v[2])));
+V3.sub$LV3$LFloat32Array$ = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	/** @type {!number} */
+	var z$0;
+	x$0 = v[0];
+	y$0 = v[1];
+	z$0 = v[2];
+	$this._[0] -= x$0;
+	$this._[1] -= y$0;
+	$this._[2] -= z$0;
+	return $this;
 };
 
+var V3$sub$LV3$LFloat32Array$ = V3.sub$LV3$LFloat32Array$;
+
 /**
+ * @param {V3} $this
  * @param {!number} x
  * @param {!number} y
  * @param {!number} z
  * @return {V3}
  */
-V3.prototype.mul$NNN = function (x, y, z) {
-	this._[0] *= x;
-	this._[1] *= y;
-	this._[2] *= z;
-	return this;
+V3.mul$LV3$NNN = function ($this, x, y, z) {
+	$this._[0] *= x;
+	$this._[1] *= y;
+	$this._[2] *= z;
+	return $this;
 };
 
+var V3$mul$LV3$NNN = V3.mul$LV3$NNN;
+
 /**
+ * @param {V3} $this
  * @param {V3} v
  * @return {V3}
  */
-V3.prototype.mul$LV3$ = function (v) {
-	return this.mul$NNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:210] null access");
-		}
-		return v;
-	}(v._[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:210] null access");
-		}
-		return v;
-	}(v._[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:210] null access");
-		}
-		return v;
-	}(v._[2])));
+V3.mul$LV3$LV3$ = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	/** @type {!number} */
+	var z$0;
+	/** @type {Float32Array} */
+	var _$0;
+	x$0 = (_$0 = v._)[0];
+	y$0 = _$0[1];
+	z$0 = _$0[2];
+	$this._[0] *= x$0;
+	$this._[1] *= y$0;
+	$this._[2] *= z$0;
+	return $this;
 };
 
+var V3$mul$LV3$LV3$ = V3.mul$LV3$LV3$;
+
 /**
+ * @param {V3} $this
  * @param {Array.<undefined|!number>} v
  * @return {V3}
  */
-V3.prototype.mul$AN = function (v) {
-	return this.mul$NNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:211] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:211] null access");
-		}
-		return v;
-	}(v[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:211] null access");
-		}
-		return v;
-	}(v[2])));
+V3.mul$LV3$AN = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	/** @type {!number} */
+	var z$0;
+	x$0 = v[0];
+	y$0 = v[1];
+	z$0 = v[2];
+	$this._[0] *= x$0;
+	$this._[1] *= y$0;
+	$this._[2] *= z$0;
+	return $this;
 };
 
+var V3$mul$LV3$AN = V3.mul$LV3$AN;
+
 /**
+ * @param {V3} $this
  * @param {Float32Array} v
  * @return {V3}
  */
-V3.prototype.mul$LFloat32Array$ = function (v) {
-	return this.mul$NNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:212] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:212] null access");
-		}
-		return v;
-	}(v[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:212] null access");
-		}
-		return v;
-	}(v[2])));
+V3.mul$LV3$LFloat32Array$ = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	/** @type {!number} */
+	var z$0;
+	x$0 = v[0];
+	y$0 = v[1];
+	z$0 = v[2];
+	$this._[0] *= x$0;
+	$this._[1] *= y$0;
+	$this._[2] *= z$0;
+	return $this;
 };
 
+var V3$mul$LV3$LFloat32Array$ = V3.mul$LV3$LFloat32Array$;
+
 /**
+ * @param {V3} $this
  * @param {!number} s
  * @return {V3}
  */
-V3.prototype.mul$N = function (s) {
-	this._[0] *= s;
-	this._[1] *= s;
-	this._[2] *= s;
-	return this;
+V3.mul$LV3$N = function ($this, s) {
+	$this._[0] *= s;
+	$this._[1] *= s;
+	$this._[2] *= s;
+	return $this;
 };
 
-/**
- * @return {V3}
- */
-V3.prototype.neg$ = function () {
-	return this.mul$N(- 1);
-};
+var V3$mul$LV3$N = V3.mul$LV3$N;
 
 /**
+ * @param {V3} $this
  * @return {V3}
  */
-V3.prototype.normalize$ = function () {
+V3.neg$LV3$ = function ($this) {
+	$this._[0] *= -1;
+	$this._[1] *= -1;
+	$this._[2] *= -1;
+	return $this;
+};
+
+var V3$neg$LV3$ = V3.neg$LV3$;
+
+/**
+ * @param {V3} $this
+ * @return {V3}
+ */
+V3.normalize$LV3$ = function ($this) {
 	/** @type {!number} */
 	var l;
-	l = this.len$();
-	if (l > 0) {
-		return this.mul$N(1 / l);
-	} else {
-		return this;
-	}
+	l = Math.sqrt(V3$len2$LV3$($this));
+	return (l > 0 ? V3$mul$LV3$N($this, 1 / l) : $this);
 };
 
+var V3$normalize$LV3$ = V3.normalize$LV3$;
+
 /**
+ * @param {V3} $this
  * @param {V3} v0
  * @param {V3} v1
  * @return {V3}
  */
-V3.prototype.cross$LV3$LV3$ = function (v0, v1) {
+V3.cross$LV3$LV3$LV3$ = function ($this, v0, v1) {
 	/** @type {undefined|!number} */
 	var x0;
 	/** @type {undefined|!number} */
@@ -2642,320 +2351,121 @@ V3.prototype.cross$LV3$LV3$ = function (v0, v1) {
 	var y1;
 	/** @type {undefined|!number} */
 	var z1;
-	(x0 = v0._[0], y0 = v0._[1], z0 = v0._[2]);
-	(x1 = v1._[0], y1 = v1._[1], z1 = v1._[2]);
-	this._[0] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:237] null access");
-		}
-		return v;
-	}(y0)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:237] null access");
-		}
-		return v;
-	}(z1)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:237] null access");
-		}
-		return v;
-	}(z0)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:237] null access");
-		}
-		return v;
-	}(y1));
-	this._[1] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:238] null access");
-		}
-		return v;
-	}(z0)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:238] null access");
-		}
-		return v;
-	}(x1)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:238] null access");
-		}
-		return v;
-	}(x0)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:238] null access");
-		}
-		return v;
-	}(z1));
-	this._[2] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:239] null access");
-		}
-		return v;
-	}(x0)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:239] null access");
-		}
-		return v;
-	}(y1)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:239] null access");
-		}
-		return v;
-	}(y0)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:239] null access");
-		}
-		return v;
-	}(x1));
-	return this;
+	/** @type {Float32Array} */
+	var _$0;
+	/** @type {Float32Array} */
+	var _$1;
+	(x0 = (_$0 = v0._)[0], y0 = _$0[1], z0 = _$0[2]);
+	(x1 = (_$1 = v1._)[0], y1 = _$1[1], z1 = _$1[2]);
+	$this._[0] = y0 * z1 - z0 * y1;
+	$this._[1] = z0 * x1 - x0 * z1;
+	$this._[2] = x0 * y1 - y0 * x1;
+	return $this;
 };
 
+var V3$cross$LV3$LV3$LV3$ = V3.cross$LV3$LV3$LV3$;
+
 /**
+ * @param {V3} $this
  * @param {V3} v
  * @return {!number}
  */
-V3.prototype.dot$LV3$ = function (v) {
-	return (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:244] null access");
-		}
-		return v;
-	}(this._[0])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:244] null access");
-		}
-		return v;
-	}(v._[0])) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:244] null access");
-		}
-		return v;
-	}(this._[1])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:244] null access");
-		}
-		return v;
-	}(v._[1])) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:244] null access");
-		}
-		return v;
-	}(this._[2])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:244] null access");
-		}
-		return v;
-	}(v._[2]));
+V3.dot$LV3$LV3$ = function ($this, v) {
+	/** @type {Float32Array} */
+	var _$0;
+	/** @type {Float32Array} */
+	var _$1;
+	return (_$0 = $this._)[0] * (_$1 = v._)[0] + _$0[1] * _$1[1] + _$0[2] * _$1[2];
 };
 
-/**
- * @return {!number}
- */
-V3.prototype.len$ = function () {
-	return Math.sqrt(this.len2$());
-};
+var V3$dot$LV3$LV3$ = V3.dot$LV3$LV3$;
 
 /**
+ * @param {V3} $this
  * @return {!number}
  */
-V3.prototype.len2$ = function () {
+V3.len$LV3$ = function ($this) {
+	return Math.sqrt(V3$len2$LV3$($this));
+};
+
+var V3$len$LV3$ = V3.len$LV3$;
+
+/**
+ * @param {V3} $this
+ * @return {!number}
+ */
+V3.len2$LV3$ = function ($this) {
 	/** @type {undefined|!number} */
 	var x;
 	/** @type {undefined|!number} */
 	var y;
 	/** @type {undefined|!number} */
 	var z;
-	(x = this._[0], y = this._[1], z = this._[2]);
-	return (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:253] null access");
-		}
-		return v;
-	}(x)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:253] null access");
-		}
-		return v;
-	}(x)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:253] null access");
-		}
-		return v;
-	}(y)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:253] null access");
-		}
-		return v;
-	}(y)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:253] null access");
-		}
-		return v;
-	}(z)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:253] null access");
-		}
-		return v;
-	}(z));
-};
-
-/**
- * @param {V3} v
- * @return {!number}
- */
-V3.prototype.dist$LV3$ = function (v) {
-	return Math.sqrt(this.dist2$LV3$(v));
-};
-
-/**
- * @param {V3} v
- * @return {!number}
- */
-V3.prototype.dist2$LV3$ = function (v) {
-	/** @type {!number} */
-	var x;
-	/** @type {!number} */
-	var y;
-	/** @type {!number} */
-	var z;
-	x = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:261] null access");
-		}
-		return v;
-	}(v._[0])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:261] null access");
-		}
-		return v;
-	}(this._[0]));
-	y = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:262] null access");
-		}
-		return v;
-	}(v._[1])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:262] null access");
-		}
-		return v;
-	}(this._[1]));
-	z = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:263] null access");
-		}
-		return v;
-	}(v._[2])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:263] null access");
-		}
-		return v;
-	}(this._[2]));
+	/** @type {Float32Array} */
+	var _$0;
+	(x = (_$0 = $this._)[0], y = _$0[1], z = _$0[2]);
 	return x * x + y * y + z * z;
 };
 
+var V3$len2$LV3$ = V3.len2$LV3$;
+
 /**
+ * @param {V3} $this
+ * @param {V3} v
+ * @return {!number}
+ */
+V3.dist$LV3$LV3$ = function ($this, v) {
+	return Math.sqrt(V3$dist2$LV3$LV3$($this, v));
+};
+
+var V3$dist$LV3$LV3$ = V3.dist$LV3$LV3$;
+
+/**
+ * @param {V3} $this
+ * @param {V3} v
+ * @return {!number}
+ */
+V3.dist2$LV3$LV3$ = function ($this, v) {
+	/** @type {!number} */
+	var x;
+	/** @type {!number} */
+	var y;
+	/** @type {!number} */
+	var z;
+	/** @type {Float32Array} */
+	var _$0;
+	/** @type {Float32Array} */
+	var _$1;
+	x = (_$0 = v._)[0] - (_$1 = $this._)[0];
+	y = _$0[1] - _$1[1];
+	z = _$0[2] - _$1[2];
+	return x * x + y * y + z * z;
+};
+
+var V3$dist2$LV3$LV3$ = V3.dist2$LV3$LV3$;
+
+/**
+ * @param {V3} $this
  * @param {V3} v0
  * @param {V3} v1
  * @param {!number} ratio
  * @return {V3}
  */
-V3.prototype.lerp$LV3$LV3$N = function (v0, v1, ratio) {
-	this._[0] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:268] null access");
-		}
-		return v;
-	}(v0._[0])) + ratio * ((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:268] null access");
-		}
-		return v;
-	}(v1._[0])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:268] null access");
-		}
-		return v;
-	}(v0._[0])));
-	this._[1] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:269] null access");
-		}
-		return v;
-	}(v0._[1])) + ratio * ((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:269] null access");
-		}
-		return v;
-	}(v1._[1])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:269] null access");
-		}
-		return v;
-	}(v0._[1])));
-	this._[2] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:270] null access");
-		}
-		return v;
-	}(v0._[2])) + ratio * ((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:270] null access");
-		}
-		return v;
-	}(v1._[2])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:270] null access");
-		}
-		return v;
-	}(v0._[2])));
-	return this;
+V3.lerp$LV3$LV3$LV3$N = function ($this, v0, v1, ratio) {
+	$this._[0] = v0._[0] + ratio * (v1._[0] - v0._[0]);
+	$this._[1] = v0._[1] + ratio * (v1._[1] - v0._[1]);
+	$this._[2] = v0._[2] + ratio * (v1._[2] - v0._[2]);
+	return $this;
 };
 
+var V3$lerp$LV3$LV3$LV3$N = V3.lerp$LV3$LV3$LV3$N;
+
 /**
+ * @param {V3} $this
  * @param {M33} m
  * @return {V3}
  */
-V3.prototype.transformBy$LM33$ = function (m) {
+V3.transformBy$LV3$LM33$ = function ($this, m) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
@@ -2966,127 +2476,22 @@ V3.prototype.transformBy$LM33$ = function (m) {
 	var y;
 	/** @type {undefined|!number} */
 	var z;
-	(a = this.array$(), t = m.array$());
+	(a = $this._, t = m._);
 	(x = a[0], y = a[1], z = a[2]);
-	a[0] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:277] null access");
-		}
-		return v;
-	}(t[0])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:277] null access");
-		}
-		return v;
-	}(x)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:277] null access");
-		}
-		return v;
-	}(t[3])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:277] null access");
-		}
-		return v;
-	}(y)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:277] null access");
-		}
-		return v;
-	}(t[6])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:277] null access");
-		}
-		return v;
-	}(z));
-	a[1] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:278] null access");
-		}
-		return v;
-	}(t[1])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:278] null access");
-		}
-		return v;
-	}(x)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:278] null access");
-		}
-		return v;
-	}(t[4])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:278] null access");
-		}
-		return v;
-	}(y)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:278] null access");
-		}
-		return v;
-	}(t[7])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:278] null access");
-		}
-		return v;
-	}(z));
-	a[2] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:279] null access");
-		}
-		return v;
-	}(t[2])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:279] null access");
-		}
-		return v;
-	}(x)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:279] null access");
-		}
-		return v;
-	}(t[5])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:279] null access");
-		}
-		return v;
-	}(y)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:279] null access");
-		}
-		return v;
-	}(t[8])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:279] null access");
-		}
-		return v;
-	}(z));
-	return this;
+	a[0] = t[0] * x + t[3] * y + t[6] * z;
+	a[1] = t[1] * x + t[4] * y + t[7] * z;
+	a[2] = t[2] * x + t[5] * y + t[8] * z;
+	return $this;
 };
 
+var V3$transformBy$LV3$LM33$ = V3.transformBy$LV3$LM33$;
+
 /**
+ * @param {V3} $this
  * @param {M44} m
  * @return {V3}
  */
-V3.prototype.transformBy$LM44$ = function (m) {
+V3.transformBy$LV3$LM44$ = function ($this, m) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
@@ -3097,139 +2502,15 @@ V3.prototype.transformBy$LM44$ = function (m) {
 	var y;
 	/** @type {undefined|!number} */
 	var z;
-	(a = this.array$(), t = m.array$());
+	(a = $this._, t = m._);
 	(x = a[0], y = a[1], z = a[2]);
-	a[0] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:285] null access");
-		}
-		return v;
-	}(t[0])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:285] null access");
-		}
-		return v;
-	}(x)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:285] null access");
-		}
-		return v;
-	}(t[4])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:285] null access");
-		}
-		return v;
-	}(y)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:285] null access");
-		}
-		return v;
-	}(t[8])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:285] null access");
-		}
-		return v;
-	}(z)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:285] null access");
-		}
-		return v;
-	}(t[12]));
-	a[1] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:286] null access");
-		}
-		return v;
-	}(t[1])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:286] null access");
-		}
-		return v;
-	}(x)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:286] null access");
-		}
-		return v;
-	}(t[5])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:286] null access");
-		}
-		return v;
-	}(y)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:286] null access");
-		}
-		return v;
-	}(t[9])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:286] null access");
-		}
-		return v;
-	}(z)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:286] null access");
-		}
-		return v;
-	}(t[13]));
-	a[2] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:287] null access");
-		}
-		return v;
-	}(t[2])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:287] null access");
-		}
-		return v;
-	}(x)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:287] null access");
-		}
-		return v;
-	}(t[6])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:287] null access");
-		}
-		return v;
-	}(y)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:287] null access");
-		}
-		return v;
-	}(t[10])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:287] null access");
-		}
-		return v;
-	}(z)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:287] null access");
-		}
-		return v;
-	}(t[14]));
-	return this;
+	a[0] = t[0] * x + t[4] * y + t[8] * z + t[12];
+	a[1] = t[1] * x + t[5] * y + t[9] * z + t[13];
+	a[2] = t[2] * x + t[6] * y + t[10] * z + t[14];
+	return $this;
 };
+
+var V3$transformBy$LV3$LM44$ = V3.transformBy$LV3$LM44$;
 
 /**
  * class V4 extends Object
@@ -3253,8 +2534,10 @@ V4$.prototype = new V4;
  * @param {V4} v
  */
 function V4$LV4$(v) {
-	this._ = new Float32Array(4);
-	this.set$LV4$(v);
+	/** @type {Float32Array} */
+	var _$0;
+	_$0 = this._ = new Float32Array(4);
+	_$0.set(v._);
 };
 
 V4$LV4$.prototype = new V4;
@@ -3264,8 +2547,10 @@ V4$LV4$.prototype = new V4;
  * @param {Array.<undefined|!number>} v
  */
 function V4$AN(v) {
-	this._ = new Float32Array(4);
-	this.set$AN(v);
+	/** @type {Float32Array} */
+	var _$0;
+	_$0 = this._ = new Float32Array(4);
+	_$0.set(v);
 };
 
 V4$AN.prototype = new V4;
@@ -3275,8 +2560,10 @@ V4$AN.prototype = new V4;
  * @param {Float32Array} v
  */
 function V4$LFloat32Array$(v) {
-	this._ = new Float32Array(4);
-	this.set$LFloat32Array$(v);
+	/** @type {Float32Array} */
+	var _$0;
+	_$0 = this._ = new Float32Array(4);
+	_$0.set(v);
 };
 
 V4$LFloat32Array$.prototype = new V4;
@@ -3290,7 +2577,7 @@ V4$LFloat32Array$.prototype = new V4;
  */
 function V4$NNNN(x, y, z, w) {
 	this._ = new Float32Array(4);
-	this.set$NNNN(x, y, z, w);
+	V4$set$LV4$NNNN(this, x, y, z, w);
 };
 
 V4$NNNN.prototype = new V4;
@@ -3302,8 +2589,10 @@ V4$NNNN.prototype = new V4;
  * @param {!number} w
  */
 function V4$LV2$NN(v, z, w) {
+	/** @type {Float32Array} */
+	var _$0;
 	this._ = new Float32Array(4);
-	this.set$LV2$NN(v, z, w);
+	V4$set$LV4$NNNN(this, (_$0 = v._)[0], _$0[1], z, w);
 };
 
 V4$LV2$NN.prototype = new V4;
@@ -3314,725 +2603,487 @@ V4$LV2$NN.prototype = new V4;
  * @param {!number} w
  */
 function V4$LV3$N(v, w) {
+	/** @type {Float32Array} */
+	var _$0;
 	this._ = new Float32Array(4);
-	this.set$LV3$N(v, w);
+	V4$set$LV4$NNNN(this, (_$0 = v._)[0], _$0[1], _$0[2], w);
 };
 
 V4$LV3$N.prototype = new V4;
 
 /**
+ * @param {V4} $this
  * @return {Float32Array}
  */
-V4.prototype.array$ = function () {
-	return this._;
+V4.array$LV4$ = function ($this) {
+	return $this._;
 };
 
+var V4$array$LV4$ = V4.array$LV4$;
+
 /**
+ * @param {V4} $this
  * @return {V2}
  */
-V4.prototype.v2$ = function () {
-	return new V2$LV4$(this);
+V4.v2$LV4$ = function ($this) {
+	return new V2$LV4$($this);
 };
 
+var V4$v2$LV4$ = V4.v2$LV4$;
+
 /**
+ * @param {V4} $this
  * @return {V3}
  */
-V4.prototype.v3$ = function () {
-	return new V3$LV4$(this);
+V4.v3$LV4$ = function ($this) {
+	return new V3$LV4$($this);
 };
 
+var V4$v3$LV4$ = V4.v3$LV4$;
+
 /**
+ * @param {V4} $this
  * @param {V2} v
  * @param {!number} z
  * @param {!number} w
  * @return {V4}
  */
-V4.prototype.set$LV2$NN = function (v, z, w) {
-	return this.set$NNNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:308] null access");
-		}
-		return v;
-	}(v._[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:308] null access");
-		}
-		return v;
-	}(v._[1])), z, w);
+V4.set$LV4$LV2$NN = function ($this, v, z, w) {
+	/** @type {Float32Array} */
+	var _$0;
+	return V4$set$LV4$NNNN($this, (_$0 = v._)[0], _$0[1], z, w);
 };
 
+var V4$set$LV4$LV2$NN = V4.set$LV4$LV2$NN;
+
 /**
+ * @param {V4} $this
  * @param {V3} v
  * @param {!number} w
  * @return {V4}
  */
-V4.prototype.set$LV3$N = function (v, w) {
-	return this.set$NNNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:309] null access");
-		}
-		return v;
-	}(v._[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:309] null access");
-		}
-		return v;
-	}(v._[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:309] null access");
-		}
-		return v;
-	}(v._[2])), w);
+V4.set$LV4$LV3$N = function ($this, v, w) {
+	/** @type {Float32Array} */
+	var _$0;
+	return V4$set$LV4$NNNN($this, (_$0 = v._)[0], _$0[1], _$0[2], w);
 };
 
+var V4$set$LV4$LV3$N = V4.set$LV4$LV3$N;
+
 /**
+ * @param {V4} $this
  * @return {V4}
  */
-V4.prototype.clone$ = function () {
-	return new V4$LV4$(this);
+V4.clone$LV4$ = function ($this) {
+	return new V4$LV4$($this);
 };
 
+var V4$clone$LV4$ = V4.clone$LV4$;
+
 /**
+ * @param {V4} $this
  * @return {V4}
  */
-V4.prototype.clear$ = function () {
-	return this.set$NNNN(0, 0, 0, 0);
+V4.clear$LV4$ = function ($this) {
+	return V4$set$LV4$NNNN($this, 0, 0, 0, 0);
 };
 
+var V4$clear$LV4$ = V4.clear$LV4$;
+
 /**
+ * @param {V4} $this
  * @param {!number} x
  * @param {!number} y
  * @param {!number} z
  * @param {!number} w
  * @return {V4}
  */
-V4.prototype.set$NNNN = function (x, y, z, w) {
-	this._[0] = x;
-	this._[1] = y;
-	this._[2] = z;
-	this._[3] = w;
-	return this;
+V4.set$LV4$NNNN = function ($this, x, y, z, w) {
+	$this._[0] = x;
+	$this._[1] = y;
+	$this._[2] = z;
+	$this._[3] = w;
+	return $this;
 };
 
+var V4$set$LV4$NNNN = V4.set$LV4$NNNN;
+
 /**
+ * @param {V4} $this
  * @param {V4} v
  * @return {V4}
  */
-V4.prototype.set$LV4$ = function (v) {
-	this._.set(v._);
-	return this;
+V4.set$LV4$LV4$ = function ($this, v) {
+	$this._.set(v._);
+	return $this;
 };
 
+var V4$set$LV4$LV4$ = V4.set$LV4$LV4$;
+
 /**
+ * @param {V4} $this
  * @param {Array.<undefined|!number>} v
  * @return {V4}
  */
-V4.prototype.set$AN = function (v) {
-	this._.set(v);
-	return this;
+V4.set$LV4$AN = function ($this, v) {
+	$this._.set(v);
+	return $this;
 };
 
+var V4$set$LV4$AN = V4.set$LV4$AN;
+
 /**
+ * @param {V4} $this
  * @param {Float32Array} v
  * @return {V4}
  */
-V4.prototype.set$LFloat32Array$ = function (v) {
-	this._.set(v);
-	return this;
+V4.set$LV4$LFloat32Array$ = function ($this, v) {
+	$this._.set(v);
+	return $this;
 };
 
+var V4$set$LV4$LFloat32Array$ = V4.set$LV4$LFloat32Array$;
+
 /**
+ * @param {V4} $this
  * @return {!number}
  */
-V4.prototype.x$ = function () {
-	return (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:322] null access");
-		}
-		return v;
-	}(this._[0]));
+V4.x$LV4$ = function ($this) {
+	return $this._[0];
 };
 
+var V4$x$LV4$ = V4.x$LV4$;
+
 /**
+ * @param {V4} $this
  * @return {!number}
  */
-V4.prototype.y$ = function () {
-	return (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:323] null access");
-		}
-		return v;
-	}(this._[1]));
+V4.y$LV4$ = function ($this) {
+	return $this._[1];
 };
 
+var V4$y$LV4$ = V4.y$LV4$;
+
 /**
+ * @param {V4} $this
  * @return {!number}
  */
-V4.prototype.z$ = function () {
-	return (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:324] null access");
-		}
-		return v;
-	}(this._[2]));
+V4.z$LV4$ = function ($this) {
+	return $this._[2];
 };
 
+var V4$z$LV4$ = V4.z$LV4$;
+
 /**
+ * @param {V4} $this
  * @return {!number}
  */
-V4.prototype.w$ = function () {
-	return (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:325] null access");
-		}
-		return v;
-	}(this._[3]));
+V4.w$LV4$ = function ($this) {
+	return $this._[3];
 };
 
+var V4$w$LV4$ = V4.w$LV4$;
+
 /**
+ * @param {V4} $this
  * @param {!number} val
  * @return {V4}
  */
-V4.prototype.x$N = function (val) {
-	this._[0] = val;
-	return this;
+V4.x$LV4$N = function ($this, val) {
+	$this._[0] = val;
+	return $this;
 };
 
+var V4$x$LV4$N = V4.x$LV4$N;
+
 /**
+ * @param {V4} $this
  * @param {!number} val
  * @return {V4}
  */
-V4.prototype.y$N = function (val) {
-	this._[1] = val;
-	return this;
+V4.y$LV4$N = function ($this, val) {
+	$this._[1] = val;
+	return $this;
 };
 
+var V4$y$LV4$N = V4.y$LV4$N;
+
 /**
+ * @param {V4} $this
  * @param {!number} val
  * @return {V4}
  */
-V4.prototype.z$N = function (val) {
-	this._[2] = val;
-	return this;
+V4.z$LV4$N = function ($this, val) {
+	$this._[2] = val;
+	return $this;
 };
 
+var V4$z$LV4$N = V4.z$LV4$N;
+
 /**
+ * @param {V4} $this
  * @param {!number} val
  * @return {V4}
  */
-V4.prototype.w$N = function (val) {
-	this._[3] = val;
-	return this;
+V4.w$LV4$N = function ($this, val) {
+	$this._[3] = val;
+	return $this;
 };
 
+var V4$w$LV4$N = V4.w$LV4$N;
+
 /**
+ * @param {V4} $this
  * @param {V4} v
  * @return {!boolean}
  */
-V4.prototype.equals$LV4$ = function (v) {
-	return this.equals$LV4$N(v, MVQ.EQUAL_EPSILON);
+V4.equals$LV4$LV4$ = function ($this, v) {
+	var $math_abs_t;
+	return (($math_abs_t = v._[0] - $this._[0]) >= 0 ? $math_abs_t : -$math_abs_t) < 0.000001 && (($math_abs_t = v._[1] - $this._[1]) >= 0 ? $math_abs_t : -$math_abs_t) < 0.000001 && (($math_abs_t = v._[2] - $this._[2]) >= 0 ? $math_abs_t : -$math_abs_t) < 0.000001 && (($math_abs_t = v._[3] - $this._[3]) >= 0 ? $math_abs_t : -$math_abs_t) < 0.000001;
 };
 
+var V4$equals$LV4$LV4$ = V4.equals$LV4$LV4$;
+
 /**
+ * @param {V4} $this
  * @param {V4} v
  * @param {!number} eps
  * @return {!boolean}
  */
-V4.prototype.equals$LV4$N = function (v, eps) {
+V4.equals$LV4$LV4$N = function ($this, v, eps) {
 	var $math_abs_t;
-	return (($math_abs_t = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:336] null access");
-		}
-		return v;
-	}(v._[0])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:336] null access");
-		}
-		return v;
-	}(this._[0]))) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:337] null access");
-		}
-		return v;
-	}(v._[1])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:337] null access");
-		}
-		return v;
-	}(this._[1]))) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:338] null access");
-		}
-		return v;
-	}(v._[2])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:338] null access");
-		}
-		return v;
-	}(this._[2]))) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:339] null access");
-		}
-		return v;
-	}(v._[3])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:339] null access");
-		}
-		return v;
-	}(this._[3]))) >= 0 ? $math_abs_t : -$math_abs_t) < eps;
+	return (($math_abs_t = v._[0] - $this._[0]) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = v._[1] - $this._[1]) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = v._[2] - $this._[2]) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = v._[3] - $this._[3]) >= 0 ? $math_abs_t : -$math_abs_t) < eps;
 };
 
+var V4$equals$LV4$LV4$N = V4.equals$LV4$LV4$N;
+
 /**
+ * @param {V4} $this
  * @param {!number} x
  * @param {!number} y
  * @param {!number} z
  * @param {!number} w
  * @return {V4}
  */
-V4.prototype.add$NNNN = function (x, y, z, w) {
-	this._[0] += x;
-	this._[1] += y;
-	this._[2] += z;
-	this._[3] += w;
-	return this;
+V4.add$LV4$NNNN = function ($this, x, y, z, w) {
+	$this._[0] += x;
+	$this._[1] += y;
+	$this._[2] += z;
+	$this._[3] += w;
+	return $this;
 };
 
+var V4$add$LV4$NNNN = V4.add$LV4$NNNN;
+
 /**
+ * @param {V4} $this
  * @param {V4} v
  * @return {V4}
  */
-V4.prototype.add$LV4$ = function (v) {
-	return this.add$NNNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:346] null access");
-		}
-		return v;
-	}(v._[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:346] null access");
-		}
-		return v;
-	}(v._[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:346] null access");
-		}
-		return v;
-	}(v._[2])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:346] null access");
-		}
-		return v;
-	}(v._[3])));
+V4.add$LV4$LV4$ = function ($this, v) {
+	/** @type {Float32Array} */
+	var _$0;
+	return V4$add$LV4$NNNN($this, (_$0 = v._)[0], _$0[1], _$0[2], _$0[3]);
 };
 
+var V4$add$LV4$LV4$ = V4.add$LV4$LV4$;
+
 /**
+ * @param {V4} $this
  * @param {Array.<undefined|!number>} v
  * @return {V4}
  */
-V4.prototype.add$AN = function (v) {
-	return this.add$NNNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:347] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:347] null access");
-		}
-		return v;
-	}(v[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:347] null access");
-		}
-		return v;
-	}(v[2])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:347] null access");
-		}
-		return v;
-	}(v[3])));
+V4.add$LV4$AN = function ($this, v) {
+	return V4$add$LV4$NNNN($this, v[0], v[1], v[2], v[3]);
 };
 
+var V4$add$LV4$AN = V4.add$LV4$AN;
+
 /**
+ * @param {V4} $this
  * @param {Float32Array} v
  * @return {V4}
  */
-V4.prototype.add$LFloat32Array$ = function (v) {
-	return this.add$NNNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:348] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:348] null access");
-		}
-		return v;
-	}(v[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:348] null access");
-		}
-		return v;
-	}(v[2])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:348] null access");
-		}
-		return v;
-	}(v[3])));
+V4.add$LV4$LFloat32Array$ = function ($this, v) {
+	return V4$add$LV4$NNNN($this, v[0], v[1], v[2], v[3]);
 };
 
+var V4$add$LV4$LFloat32Array$ = V4.add$LV4$LFloat32Array$;
+
 /**
+ * @param {V4} $this
  * @param {!number} x
  * @param {!number} y
  * @param {!number} z
  * @param {!number} w
  * @return {V4}
  */
-V4.prototype.sub$NNNN = function (x, y, z, w) {
-	this._[0] -= x;
-	this._[1] -= y;
-	this._[2] -= z;
-	this._[3] -= w;
-	return this;
+V4.sub$LV4$NNNN = function ($this, x, y, z, w) {
+	$this._[0] -= x;
+	$this._[1] -= y;
+	$this._[2] -= z;
+	$this._[3] -= w;
+	return $this;
 };
 
+var V4$sub$LV4$NNNN = V4.sub$LV4$NNNN;
+
 /**
+ * @param {V4} $this
  * @param {V4} v
  * @return {V4}
  */
-V4.prototype.sub$LV4$ = function (v) {
-	return this.sub$NNNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:354] null access");
-		}
-		return v;
-	}(v._[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:354] null access");
-		}
-		return v;
-	}(v._[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:354] null access");
-		}
-		return v;
-	}(v._[2])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:354] null access");
-		}
-		return v;
-	}(v._[3])));
+V4.sub$LV4$LV4$ = function ($this, v) {
+	/** @type {Float32Array} */
+	var _$0;
+	return V4$sub$LV4$NNNN($this, (_$0 = v._)[0], _$0[1], _$0[2], _$0[3]);
 };
 
+var V4$sub$LV4$LV4$ = V4.sub$LV4$LV4$;
+
 /**
+ * @param {V4} $this
  * @param {Array.<undefined|!number>} v
  * @return {V4}
  */
-V4.prototype.sub$AN = function (v) {
-	return this.sub$NNNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:355] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:355] null access");
-		}
-		return v;
-	}(v[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:355] null access");
-		}
-		return v;
-	}(v[2])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:355] null access");
-		}
-		return v;
-	}(v[3])));
+V4.sub$LV4$AN = function ($this, v) {
+	return V4$sub$LV4$NNNN($this, v[0], v[1], v[2], v[3]);
 };
 
+var V4$sub$LV4$AN = V4.sub$LV4$AN;
+
 /**
+ * @param {V4} $this
  * @param {Float32Array} v
  * @return {V4}
  */
-V4.prototype.sub$LFloat32Array$ = function (v) {
-	return this.sub$NNNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:356] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:356] null access");
-		}
-		return v;
-	}(v[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:356] null access");
-		}
-		return v;
-	}(v[2])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:356] null access");
-		}
-		return v;
-	}(v[3])));
+V4.sub$LV4$LFloat32Array$ = function ($this, v) {
+	return V4$sub$LV4$NNNN($this, v[0], v[1], v[2], v[3]);
 };
 
+var V4$sub$LV4$LFloat32Array$ = V4.sub$LV4$LFloat32Array$;
+
 /**
+ * @param {V4} $this
  * @param {!number} x
  * @param {!number} y
  * @param {!number} z
  * @param {!number} w
  * @return {V4}
  */
-V4.prototype.mul$NNNN = function (x, y, z, w) {
-	this._[0] *= x;
-	this._[1] *= y;
-	this._[2] *= z;
-	this._[3] *= w;
-	return this;
+V4.mul$LV4$NNNN = function ($this, x, y, z, w) {
+	$this._[0] *= x;
+	$this._[1] *= y;
+	$this._[2] *= z;
+	$this._[3] *= w;
+	return $this;
 };
 
+var V4$mul$LV4$NNNN = V4.mul$LV4$NNNN;
+
 /**
+ * @param {V4} $this
  * @param {V4} v
  * @return {V4}
  */
-V4.prototype.mul$LV4$ = function (v) {
-	return this.mul$NNNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:362] null access");
-		}
-		return v;
-	}(v._[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:362] null access");
-		}
-		return v;
-	}(v._[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:362] null access");
-		}
-		return v;
-	}(v._[2])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:362] null access");
-		}
-		return v;
-	}(v._[3])));
+V4.mul$LV4$LV4$ = function ($this, v) {
+	/** @type {Float32Array} */
+	var _$0;
+	return V4$mul$LV4$NNNN($this, (_$0 = v._)[0], _$0[1], _$0[2], _$0[3]);
 };
 
+var V4$mul$LV4$LV4$ = V4.mul$LV4$LV4$;
+
 /**
+ * @param {V4} $this
  * @param {Array.<undefined|!number>} v
  * @return {V4}
  */
-V4.prototype.mul$AN = function (v) {
-	return this.mul$NNNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:363] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:363] null access");
-		}
-		return v;
-	}(v[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:363] null access");
-		}
-		return v;
-	}(v[2])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:363] null access");
-		}
-		return v;
-	}(v[3])));
+V4.mul$LV4$AN = function ($this, v) {
+	return V4$mul$LV4$NNNN($this, v[0], v[1], v[2], v[3]);
 };
 
+var V4$mul$LV4$AN = V4.mul$LV4$AN;
+
 /**
+ * @param {V4} $this
  * @param {Float32Array} v
  * @return {V4}
  */
-V4.prototype.mul$LFloat32Array$ = function (v) {
-	return this.mul$NNNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:364] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:364] null access");
-		}
-		return v;
-	}(v[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:364] null access");
-		}
-		return v;
-	}(v[2])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:364] null access");
-		}
-		return v;
-	}(v[3])));
+V4.mul$LV4$LFloat32Array$ = function ($this, v) {
+	return V4$mul$LV4$NNNN($this, v[0], v[1], v[2], v[3]);
 };
 
+var V4$mul$LV4$LFloat32Array$ = V4.mul$LV4$LFloat32Array$;
+
 /**
+ * @param {V4} $this
  * @param {!number} s
  * @return {V4}
  */
-V4.prototype.mul$N = function (s) {
-	this._[0] *= s;
-	this._[1] *= s;
-	this._[2] *= s;
-	this._[3] *= s;
-	return this;
+V4.mul$LV4$N = function ($this, s) {
+	$this._[0] *= s;
+	$this._[1] *= s;
+	$this._[2] *= s;
+	$this._[3] *= s;
+	return $this;
 };
 
-/**
- * @return {V4}
- */
-V4.prototype.neg$ = function () {
-	return this.mul$N(- 1);
-};
+var V4$mul$LV4$N = V4.mul$LV4$N;
 
 /**
+ * @param {V4} $this
  * @return {V4}
  */
-V4.prototype.normalize$ = function () {
+V4.neg$LV4$ = function ($this) {
+	return V4$mul$LV4$N($this, -1);
+};
+
+var V4$neg$LV4$ = V4.neg$LV4$;
+
+/**
+ * @param {V4} $this
+ * @return {V4}
+ */
+V4.normalize$LV4$ = function ($this) {
 	/** @type {!number} */
 	var l;
-	l = this.len$();
-	if (l > 0) {
-		return this.mul$N(1 / l);
-	} else {
-		return this;
-	}
+	l = Math.sqrt(V4$len2$LV4$($this));
+	return (l > 0 ? V4$mul$LV4$N($this, 1 / l) : $this);
 };
 
+var V4$normalize$LV4$ = V4.normalize$LV4$;
+
 /**
+ * @param {V4} $this
  * @param {V4} v
  * @return {!number}
  */
-V4.prototype.dot$LV4$ = function (v) {
-	return (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:388] null access");
-		}
-		return v;
-	}(this._[0])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:388] null access");
-		}
-		return v;
-	}(v._[0])) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:388] null access");
-		}
-		return v;
-	}(this._[1])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:388] null access");
-		}
-		return v;
-	}(v._[1])) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:388] null access");
-		}
-		return v;
-	}(this._[2])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:388] null access");
-		}
-		return v;
-	}(v._[2])) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:388] null access");
-		}
-		return v;
-	}(this._[3])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:388] null access");
-		}
-		return v;
-	}(v._[3]));
+V4.dot$LV4$LV4$ = function ($this, v) {
+	/** @type {Float32Array} */
+	var _$0;
+	/** @type {Float32Array} */
+	var _$1;
+	return (_$0 = $this._)[0] * (_$1 = v._)[0] + _$0[1] * _$1[1] + _$0[2] * _$1[2] + _$0[3] * _$1[3];
 };
 
-/**
- * @return {!number}
- */
-V4.prototype.len$ = function () {
-	return Math.sqrt(this.len2$());
-};
+var V4$dot$LV4$LV4$ = V4.dot$LV4$LV4$;
 
 /**
+ * @param {V4} $this
  * @return {!number}
  */
-V4.prototype.len2$ = function () {
+V4.len$LV4$ = function ($this) {
+	return Math.sqrt(V4$len2$LV4$($this));
+};
+
+var V4$len$LV4$ = V4.len$LV4$;
+
+/**
+ * @param {V4} $this
+ * @return {!number}
+ */
+V4.len2$LV4$ = function ($this) {
 	/** @type {undefined|!number} */
 	var x;
 	/** @type {undefined|!number} */
@@ -4041,225 +3092,75 @@ V4.prototype.len2$ = function () {
 	var z;
 	/** @type {undefined|!number} */
 	var w;
-	(x = this._[0], y = this._[1], z = this._[2], w = this._[3]);
-	return (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:397] null access");
-		}
-		return v;
-	}(x)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:397] null access");
-		}
-		return v;
-	}(x)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:397] null access");
-		}
-		return v;
-	}(y)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:397] null access");
-		}
-		return v;
-	}(y)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:397] null access");
-		}
-		return v;
-	}(z)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:397] null access");
-		}
-		return v;
-	}(z)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:397] null access");
-		}
-		return v;
-	}(w)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:397] null access");
-		}
-		return v;
-	}(w));
-};
-
-/**
- * @param {V4} v
- * @return {!number}
- */
-V4.prototype.dist$LV4$ = function (v) {
-	return Math.sqrt(this.dist2$LV4$(v));
-};
-
-/**
- * @param {V4} v
- * @return {!number}
- */
-V4.prototype.dist2$LV4$ = function (v) {
-	/** @type {!number} */
-	var x;
-	/** @type {!number} */
-	var y;
-	/** @type {!number} */
-	var z;
-	/** @type {!number} */
-	var w;
-	x = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:405] null access");
-		}
-		return v;
-	}(v._[0])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:405] null access");
-		}
-		return v;
-	}(this._[0]));
-	y = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:406] null access");
-		}
-		return v;
-	}(v._[1])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:406] null access");
-		}
-		return v;
-	}(this._[1]));
-	z = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:407] null access");
-		}
-		return v;
-	}(v._[2])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:407] null access");
-		}
-		return v;
-	}(this._[2]));
-	w = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:408] null access");
-		}
-		return v;
-	}(v._[3])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:408] null access");
-		}
-		return v;
-	}(this._[3]));
+	/** @type {Float32Array} */
+	var _$0;
+	(x = (_$0 = $this._)[0], y = _$0[1], z = _$0[2], w = _$0[3]);
 	return x * x + y * y + z * z + w * w;
 };
 
+var V4$len2$LV4$ = V4.len2$LV4$;
+
 /**
+ * @param {V4} $this
+ * @param {V4} v
+ * @return {!number}
+ */
+V4.dist$LV4$LV4$ = function ($this, v) {
+	return Math.sqrt(V4$dist2$LV4$LV4$($this, v));
+};
+
+var V4$dist$LV4$LV4$ = V4.dist$LV4$LV4$;
+
+/**
+ * @param {V4} $this
+ * @param {V4} v
+ * @return {!number}
+ */
+V4.dist2$LV4$LV4$ = function ($this, v) {
+	/** @type {!number} */
+	var x;
+	/** @type {!number} */
+	var y;
+	/** @type {!number} */
+	var z;
+	/** @type {!number} */
+	var w;
+	/** @type {Float32Array} */
+	var _$0;
+	/** @type {Float32Array} */
+	var _$1;
+	x = (_$0 = v._)[0] - (_$1 = $this._)[0];
+	y = _$0[1] - _$1[1];
+	z = _$0[2] - _$1[2];
+	w = _$0[3] - _$1[3];
+	return x * x + y * y + z * z + w * w;
+};
+
+var V4$dist2$LV4$LV4$ = V4.dist2$LV4$LV4$;
+
+/**
+ * @param {V4} $this
  * @param {V4} v0
  * @param {V4} v1
  * @param {!number} ratio
  * @return {V4}
  */
-V4.prototype.lerp$LV4$LV4$N = function (v0, v1, ratio) {
-	this._[0] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:413] null access");
-		}
-		return v;
-	}(v0._[0])) + ratio * ((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:413] null access");
-		}
-		return v;
-	}(v1._[0])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:413] null access");
-		}
-		return v;
-	}(v0._[0])));
-	this._[1] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:414] null access");
-		}
-		return v;
-	}(v0._[1])) + ratio * ((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:414] null access");
-		}
-		return v;
-	}(v1._[1])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:414] null access");
-		}
-		return v;
-	}(v0._[1])));
-	this._[2] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:415] null access");
-		}
-		return v;
-	}(v0._[2])) + ratio * ((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:415] null access");
-		}
-		return v;
-	}(v1._[2])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:415] null access");
-		}
-		return v;
-	}(v0._[2])));
-	this._[3] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:416] null access");
-		}
-		return v;
-	}(v0._[3])) + ratio * ((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:416] null access");
-		}
-		return v;
-	}(v1._[3])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:416] null access");
-		}
-		return v;
-	}(v0._[3])));
-	return this;
+V4.lerp$LV4$LV4$LV4$N = function ($this, v0, v1, ratio) {
+	$this._[0] = v0._[0] + ratio * (v1._[0] - v0._[0]);
+	$this._[1] = v0._[1] + ratio * (v1._[1] - v0._[1]);
+	$this._[2] = v0._[2] + ratio * (v1._[2] - v0._[2]);
+	$this._[3] = v0._[3] + ratio * (v1._[3] - v0._[3]);
+	return $this;
 };
 
+var V4$lerp$LV4$LV4$LV4$N = V4.lerp$LV4$LV4$LV4$N;
+
 /**
+ * @param {V4} $this
  * @param {M44} m
  * @return {V4}
  */
-V4.prototype.transformBy$LM44$ = function (m) {
+V4.transformBy$LV4$LM44$ = function ($this, m) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
@@ -4272,206 +3173,16 @@ V4.prototype.transformBy$LM44$ = function (m) {
 	var z;
 	/** @type {undefined|!number} */
 	var w;
-	(a = this.array$(), t = m.array$());
+	(a = $this._, t = m._);
 	(x = a[0], y = a[1], z = a[2], w = a[3]);
-	a[0] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:423] null access");
-		}
-		return v;
-	}(t[0])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:423] null access");
-		}
-		return v;
-	}(x)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:423] null access");
-		}
-		return v;
-	}(t[4])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:423] null access");
-		}
-		return v;
-	}(y)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:423] null access");
-		}
-		return v;
-	}(t[8])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:423] null access");
-		}
-		return v;
-	}(z)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:423] null access");
-		}
-		return v;
-	}(t[12])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:423] null access");
-		}
-		return v;
-	}(w));
-	a[1] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:424] null access");
-		}
-		return v;
-	}(t[1])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:424] null access");
-		}
-		return v;
-	}(x)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:424] null access");
-		}
-		return v;
-	}(t[5])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:424] null access");
-		}
-		return v;
-	}(y)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:424] null access");
-		}
-		return v;
-	}(t[9])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:424] null access");
-		}
-		return v;
-	}(z)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:424] null access");
-		}
-		return v;
-	}(t[13])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:424] null access");
-		}
-		return v;
-	}(w));
-	a[2] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:425] null access");
-		}
-		return v;
-	}(t[2])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:425] null access");
-		}
-		return v;
-	}(x)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:425] null access");
-		}
-		return v;
-	}(t[6])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:425] null access");
-		}
-		return v;
-	}(y)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:425] null access");
-		}
-		return v;
-	}(t[10])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:425] null access");
-		}
-		return v;
-	}(z)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:425] null access");
-		}
-		return v;
-	}(t[14])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:425] null access");
-		}
-		return v;
-	}(w));
-	a[3] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:426] null access");
-		}
-		return v;
-	}(t[3])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:426] null access");
-		}
-		return v;
-	}(x)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:426] null access");
-		}
-		return v;
-	}(t[7])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:426] null access");
-		}
-		return v;
-	}(y)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:426] null access");
-		}
-		return v;
-	}(t[11])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:426] null access");
-		}
-		return v;
-	}(z)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:426] null access");
-		}
-		return v;
-	}(t[15])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:426] null access");
-		}
-		return v;
-	}(w));
-	return this;
+	a[0] = t[0] * x + t[4] * y + t[8] * z + t[12] * w;
+	a[1] = t[1] * x + t[5] * y + t[9] * z + t[13] * w;
+	a[2] = t[2] * x + t[6] * y + t[10] * z + t[14] * w;
+	a[3] = t[3] * x + t[7] * y + t[11] * z + t[15] * w;
+	return $this;
 };
+
+var V4$transformBy$LV4$LM44$ = V4.transformBy$LV4$LM44$;
 
 /**
  * class M22 extends Object
@@ -4485,7 +3196,7 @@ M22.prototype = new Object;
  * @constructor
  */
 function M22$() {
-	this._ = new Float32Array(M22.ELEMS);
+	this._ = new Float32Array(4);
 };
 
 M22$.prototype = new M22;
@@ -4495,8 +3206,10 @@ M22$.prototype = new M22;
  * @param {M22} m
  */
 function M22$LM22$(m) {
-	this._ = new Float32Array(M22.ELEMS);
-	this.set$LM22$(m);
+	/** @type {Float32Array} */
+	var _$0;
+	_$0 = this._ = new Float32Array(4);
+	_$0.set(m._);
 };
 
 M22$LM22$.prototype = new M22;
@@ -4506,8 +3219,10 @@ M22$LM22$.prototype = new M22;
  * @param {Array.<undefined|!number>} m
  */
 function M22$AN(m) {
-	this._ = new Float32Array(M22.ELEMS);
-	this.set$AN(m);
+	/** @type {Float32Array} */
+	var _$0;
+	_$0 = this._ = new Float32Array(4);
+	_$0.set(m);
 };
 
 M22$AN.prototype = new M22;
@@ -4517,8 +3232,10 @@ M22$AN.prototype = new M22;
  * @param {Float32Array} m
  */
 function M22$LFloat32Array$(m) {
-	this._ = new Float32Array(M22.ELEMS);
-	this.set$LFloat32Array$(m);
+	/** @type {Float32Array} */
+	var _$0;
+	_$0 = this._ = new Float32Array(4);
+	_$0.set(m);
 };
 
 M22$LFloat32Array$.prototype = new M22;
@@ -4532,13 +3249,12 @@ M22$LFloat32Array$.prototype = new M22;
  */
 function M22$NNNN(m00, m01, m10, m11) {
 	/** @type {Float32Array} */
-	var a;
-	this._ = new Float32Array(M22.ELEMS);
-	a = this.array$();
-	a[0] = m00;
-	a[1] = m10;
-	a[2] = m01;
-	a[3] = m11;
+	var _$0;
+	_$0 = this._ = new Float32Array(4);
+	_$0[0] = m00;
+	_$0[1] = m10;
+	_$0[2] = m01;
+	_$0[3] = m11;
 };
 
 M22$NNNN.prototype = new M22;
@@ -4549,8 +3265,11 @@ M22$NNNN.prototype = new M22;
  * @param {V2} v1
  */
 function M22$LV2$LV2$(v0, v1) {
-	this._ = new Float32Array(M22.ELEMS);
-	this.set$LV2$LV2$(v0, v1);
+	/** @type {Float32Array} */
+	var _$0;
+	_$0 = this._ = new Float32Array(4);
+	_$0.set(v0._, 0);
+	this._.set(v1._, 2);
 };
 
 M22$LV2$LV2$.prototype = new M22;
@@ -4560,8 +3279,8 @@ M22$LV2$LV2$.prototype = new M22;
  * @param {M33} m
  */
 function M22$LM33$(m) {
-	this._ = new Float32Array(M22.ELEMS);
-	this.set$LM33$(m);
+	this._ = new Float32Array(4);
+	M22$set$LM22$LM33$(this, m);
 };
 
 M22$LM33$.prototype = new M22;
@@ -4571,197 +3290,246 @@ M22$LM33$.prototype = new M22;
  * @param {M44} m
  */
 function M22$LM44$(m) {
-	this._ = new Float32Array(M22.ELEMS);
-	this.set$LM44$(m);
+	this._ = new Float32Array(4);
+	M22$set$LM22$LM44$(this, m);
 };
 
 M22$LM44$.prototype = new M22;
 
 /**
+ * @param {M22} $this
  * @return {Float32Array}
  */
-M22.prototype.array$ = function () {
-	return this._;
+M22.array$LM22$ = function ($this) {
+	return $this._;
 };
 
+var M22$array$LM22$ = M22.array$LM22$;
+
 /**
+ * @param {M22} $this
  * @param {!number} m22
  * @return {M33}
  */
-M22.prototype.m33$N = function (m22) {
-	return new M33$LM22$N(this, m22);
+M22.m33$LM22$N = function ($this, m22) {
+	return new M33$LM22$N($this, m22);
 };
 
+var M22$m33$LM22$N = M22.m33$LM22$N;
+
 /**
+ * @param {M22} $this
  * @param {!number} m22
  * @param {!number} m33
  * @return {M44}
  */
-M22.prototype.m44$NN = function (m22, m33) {
-	return new M44$LM22$NN(this, m22, m33);
+M22.m44$LM22$NN = function ($this, m22, m33) {
+	return new M44$LM22$NN($this, m22, m33);
 };
 
+var M22$m44$LM22$NN = M22.m44$LM22$NN;
+
 /**
+ * @param {M22} $this
  * @param {M33} m
  * @return {M22}
  */
-M22.prototype.set$LM33$ = function (m) {
+M22.set$LM22$LM33$ = function ($this, m) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
 	var b;
-	(a = this.array$(), b = m.array$());
+	(a = $this._, b = m._);
 	a[0] = b[0];
 	a[1] = b[1];
 	a[2] = b[3];
 	a[3] = b[4];
-	return this;
+	return $this;
 };
 
+var M22$set$LM22$LM33$ = M22.set$LM22$LM33$;
+
 /**
+ * @param {M22} $this
  * @param {M44} m
  * @return {M22}
  */
-M22.prototype.set$LM44$ = function (m) {
+M22.set$LM22$LM44$ = function ($this, m) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
 	var b;
-	(a = this.array$(), b = m.array$());
+	(a = $this._, b = m._);
 	a[0] = b[0];
 	a[1] = b[1];
 	a[2] = b[4];
 	a[3] = b[5];
-	return this;
+	return $this;
 };
 
-/**
- * @return {M22}
- */
-M22.prototype.clone$ = function () {
-	return new M22$LM22$(this);
-};
+var M22$set$LM22$LM44$ = M22.set$LM22$LM44$;
 
 /**
+ * @param {M22} $this
  * @return {M22}
  */
-M22.prototype.setZero$ = function () {
+M22.clone$LM22$ = function ($this) {
+	return new M22$LM22$($this);
+};
+
+var M22$clone$LM22$ = M22.clone$LM22$;
+
+/**
+ * @param {M22} $this
+ * @return {M22}
+ */
+M22.setZero$LM22$ = function ($this) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {!number} */
 	var i;
-	a = this.array$();
-	for (i = 0; i < M22.ELEMS; ++ i) {
+	a = $this._;
+	for (i = 0; i < 4; ++ i) {
 		a[i] = 0;
 	}
-	return this;
+	return $this;
 };
 
+var M22$setZero$LM22$ = M22.setZero$LM22$;
+
 /**
+ * @param {M22} $this
  * @return {M22}
  */
-M22.prototype.setIdentity$ = function () {
+M22.setIdentity$LM22$ = function ($this) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {!number} */
 	var i;
-	a = this.array$();
-	for (i = 0; i < M22.ELEMS; ++ i) {
-		a[i] = (i % (M22.ROWS + 1) === 0 ? 1 : 0);
+	a = $this._;
+	for (i = 0; i < 4; ++ i) {
+		a[i] = (i % 3 === 0 ? 1 : 0);
 	}
-	return this;
+	return $this;
 };
 
+var M22$setIdentity$LM22$ = M22.setIdentity$LM22$;
+
 /**
+ * @param {M22} $this
  * @param {!number} m00
  * @param {!number} m01
  * @param {!number} m10
  * @param {!number} m11
  * @return {M22}
  */
-M22.prototype.set$NNNN = function (m00, m01, m10, m11) {
+M22.set$LM22$NNNN = function ($this, m00, m01, m10, m11) {
 	/** @type {Float32Array} */
 	var a;
-	a = this.array$();
+	a = $this._;
 	a[0] = m00;
 	a[1] = m10;
 	a[2] = m01;
 	a[3] = m11;
-	return this;
+	return $this;
 };
 
+var M22$set$LM22$NNNN = M22.set$LM22$NNNN;
+
 /**
+ * @param {M22} $this
  * @param {V2} v0
  * @param {V2} v1
  * @return {M22}
  */
-M22.prototype.set$LV2$LV2$ = function (v0, v1) {
-	this._.set(v0._, 0);
-	this._.set(v1._, 2);
-	return this;
+M22.set$LM22$LV2$LV2$ = function ($this, v0, v1) {
+	$this._.set(v0._, 0);
+	$this._.set(v1._, 2);
+	return $this;
 };
 
+var M22$set$LM22$LV2$LV2$ = M22.set$LM22$LV2$LV2$;
+
 /**
+ * @param {M22} $this
  * @param {M22} m
  * @return {M22}
  */
-M22.prototype.set$LM22$ = function (m) {
-	this._.set(m._);
-	return this;
+M22.set$LM22$LM22$ = function ($this, m) {
+	$this._.set(m._);
+	return $this;
 };
 
+var M22$set$LM22$LM22$ = M22.set$LM22$LM22$;
+
 /**
+ * @param {M22} $this
  * @param {Array.<undefined|!number>} m
  * @return {M22}
  */
-M22.prototype.set$AN = function (m) {
-	this._.set(m);
-	return this;
+M22.set$LM22$AN = function ($this, m) {
+	$this._.set(m);
+	return $this;
 };
 
+var M22$set$LM22$AN = M22.set$LM22$AN;
+
 /**
+ * @param {M22} $this
  * @param {Float32Array} m
  * @return {M22}
  */
-M22.prototype.set$LFloat32Array$ = function (m) {
-	this._.set(m);
-	return this;
+M22.set$LM22$LFloat32Array$ = function ($this, m) {
+	$this._.set(m);
+	return $this;
 };
 
+var M22$set$LM22$LFloat32Array$ = M22.set$LM22$LFloat32Array$;
+
 /**
+ * @param {M22} $this
  * @param {Array.<undefined|!number>} m
  * @param {!number} offs
  * @return {M22}
  */
-M22.prototype.set$ANN = function (m, offs) {
-	this._.set(m, offs);
-	return this;
+M22.set$LM22$ANN = function ($this, m, offs) {
+	$this._.set(m, offs);
+	return $this;
 };
 
+var M22$set$LM22$ANN = M22.set$LM22$ANN;
+
 /**
+ * @param {M22} $this
  * @param {Float32Array} m
  * @param {!number} offs
  * @return {M22}
  */
-M22.prototype.set$LFloat32Array$N = function (m, offs) {
-	this._.set(m, offs);
-	return this;
+M22.set$LM22$LFloat32Array$N = function ($this, m, offs) {
+	$this._.set(m, offs);
+	return $this;
 };
 
+var M22$set$LM22$LFloat32Array$N = M22.set$LM22$LFloat32Array$N;
+
 /**
+ * @param {M22} $this
  * @param {M22} m
  * @return {!boolean}
  */
-M22.prototype.equals$LM22$ = function (m) {
-	return this.equals$LM22$N(m, MVQ.EQUAL_EPSILON);
+M22.equals$LM22$LM22$ = function ($this, m) {
+	return M22$equals$LM22$LM22$N($this, m, 0.000001);
 };
 
+var M22$equals$LM22$LM22$ = M22.equals$LM22$LM22$;
+
 /**
+ * @param {M22} $this
  * @param {M22} m
  * @param {!number} eps
  * @return {!boolean}
  */
-M22.prototype.equals$LM22$N = function (m, eps) {
+M22.equals$LM22$LM22$N = function ($this, m, eps) {
 	var $math_abs_t;
 	/** @type {Float32Array} */
 	var a;
@@ -4769,77 +3537,77 @@ M22.prototype.equals$LM22$N = function (m, eps) {
 	var b;
 	/** @type {!number} */
 	var i;
-	(a = this.array$(), b = m.array$());
-	for (i = 0; i < M22.ELEMS; ++ i) {
-		if ((($math_abs_t = (function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[mvq.jsx:500] null access");
-			}
-			return v;
-		}(b[i])) - (function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[mvq.jsx:500] null access");
-			}
-			return v;
-		}(a[i]))) >= 0 ? $math_abs_t : -$math_abs_t) >= eps) {
+	(a = $this._, b = m._);
+	for (i = 0; i < 4; ++ i) {
+		if ((($math_abs_t = b[i] - a[i]) >= 0 ? $math_abs_t : -$math_abs_t) >= eps) {
 			return false;
 		}
 	}
 	return true;
 };
 
+var M22$equals$LM22$LM22$N = M22.equals$LM22$LM22$N;
+
 /**
+ * @param {M22} $this
  * @param {M22} m
  * @return {M22}
  */
-M22.prototype.add$LM22$ = function (m) {
+M22.add$LM22$LM22$ = function ($this, m) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
 	var b;
 	/** @type {!number} */
 	var i;
-	(a = this.array$(), b = m.array$());
-	for (i = 0; i < M22.ELEMS; ++ i) {
+	(a = $this._, b = m._);
+	for (i = 0; i < 4; ++ i) {
 		a[i] += b[i];
 	}
-	return this;
+	return $this;
 };
 
+var M22$add$LM22$LM22$ = M22.add$LM22$LM22$;
+
 /**
+ * @param {M22} $this
  * @param {M22} m
  * @return {M22}
  */
-M22.prototype.sub$LM22$ = function (m) {
+M22.sub$LM22$LM22$ = function ($this, m) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
 	var b;
 	/** @type {!number} */
 	var i;
-	(a = this.array$(), b = m.array$());
-	for (i = 0; i < M22.ELEMS; ++ i) {
+	(a = $this._, b = m._);
+	for (i = 0; i < 4; ++ i) {
 		a[i] -= b[i];
 	}
-	return this;
+	return $this;
 };
 
+var M22$sub$LM22$LM22$ = M22.sub$LM22$LM22$;
+
 /**
+ * @param {M22} $this
  * @param {M22} m
  * @return {M22}
  */
-M22.prototype.mul$LM22$ = function (m) {
-	return this.mul$LM22$LM22$(this, m);
+M22.mul$LM22$LM22$ = function ($this, m) {
+	return M22$mul$LM22$LM22$LM22$($this, $this, m);
 };
 
+var M22$mul$LM22$LM22$ = M22.mul$LM22$LM22$;
+
 /**
+ * @param {M22} $this
  * @param {M22} m0
  * @param {M22} m1
  * @return {M22}
  */
-M22.prototype.mul$LM22$LM22$ = function (m0, m1) {
+M22.mul$LM22$LM22$LM22$ = function ($this, m0, m1) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {undefined|!number} */
@@ -4860,185 +3628,77 @@ M22.prototype.mul$LM22$LM22$ = function (m0, m1) {
 	var b01;
 	/** @type {undefined|!number} */
 	var b11;
-	a = m0.array$();
+	a = m0._;
 	(a00 = a[0], a10 = a[1]);
 	(a01 = a[2], a11 = a[3]);
-	b = m1.array$();
+	b = m1._;
 	(b00 = b[0], b10 = b[1]);
 	(b01 = b[2], b11 = b[3]);
-	a[0] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:524] null access");
-		}
-		return v;
-	}(a00)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:524] null access");
-		}
-		return v;
-	}(b00)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:524] null access");
-		}
-		return v;
-	}(a01)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:524] null access");
-		}
-		return v;
-	}(b10));
-	a[1] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:525] null access");
-		}
-		return v;
-	}(a10)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:525] null access");
-		}
-		return v;
-	}(b00)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:525] null access");
-		}
-		return v;
-	}(a11)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:525] null access");
-		}
-		return v;
-	}(b10));
-	a[2] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:526] null access");
-		}
-		return v;
-	}(a00)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:526] null access");
-		}
-		return v;
-	}(b01)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:526] null access");
-		}
-		return v;
-	}(a01)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:526] null access");
-		}
-		return v;
-	}(b11));
-	a[3] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:527] null access");
-		}
-		return v;
-	}(a10)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:527] null access");
-		}
-		return v;
-	}(b01)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:527] null access");
-		}
-		return v;
-	}(a11)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:527] null access");
-		}
-		return v;
-	}(b11));
-	return this;
+	a[0] = a00 * b00 + a01 * b10;
+	a[1] = a10 * b00 + a11 * b10;
+	a[2] = a00 * b01 + a01 * b11;
+	a[3] = a10 * b01 + a11 * b11;
+	return $this;
 };
 
+var M22$mul$LM22$LM22$LM22$ = M22.mul$LM22$LM22$LM22$;
+
 /**
+ * @param {M22} $this
  * @return {M22}
  */
-M22.prototype.transpose$ = function () {
+M22.transpose$LM22$ = function ($this) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {undefined|!number} */
 	var a10;
-	a = this.array$();
+	a = $this._;
 	a10 = a[1];
 	a[1] = a[2];
 	a[2] = a10;
-	return this;
+	return $this;
 };
 
+var M22$transpose$LM22$ = M22.transpose$LM22$;
+
 /**
+ * @param {M22} $this
  * @param {M22} m
  * @return {M22}
  */
-M22.prototype.transpose$LM22$ = function (m) {
+M22.transpose$LM22$LM22$ = function ($this, m) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
 	var b;
-	(a = this.array$(), b = m.array$());
+	(a = $this._, b = m._);
 	a[0] = b[0];
 	a[1] = b[2];
 	a[2] = b[1];
 	a[3] = b[3];
-	return this;
+	return $this;
 };
 
+var M22$transpose$LM22$LM22$ = M22.transpose$LM22$LM22$;
+
 /**
+ * @param {M22} $this
  * @return {!number}
  */
-M22.prototype.det$ = function () {
+M22.det$LM22$ = function ($this) {
 	/** @type {Float32Array} */
 	var a;
-	a = this.array$();
-	return (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:549] null access");
-		}
-		return v;
-	}(a[0])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:549] null access");
-		}
-		return v;
-	}(a[3])) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:549] null access");
-		}
-		return v;
-	}(a[1])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:549] null access");
-		}
-		return v;
-	}(a[2]));
+	a = $this._;
+	return a[0] * a[3] - a[1] * a[2];
 };
 
+var M22$det$LM22$ = M22.det$LM22$;
+
 /**
+ * @param {M22} $this
  * @return {M22}
  */
-M22.prototype.inverse$ = function () {
+M22.inverse$LM22$ = function ($this) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {undefined|!number} */
@@ -5053,155 +3713,135 @@ M22.prototype.inverse$ = function () {
 	var d;
 	/** @type {!number} */
 	var invDet;
-	a = this.array$();
+	a = $this._;
 	(a00 = a[0], a10 = a[1], a01 = a[2], a11 = a[3]);
-	d = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:555] null access");
-		}
-		return v;
-	}(a00)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:555] null access");
-		}
-		return v;
-	}(a11)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:555] null access");
-		}
-		return v;
-	}(a10)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:555] null access");
-		}
-		return v;
-	}(a01));
+	d = a00 * a11 - a10 * a01;
 	if (d === 0) {
 		return null;
 	}
 	invDet = 1 / d;
-	a[0] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:558] null access");
-		}
-		return v;
-	}(a11)) * invDet;
+	a[0] = a11 * invDet;
 	a[1] = - a10 * invDet;
 	a[2] = - a01 * invDet;
-	a[3] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:561] null access");
-		}
-		return v;
-	}(a00)) * invDet;
-	return this;
+	a[3] = a00 * invDet;
+	return $this;
 };
 
+var M22$inverse$LM22$ = M22.inverse$LM22$;
+
 /**
+ * @param {M22} $this
  * @param {!number} s
  * @return {M22}
  */
-M22.prototype.setScale$N = function (s) {
-	return this.setScale$NN(s, s);
+M22.setScale$LM22$N = function ($this, s) {
+	$this._[0] = s;
+	$this._[1] = $this._[2] = 0;
+	$this._[3] = s;
+	return $this;
 };
 
+var M22$setScale$LM22$N = M22.setScale$LM22$N;
+
 /**
+ * @param {M22} $this
  * @param {!number} x
  * @param {!number} y
  * @return {M22}
  */
-M22.prototype.setScale$NN = function (x, y) {
-	this._[0] = x;
-	this._[1] = this._[2] = 0;
-	this._[3] = y;
-	return this;
+M22.setScale$LM22$NN = function ($this, x, y) {
+	$this._[0] = x;
+	$this._[1] = $this._[2] = 0;
+	$this._[3] = y;
+	return $this;
 };
 
+var M22$setScale$LM22$NN = M22.setScale$LM22$NN;
+
 /**
+ * @param {M22} $this
  * @param {V2} v
  * @return {M22}
  */
-M22.prototype.setScale$LV2$ = function (v) {
-	return this.setScale$NN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:572] null access");
-		}
-		return v;
-	}(v._[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:572] null access");
-		}
-		return v;
-	}(v._[1])));
+M22.setScale$LM22$LV2$ = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	/** @type {Float32Array} */
+	var _$0;
+	x$0 = (_$0 = v._)[0];
+	y$0 = _$0[1];
+	$this._[0] = x$0;
+	$this._[1] = $this._[2] = 0;
+	$this._[3] = y$0;
+	return $this;
 };
 
+var M22$setScale$LM22$LV2$ = M22.setScale$LM22$LV2$;
+
 /**
+ * @param {M22} $this
  * @param {Array.<undefined|!number>} v
  * @return {M22}
  */
-M22.prototype.setScale$AN = function (v) {
-	return this.setScale$NN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:573] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:573] null access");
-		}
-		return v;
-	}(v[1])));
+M22.setScale$LM22$AN = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	x$0 = v[0];
+	y$0 = v[1];
+	$this._[0] = x$0;
+	$this._[1] = $this._[2] = 0;
+	$this._[3] = y$0;
+	return $this;
 };
 
+var M22$setScale$LM22$AN = M22.setScale$LM22$AN;
+
 /**
+ * @param {M22} $this
  * @param {Float32Array} v
  * @return {M22}
  */
-M22.prototype.setScale$LFloat32Array$ = function (v) {
-	return this.setScale$NN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:574] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:574] null access");
-		}
-		return v;
-	}(v[1])));
+M22.setScale$LM22$LFloat32Array$ = function ($this, v) {
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	x$0 = v[0];
+	y$0 = v[1];
+	$this._[0] = x$0;
+	$this._[1] = $this._[2] = 0;
+	$this._[3] = y$0;
+	return $this;
 };
 
+var M22$setScale$LM22$LFloat32Array$ = M22.setScale$LM22$LFloat32Array$;
+
 /**
+ * @param {M22} $this
  * @param {!number} rad
  * @return {M22}
  */
-M22.prototype.setRotate$N = function (rad) {
+M22.setRotate$LM22$N = function ($this, rad) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {!number} */
 	var c;
 	/** @type {!number} */
 	var s;
-	a = this.array$();
+	a = $this._;
 	(c = Math.cos(rad), s = Math.sin(rad));
 	a[0] = c;
 	a[1] = s;
 	a[2] = - s;
 	a[3] = c;
-	return this;
+	return $this;
 };
+
+var M22$setRotate$LM22$N = M22.setRotate$LM22$N;
 
 /**
  * class M33 extends Object
@@ -5215,7 +3855,7 @@ M33.prototype = new Object;
  * @constructor
  */
 function M33$() {
-	this._ = new Float32Array(M33.ELEMS);
+	this._ = new Float32Array(9);
 };
 
 M33$.prototype = new M33;
@@ -5225,8 +3865,10 @@ M33$.prototype = new M33;
  * @param {M33} m
  */
 function M33$LM33$(m) {
-	this._ = new Float32Array(M33.ELEMS);
-	this.set$LM33$(m);
+	/** @type {Float32Array} */
+	var _$0;
+	_$0 = this._ = new Float32Array(9);
+	_$0.set(m._);
 };
 
 M33$LM33$.prototype = new M33;
@@ -5236,8 +3878,10 @@ M33$LM33$.prototype = new M33;
  * @param {Array.<undefined|!number>} m
  */
 function M33$AN(m) {
-	this._ = new Float32Array(M33.ELEMS);
-	this.set$AN(m);
+	/** @type {Float32Array} */
+	var _$0;
+	_$0 = this._ = new Float32Array(9);
+	_$0.set(m);
 };
 
 M33$AN.prototype = new M33;
@@ -5247,8 +3891,10 @@ M33$AN.prototype = new M33;
  * @param {Float32Array} m
  */
 function M33$LFloat32Array$(m) {
-	this._ = new Float32Array(M33.ELEMS);
-	this.set$LFloat32Array$(m);
+	/** @type {Float32Array} */
+	var _$0;
+	_$0 = this._ = new Float32Array(9);
+	_$0.set(m);
 };
 
 M33$LFloat32Array$.prototype = new M33;
@@ -5267,18 +3913,17 @@ M33$LFloat32Array$.prototype = new M33;
  */
 function M33$NNNNNNNNN(m00, m01, m02, m10, m11, m12, m20, m21, m22) {
 	/** @type {Float32Array} */
-	var a;
-	this._ = new Float32Array(M33.ELEMS);
-	a = this.array$();
-	a[0] = m00;
-	a[1] = m10;
-	a[2] = m20;
-	a[3] = m01;
-	a[4] = m11;
-	a[5] = m21;
-	a[5] = m02;
-	a[7] = m12;
-	a[8] = m22;
+	var _$0;
+	_$0 = this._ = new Float32Array(9);
+	_$0[0] = m00;
+	_$0[1] = m10;
+	_$0[2] = m20;
+	_$0[3] = m01;
+	_$0[4] = m11;
+	_$0[5] = m21;
+	_$0[5] = m02;
+	_$0[7] = m12;
+	_$0[8] = m22;
 };
 
 M33$NNNNNNNNN.prototype = new M33;
@@ -5290,8 +3935,12 @@ M33$NNNNNNNNN.prototype = new M33;
  * @param {V3} v2
  */
 function M33$LV3$LV3$LV3$(v0, v1, v2) {
-	this._ = new Float32Array(M33.ELEMS);
-	this.set$LV3$LV3$LV3$(v0, v1, v2);
+	/** @type {Float32Array} */
+	var _$0;
+	_$0 = this._ = new Float32Array(9);
+	_$0.set(v0._, 0);
+	this._.set(v1._, 3);
+	this._.set(v2._, 6);
 };
 
 M33$LV3$LV3$LV3$.prototype = new M33;
@@ -5302,8 +3951,8 @@ M33$LV3$LV3$LV3$.prototype = new M33;
  * @param {!number} m22
  */
 function M33$LM22$N(m, m22) {
-	this._ = new Float32Array(M33.ELEMS);
-	this.set$LM22$N(m, m22);
+	this._ = new Float32Array(9);
+	M33$set$LM33$LM22$N(this, m, m22);
 };
 
 M33$LM22$N.prototype = new M33;
@@ -5313,45 +3962,55 @@ M33$LM22$N.prototype = new M33;
  * @param {M44} m
  */
 function M33$LM44$(m) {
-	this._ = new Float32Array(M33.ELEMS);
-	this.set$LM44$(m);
+	this._ = new Float32Array(9);
+	M33$set$LM33$LM44$(this, m);
 };
 
 M33$LM44$.prototype = new M33;
 
 /**
+ * @param {M33} $this
  * @return {Float32Array}
  */
-M33.prototype.array$ = function () {
-	return this._;
+M33.array$LM33$ = function ($this) {
+	return $this._;
 };
 
+var M33$array$LM33$ = M33.array$LM33$;
+
 /**
+ * @param {M33} $this
  * @return {M22}
  */
-M33.prototype.m22$ = function () {
-	return new M22$LM33$(this);
+M33.m22$LM33$ = function ($this) {
+	return new M22$LM33$($this);
 };
 
+var M33$m22$LM33$ = M33.m22$LM33$;
+
 /**
+ * @param {M33} $this
  * @param {!number} m33
  * @return {M44}
  */
-M33.prototype.m44$N = function (m33) {
-	return new M44$LM33$N(this, m33);
+M33.m44$LM33$N = function ($this, m33) {
+	return new M44$LM33$N($this, m33);
 };
 
+var M33$m44$LM33$N = M33.m44$LM33$N;
+
 /**
+ * @param {M33} $this
  * @param {M22} m
  * @param {!number} m22
  * @return {M33}
  */
-M33.prototype.set$LM22$N = function (m, m22) {
+M33.set$LM33$LM22$N = function ($this, m, m22) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
 	var b;
-	(a = this.array$(), b = m.array$());
+	(a = $this._, b = m._);
 	a[0] = b[0];
 	a[1] = b[1];
 	a[2] = 0;
@@ -5361,19 +4020,22 @@ M33.prototype.set$LM22$N = function (m, m22) {
 	a[6] = 0;
 	a[7] = 0;
 	a[8] = m22;
-	return this;
+	return $this;
 };
 
+var M33$set$LM33$LM22$N = M33.set$LM33$LM22$N;
+
 /**
+ * @param {M33} $this
  * @param {M44} m
  * @return {M33}
  */
-M33.prototype.set$LM44$ = function (m) {
+M33.set$LM33$LM44$ = function ($this, m) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
 	var b;
-	(a = this.array$(), b = m.array$());
+	(a = $this._, b = m._);
 	a[0] = b[0];
 	a[1] = b[1];
 	a[2] = b[2];
@@ -5383,47 +4045,59 @@ M33.prototype.set$LM44$ = function (m) {
 	a[6] = b[8];
 	a[7] = b[9];
 	a[8] = b[10];
-	return this;
+	return $this;
 };
 
-/**
- * @return {M33}
- */
-M33.prototype.clone$ = function () {
-	return new M33$LM33$(this);
-};
+var M33$set$LM33$LM44$ = M33.set$LM33$LM44$;
 
 /**
+ * @param {M33} $this
  * @return {M33}
  */
-M33.prototype.setZero$ = function () {
+M33.clone$LM33$ = function ($this) {
+	return new M33$LM33$($this);
+};
+
+var M33$clone$LM33$ = M33.clone$LM33$;
+
+/**
+ * @param {M33} $this
+ * @return {M33}
+ */
+M33.setZero$LM33$ = function ($this) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {!number} */
 	var i;
-	a = this.array$();
-	for (i = 0; i < M33.ELEMS; ++ i) {
+	a = $this._;
+	for (i = 0; i < 9; ++ i) {
 		a[i] = 0;
 	}
-	return this;
+	return $this;
 };
 
+var M33$setZero$LM33$ = M33.setZero$LM33$;
+
 /**
+ * @param {M33} $this
  * @return {M33}
  */
-M33.prototype.setIdentity$ = function () {
+M33.setIdentity$LM33$ = function ($this) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {!number} */
 	var i;
-	a = this.array$();
-	for (i = 0; i < M33.ELEMS; ++ i) {
-		a[i] = (i % (M33.ROWS + 1) === 0 ? 1 : 0);
+	a = $this._;
+	for (i = 0; i < 9; ++ i) {
+		a[i] = (i % 4 === 0 ? 1 : 0);
 	}
-	return this;
+	return $this;
 };
 
+var M33$setIdentity$LM33$ = M33.setIdentity$LM33$;
+
 /**
+ * @param {M33} $this
  * @param {!number} m00
  * @param {!number} m01
  * @param {!number} m02
@@ -5435,10 +4109,10 @@ M33.prototype.setIdentity$ = function () {
  * @param {!number} m22
  * @return {M33}
  */
-M33.prototype.set$NNNNNNNNN = function (m00, m01, m02, m10, m11, m12, m20, m21, m22) {
+M33.set$LM33$NNNNNNNNN = function ($this, m00, m01, m02, m10, m11, m12, m20, m21, m22) {
 	/** @type {Float32Array} */
 	var a;
-	a = this.array$();
+	a = $this._;
 	a[0] = m00;
 	a[1] = m10;
 	a[2] = m20;
@@ -5448,83 +4122,107 @@ M33.prototype.set$NNNNNNNNN = function (m00, m01, m02, m10, m11, m12, m20, m21, 
 	a[6] = m02;
 	a[7] = m12;
 	a[8] = m22;
-	return this;
+	return $this;
 };
 
+var M33$set$LM33$NNNNNNNNN = M33.set$LM33$NNNNNNNNN;
+
 /**
+ * @param {M33} $this
  * @param {V3} v0
  * @param {V3} v1
  * @param {V3} v2
  * @return {M33}
  */
-M33.prototype.set$LV3$LV3$LV3$ = function (v0, v1, v2) {
-	this._.set(v0._, 0);
-	this._.set(v1._, 3);
-	this._.set(v2._, 6);
-	return this;
+M33.set$LM33$LV3$LV3$LV3$ = function ($this, v0, v1, v2) {
+	$this._.set(v0._, 0);
+	$this._.set(v1._, 3);
+	$this._.set(v2._, 6);
+	return $this;
 };
 
+var M33$set$LM33$LV3$LV3$LV3$ = M33.set$LM33$LV3$LV3$LV3$;
+
 /**
+ * @param {M33} $this
  * @param {M33} m
  * @return {M33}
  */
-M33.prototype.set$LM33$ = function (m) {
-	this._.set(m._);
-	return this;
+M33.set$LM33$LM33$ = function ($this, m) {
+	$this._.set(m._);
+	return $this;
 };
 
+var M33$set$LM33$LM33$ = M33.set$LM33$LM33$;
+
 /**
+ * @param {M33} $this
  * @param {Array.<undefined|!number>} m
  * @return {M33}
  */
-M33.prototype.set$AN = function (m) {
-	this._.set(m);
-	return this;
+M33.set$LM33$AN = function ($this, m) {
+	$this._.set(m);
+	return $this;
 };
 
+var M33$set$LM33$AN = M33.set$LM33$AN;
+
 /**
+ * @param {M33} $this
  * @param {Float32Array} m
  * @return {M33}
  */
-M33.prototype.set$LFloat32Array$ = function (m) {
-	this._.set(m);
-	return this;
+M33.set$LM33$LFloat32Array$ = function ($this, m) {
+	$this._.set(m);
+	return $this;
 };
 
+var M33$set$LM33$LFloat32Array$ = M33.set$LM33$LFloat32Array$;
+
 /**
+ * @param {M33} $this
  * @param {Array.<undefined|!number>} m
  * @param {!number} offs
  * @return {M33}
  */
-M33.prototype.set$ANN = function (m, offs) {
-	this._.set(m, offs);
-	return this;
+M33.set$LM33$ANN = function ($this, m, offs) {
+	$this._.set(m, offs);
+	return $this;
 };
 
+var M33$set$LM33$ANN = M33.set$LM33$ANN;
+
 /**
+ * @param {M33} $this
  * @param {Float32Array} m
  * @param {!number} offs
  * @return {M33}
  */
-M33.prototype.set$LFloat32Array$N = function (m, offs) {
-	this._.set(m, offs);
-	return this;
+M33.set$LM33$LFloat32Array$N = function ($this, m, offs) {
+	$this._.set(m, offs);
+	return $this;
 };
 
+var M33$set$LM33$LFloat32Array$N = M33.set$LM33$LFloat32Array$N;
+
 /**
+ * @param {M33} $this
  * @param {M33} m
  * @return {!boolean}
  */
-M33.prototype.equals$LM33$ = function (m) {
-	return this.equals$LM33$N(m, MVQ.EQUAL_EPSILON);
+M33.equals$LM33$LM33$ = function ($this, m) {
+	return M33$equals$LM33$LM33$N($this, m, 0.000001);
 };
 
+var M33$equals$LM33$LM33$ = M33.equals$LM33$LM33$;
+
 /**
+ * @param {M33} $this
  * @param {M33} m
  * @param {!number} eps
  * @return {!boolean}
  */
-M33.prototype.equals$LM33$N = function (m, eps) {
+M33.equals$LM33$LM33$N = function ($this, m, eps) {
 	var $math_abs_t;
 	/** @type {Float32Array} */
 	var a;
@@ -5532,77 +4230,77 @@ M33.prototype.equals$LM33$N = function (m, eps) {
 	var b;
 	/** @type {!number} */
 	var i;
-	(a = this.array$(), b = m.array$());
-	for (i = 0; i < M33.ELEMS; ++ i) {
-		if ((($math_abs_t = (function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[mvq.jsx:665] null access");
-			}
-			return v;
-		}(b[i])) - (function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[mvq.jsx:665] null access");
-			}
-			return v;
-		}(a[i]))) >= 0 ? $math_abs_t : -$math_abs_t) >= eps) {
+	(a = $this._, b = m._);
+	for (i = 0; i < 9; ++ i) {
+		if ((($math_abs_t = b[i] - a[i]) >= 0 ? $math_abs_t : -$math_abs_t) >= eps) {
 			return false;
 		}
 	}
 	return true;
 };
 
+var M33$equals$LM33$LM33$N = M33.equals$LM33$LM33$N;
+
 /**
+ * @param {M33} $this
  * @param {M33} m
  * @return {M33}
  */
-M33.prototype.add$LM33$ = function (m) {
+M33.add$LM33$LM33$ = function ($this, m) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
 	var b;
 	/** @type {!number} */
 	var i;
-	(a = this.array$(), b = m.array$());
-	for (i = 0; i < M33.ELEMS; ++ i) {
+	(a = $this._, b = m._);
+	for (i = 0; i < 9; ++ i) {
 		a[i] += b[i];
 	}
-	return this;
+	return $this;
 };
 
+var M33$add$LM33$LM33$ = M33.add$LM33$LM33$;
+
 /**
+ * @param {M33} $this
  * @param {M33} m
  * @return {M33}
  */
-M33.prototype.sub$LM33$ = function (m) {
+M33.sub$LM33$LM33$ = function ($this, m) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
 	var b;
 	/** @type {!number} */
 	var i;
-	(a = this.array$(), b = m.array$());
-	for (i = 0; i < M33.ELEMS; ++ i) {
+	(a = $this._, b = m._);
+	for (i = 0; i < 9; ++ i) {
 		a[i] -= b[i];
 	}
-	return this;
+	return $this;
 };
 
+var M33$sub$LM33$LM33$ = M33.sub$LM33$LM33$;
+
 /**
+ * @param {M33} $this
  * @param {M33} m
  * @return {M33}
  */
-M33.prototype.mul$LM33$ = function (m) {
-	return this.mul$LM33$LM33$(this, m);
+M33.mul$LM33$LM33$ = function ($this, m) {
+	return M33$mul$LM33$LM33$LM33$($this, $this, m);
 };
 
+var M33$mul$LM33$LM33$ = M33.mul$LM33$LM33$;
+
 /**
+ * @param {M33} $this
  * @param {M33} m0
  * @param {M33} m1
  * @return {M33}
  */
-M33.prototype.mul$LM33$LM33$ = function (m0, m1) {
+M33.mul$LM33$LM33$LM33$ = function ($this, m0, m1) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {undefined|!number} */
@@ -5643,354 +4341,33 @@ M33.prototype.mul$LM33$LM33$ = function (m0, m1) {
 	var b12;
 	/** @type {undefined|!number} */
 	var b22;
-	a = m0.array$();
+	a = m0._;
 	(a00 = a[0], a10 = a[1], a20 = a[2]);
 	(a01 = a[3], a11 = a[4], a21 = a[5]);
 	(a02 = a[6], a12 = a[7], a22 = a[8]);
-	b = m1.array$();
+	b = m1._;
 	(b00 = b[0], b10 = b[1], b20 = b[2]);
 	(b01 = b[3], b11 = b[4], b21 = b[5]);
 	(b02 = b[6], b12 = b[7], b22 = b[8]);
-	a[0] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:691] null access");
-		}
-		return v;
-	}(a00)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:691] null access");
-		}
-		return v;
-	}(b00)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:691] null access");
-		}
-		return v;
-	}(a01)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:691] null access");
-		}
-		return v;
-	}(b10)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:691] null access");
-		}
-		return v;
-	}(a02)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:691] null access");
-		}
-		return v;
-	}(b20));
-	a[1] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:692] null access");
-		}
-		return v;
-	}(a10)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:692] null access");
-		}
-		return v;
-	}(b00)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:692] null access");
-		}
-		return v;
-	}(a11)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:692] null access");
-		}
-		return v;
-	}(b10)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:692] null access");
-		}
-		return v;
-	}(a12)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:692] null access");
-		}
-		return v;
-	}(b20));
-	a[2] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:693] null access");
-		}
-		return v;
-	}(a20)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:693] null access");
-		}
-		return v;
-	}(b00)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:693] null access");
-		}
-		return v;
-	}(a21)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:693] null access");
-		}
-		return v;
-	}(b10)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:693] null access");
-		}
-		return v;
-	}(a22)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:693] null access");
-		}
-		return v;
-	}(b20));
-	a[3] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:694] null access");
-		}
-		return v;
-	}(a00)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:694] null access");
-		}
-		return v;
-	}(b01)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:694] null access");
-		}
-		return v;
-	}(a01)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:694] null access");
-		}
-		return v;
-	}(b11)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:694] null access");
-		}
-		return v;
-	}(a02)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:694] null access");
-		}
-		return v;
-	}(b21));
-	a[4] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:695] null access");
-		}
-		return v;
-	}(a10)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:695] null access");
-		}
-		return v;
-	}(b01)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:695] null access");
-		}
-		return v;
-	}(a11)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:695] null access");
-		}
-		return v;
-	}(b11)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:695] null access");
-		}
-		return v;
-	}(a12)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:695] null access");
-		}
-		return v;
-	}(b21));
-	a[5] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:696] null access");
-		}
-		return v;
-	}(a20)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:696] null access");
-		}
-		return v;
-	}(b01)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:696] null access");
-		}
-		return v;
-	}(a21)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:696] null access");
-		}
-		return v;
-	}(b11)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:696] null access");
-		}
-		return v;
-	}(a22)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:696] null access");
-		}
-		return v;
-	}(b21));
-	a[6] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:697] null access");
-		}
-		return v;
-	}(a00)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:697] null access");
-		}
-		return v;
-	}(b02)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:697] null access");
-		}
-		return v;
-	}(a01)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:697] null access");
-		}
-		return v;
-	}(b12)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:697] null access");
-		}
-		return v;
-	}(a02)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:697] null access");
-		}
-		return v;
-	}(b22));
-	a[7] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:698] null access");
-		}
-		return v;
-	}(a10)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:698] null access");
-		}
-		return v;
-	}(b02)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:698] null access");
-		}
-		return v;
-	}(a11)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:698] null access");
-		}
-		return v;
-	}(b12)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:698] null access");
-		}
-		return v;
-	}(a12)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:698] null access");
-		}
-		return v;
-	}(b22));
-	a[8] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:699] null access");
-		}
-		return v;
-	}(a20)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:699] null access");
-		}
-		return v;
-	}(b02)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:699] null access");
-		}
-		return v;
-	}(a21)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:699] null access");
-		}
-		return v;
-	}(b12)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:699] null access");
-		}
-		return v;
-	}(a22)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:699] null access");
-		}
-		return v;
-	}(b22));
-	return this;
+	a[0] = a00 * b00 + a01 * b10 + a02 * b20;
+	a[1] = a10 * b00 + a11 * b10 + a12 * b20;
+	a[2] = a20 * b00 + a21 * b10 + a22 * b20;
+	a[3] = a00 * b01 + a01 * b11 + a02 * b21;
+	a[4] = a10 * b01 + a11 * b11 + a12 * b21;
+	a[5] = a20 * b01 + a21 * b11 + a22 * b21;
+	a[6] = a00 * b02 + a01 * b12 + a02 * b22;
+	a[7] = a10 * b02 + a11 * b12 + a12 * b22;
+	a[8] = a20 * b02 + a21 * b12 + a22 * b22;
+	return $this;
 };
 
+var M33$mul$LM33$LM33$LM33$ = M33.mul$LM33$LM33$LM33$;
+
 /**
+ * @param {M33} $this
  * @return {M33}
  */
-M33.prototype.transpose$ = function () {
+M33.transpose$LM33$ = function ($this) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {undefined|!number} */
@@ -5999,7 +4376,7 @@ M33.prototype.transpose$ = function () {
 	var a20;
 	/** @type {undefined|!number} */
 	var a21;
-	a = this.array$();
+	a = $this._;
 	(a10 = a[1], a20 = a[2], a21 = a[5]);
 	a[1] = a[3];
 	a[2] = a[6];
@@ -6007,19 +4384,22 @@ M33.prototype.transpose$ = function () {
 	a[5] = a[7];
 	a[6] = a20;
 	a[7] = a21;
-	return this;
+	return $this;
 };
 
+var M33$transpose$LM33$ = M33.transpose$LM33$;
+
 /**
+ * @param {M33} $this
  * @param {M33} m
  * @return {M33}
  */
-M33.prototype.transpose$LM33$ = function (m) {
+M33.transpose$LM33$LM33$ = function ($this, m) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
 	var b;
-	(a = this.array$(), b = m.array$());
+	(a = $this._, b = m._);
 	a[0] = b[0];
 	a[1] = b[3];
 	a[2] = b[6];
@@ -6029,13 +4409,16 @@ M33.prototype.transpose$LM33$ = function (m) {
 	a[6] = b[2];
 	a[7] = b[5];
 	a[8] = b[8];
-	return this;
+	return $this;
 };
 
+var M33$transpose$LM33$LM33$ = M33.transpose$LM33$LM33$;
+
 /**
+ * @param {M33} $this
  * @return {!number}
  */
-M33.prototype.det$ = function () {
+M33.det$LM33$ = function ($this) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {undefined|!number} */
@@ -6056,101 +4439,20 @@ M33.prototype.det$ = function () {
 	var a21;
 	/** @type {undefined|!number} */
 	var a22;
-	a = this.array$();
+	a = $this._;
 	(a00 = a[0], a01 = a[1], a02 = a[2]);
 	(a10 = a[3], a11 = a[4], a12 = a[5]);
 	(a20 = a[6], a21 = a[7], a22 = a[8]);
-	return (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:733] null access");
-		}
-		return v;
-	}(a00)) * ((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:733] null access");
-		}
-		return v;
-	}(a22)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:733] null access");
-		}
-		return v;
-	}(a11)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:733] null access");
-		}
-		return v;
-	}(a12)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:733] null access");
-		}
-		return v;
-	}(a21))) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:733] null access");
-		}
-		return v;
-	}(a01)) * (- a22 * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:733] null access");
-		}
-		return v;
-	}(a10)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:733] null access");
-		}
-		return v;
-	}(a12)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:733] null access");
-		}
-		return v;
-	}(a20))) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:733] null access");
-		}
-		return v;
-	}(a02)) * ((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:733] null access");
-		}
-		return v;
-	}(a21)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:733] null access");
-		}
-		return v;
-	}(a10)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:733] null access");
-		}
-		return v;
-	}(a11)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:733] null access");
-		}
-		return v;
-	}(a20)));
+	return a00 * (a22 * a11 - a12 * a21) + a01 * (- a22 * a10 + a12 * a20) + a02 * (a21 * a10 - a11 * a20);
 };
 
+var M33$det$LM33$ = M33.det$LM33$;
+
 /**
+ * @param {M33} $this
  * @return {M33}
  */
-M33.prototype.inverse$ = function () {
+M33.inverse$LM33$ = function ($this) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {undefined|!number} */
@@ -6181,348 +4483,104 @@ M33.prototype.inverse$ = function () {
 	var d;
 	/** @type {!number} */
 	var invDet;
-	a = this.array$();
+	a = $this._;
 	(a00 = a[0], a01 = a[1], a02 = a[2]);
 	(a10 = a[3], a11 = a[4], a12 = a[5]);
 	(a20 = a[6], a21 = a[7], a22 = a[8]);
-	b01 = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:741] null access");
-		}
-		return v;
-	}(a22)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:741] null access");
-		}
-		return v;
-	}(a11)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:741] null access");
-		}
-		return v;
-	}(a12)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:741] null access");
-		}
-		return v;
-	}(a21));
-	b11 = - a22 * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:742] null access");
-		}
-		return v;
-	}(a10)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:742] null access");
-		}
-		return v;
-	}(a12)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:742] null access");
-		}
-		return v;
-	}(a20));
-	b21 = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:743] null access");
-		}
-		return v;
-	}(a21)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:743] null access");
-		}
-		return v;
-	}(a10)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:743] null access");
-		}
-		return v;
-	}(a11)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:743] null access");
-		}
-		return v;
-	}(a20));
-	d = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:745] null access");
-		}
-		return v;
-	}(a00)) * b01 + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:745] null access");
-		}
-		return v;
-	}(a01)) * b11 + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:745] null access");
-		}
-		return v;
-	}(a02)) * b21;
+	b01 = a22 * a11 - a12 * a21;
+	b11 = - a22 * a10 + a12 * a20;
+	b21 = a21 * a10 - a11 * a20;
+	d = a00 * b01 + a01 * b11 + a02 * b21;
 	if (d === 0) {
 		return null;
 	}
 	invDet = 1 / d;
 	a[0] = b01 * invDet;
-	a[1] = (- a22 * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:751] null access");
-		}
-		return v;
-	}(a01)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:751] null access");
-		}
-		return v;
-	}(a02)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:751] null access");
-		}
-		return v;
-	}(a21))) * invDet;
-	a[2] = ((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:752] null access");
-		}
-		return v;
-	}(a12)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:752] null access");
-		}
-		return v;
-	}(a01)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:752] null access");
-		}
-		return v;
-	}(a02)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:752] null access");
-		}
-		return v;
-	}(a11))) * invDet;
+	a[1] = (- a22 * a01 + a02 * a21) * invDet;
+	a[2] = (a12 * a01 - a02 * a11) * invDet;
 	a[3] = b11 * invDet;
-	a[4] = ((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:754] null access");
-		}
-		return v;
-	}(a22)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:754] null access");
-		}
-		return v;
-	}(a00)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:754] null access");
-		}
-		return v;
-	}(a02)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:754] null access");
-		}
-		return v;
-	}(a20))) * invDet;
-	a[5] = (- a12 * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:755] null access");
-		}
-		return v;
-	}(a00)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:755] null access");
-		}
-		return v;
-	}(a02)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:755] null access");
-		}
-		return v;
-	}(a10))) * invDet;
+	a[4] = (a22 * a00 - a02 * a20) * invDet;
+	a[5] = (- a12 * a00 + a02 * a10) * invDet;
 	a[6] = b21 * invDet;
-	a[7] = (- a21 * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:757] null access");
-		}
-		return v;
-	}(a00)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:757] null access");
-		}
-		return v;
-	}(a01)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:757] null access");
-		}
-		return v;
-	}(a20))) * invDet;
-	a[8] = ((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:758] null access");
-		}
-		return v;
-	}(a11)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:758] null access");
-		}
-		return v;
-	}(a00)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:758] null access");
-		}
-		return v;
-	}(a01)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:758] null access");
-		}
-		return v;
-	}(a10))) * invDet;
-	return this;
+	a[7] = (- a21 * a00 + a01 * a20) * invDet;
+	a[8] = (a11 * a00 - a01 * a10) * invDet;
+	return $this;
 };
 
+var M33$inverse$LM33$ = M33.inverse$LM33$;
+
 /**
+ * @param {M33} $this
  * @param {!number} s
  * @return {M33}
  */
-M33.prototype.setScale$N = function (s) {
-	return this.setScale$NNN(s, s, s);
+M33.setScale$LM33$N = function ($this, s) {
+	return M33$setScale$LM33$NNN($this, s, s, s);
 };
 
+var M33$setScale$LM33$N = M33.setScale$LM33$N;
+
 /**
+ * @param {M33} $this
  * @param {!number} x
  * @param {!number} y
  * @param {!number} z
  * @return {M33}
  */
-M33.prototype.setScale$NNN = function (x, y, z) {
-	this.setZero$();
-	this._[0] = x;
-	this._[4] = y;
-	this._[8] = z;
-	return this;
+M33.setScale$LM33$NNN = function ($this, x, y, z) {
+	M33$setZero$LM33$($this);
+	$this._[0] = x;
+	$this._[4] = y;
+	$this._[8] = z;
+	return $this;
 };
 
+var M33$setScale$LM33$NNN = M33.setScale$LM33$NNN;
+
 /**
+ * @param {M33} $this
  * @param {V3} v
  * @return {M33}
  */
-M33.prototype.setScale$LV3$ = function (v) {
-	return this.setScale$NNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:771] null access");
-		}
-		return v;
-	}(v._[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:771] null access");
-		}
-		return v;
-	}(v._[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:771] null access");
-		}
-		return v;
-	}(v._[2])));
+M33.setScale$LM33$LV3$ = function ($this, v) {
+	/** @type {Float32Array} */
+	var _$0;
+	return M33$setScale$LM33$NNN($this, (_$0 = v._)[0], _$0[1], _$0[2]);
 };
 
+var M33$setScale$LM33$LV3$ = M33.setScale$LM33$LV3$;
+
 /**
+ * @param {M33} $this
  * @param {Array.<undefined|!number>} v
  * @return {M33}
  */
-M33.prototype.setScale$AN = function (v) {
-	return this.setScale$NNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:772] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:772] null access");
-		}
-		return v;
-	}(v[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:772] null access");
-		}
-		return v;
-	}(v[2])));
+M33.setScale$LM33$AN = function ($this, v) {
+	return M33$setScale$LM33$NNN($this, v[0], v[1], v[2]);
 };
 
+var M33$setScale$LM33$AN = M33.setScale$LM33$AN;
+
 /**
+ * @param {M33} $this
  * @param {Float32Array} v
  * @return {M33}
  */
-M33.prototype.setScale$LFloat32Array$ = function (v) {
-	return this.setScale$NNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:773] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:773] null access");
-		}
-		return v;
-	}(v[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:773] null access");
-		}
-		return v;
-	}(v[2])));
+M33.setScale$LM33$LFloat32Array$ = function ($this, v) {
+	return M33$setScale$LM33$NNN($this, v[0], v[1], v[2]);
 };
 
+var M33$setScale$LM33$LFloat32Array$ = M33.setScale$LM33$LFloat32Array$;
+
 /**
+ * @param {M33} $this
  * @param {!number} rad
  * @param {!number} x
  * @param {!number} y
  * @param {!number} z
  * @return {M33}
  */
-M33.prototype.setRotate$NNNN = function (rad, x, y, z) {
+M33.setRotate$LM33$NNNN = function ($this, rad, x, y, z) {
 	/** @type {!number} */
 	var l;
 	/** @type {!number} */
@@ -6543,7 +4601,7 @@ M33.prototype.setRotate$NNNN = function (rad, x, y, z) {
 	x *= il;
 	y *= il;
 	z *= il;
-	a = this.array$();
+	a = $this._;
 	(c = Math.cos(rad), s = Math.sin(rad));
 	_c = 1 - c;
 	a[0] = x * x * _c + c;
@@ -6555,113 +4613,81 @@ M33.prototype.setRotate$NNNN = function (rad, x, y, z) {
 	a[6] = x * z * _c + y * s;
 	a[7] = y * z * _c - x * s;
 	a[8] = z * z * _c + c;
-	return this;
+	return $this;
 };
 
+var M33$setRotate$LM33$NNNN = M33.setRotate$LM33$NNNN;
+
 /**
+ * @param {M33} $this
  * @param {!number} rad
  * @param {V3} a
  * @return {M33}
  */
-M33.prototype.setRotate$NLV3$ = function (rad, a) {
-	return this.setRotate$NNNN(rad, (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:796] null access");
-		}
-		return v;
-	}(a._[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:796] null access");
-		}
-		return v;
-	}(a._[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:796] null access");
-		}
-		return v;
-	}(a._[2])));
+M33.setRotate$LM33$NLV3$ = function ($this, rad, a) {
+	/** @type {Float32Array} */
+	var _$0;
+	return M33$setRotate$LM33$NNNN($this, rad, (_$0 = a._)[0], _$0[1], _$0[2]);
 };
 
+var M33$setRotate$LM33$NLV3$ = M33.setRotate$LM33$NLV3$;
+
 /**
+ * @param {M33} $this
  * @param {!number} rad
  * @param {Array.<undefined|!number>} a
  * @return {M33}
  */
-M33.prototype.setRotate$NAN = function (rad, a) {
-	return this.setRotate$NNNN(rad, (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:797] null access");
-		}
-		return v;
-	}(a[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:797] null access");
-		}
-		return v;
-	}(a[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:797] null access");
-		}
-		return v;
-	}(a[2])));
+M33.setRotate$LM33$NAN = function ($this, rad, a) {
+	return M33$setRotate$LM33$NNNN($this, rad, a[0], a[1], a[2]);
 };
 
+var M33$setRotate$LM33$NAN = M33.setRotate$LM33$NAN;
+
 /**
+ * @param {M33} $this
  * @param {!number} rad
  * @param {Float32Array} a
  * @return {M33}
  */
-M33.prototype.setRotate$NLFloat32Array$ = function (rad, a) {
-	return this.setRotate$NNNN(rad, (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:798] null access");
-		}
-		return v;
-	}(a[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:798] null access");
-		}
-		return v;
-	}(a[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:798] null access");
-		}
-		return v;
-	}(a[2])));
+M33.setRotate$LM33$NLFloat32Array$ = function ($this, rad, a) {
+	return M33$setRotate$LM33$NNNN($this, rad, a[0], a[1], a[2]);
 };
 
+var M33$setRotate$LM33$NLFloat32Array$ = M33.setRotate$LM33$NLFloat32Array$;
+
 /**
+ * @param {M33} $this
  * @param {!number} rad
  * @return {M33}
  */
-M33.prototype.setRotateX$N = function (rad) {
-	return this.setRotate$NNNN(rad, 1, 0, 0);
+M33.setRotateX$LM33$N = function ($this, rad) {
+	return M33$setRotate$LM33$NNNN($this, rad, 1, 0, 0);
 };
 
+var M33$setRotateX$LM33$N = M33.setRotateX$LM33$N;
+
 /**
+ * @param {M33} $this
  * @param {!number} rad
  * @return {M33}
  */
-M33.prototype.setRotateY$N = function (rad) {
-	return this.setRotate$NNNN(rad, 0, 1, 0);
+M33.setRotateY$LM33$N = function ($this, rad) {
+	return M33$setRotate$LM33$NNNN($this, rad, 0, 1, 0);
 };
 
+var M33$setRotateY$LM33$N = M33.setRotateY$LM33$N;
+
 /**
+ * @param {M33} $this
  * @param {!number} rad
  * @return {M33}
  */
-M33.prototype.setRotateZ$N = function (rad) {
-	return this.setRotate$NNNN(rad, 0, 0, 1);
+M33.setRotateZ$LM33$N = function ($this, rad) {
+	return M33$setRotate$LM33$NNNN($this, rad, 0, 0, 1);
 };
+
+var M33$setRotateZ$LM33$N = M33.setRotateZ$LM33$N;
 
 /**
  * class M44 extends Object
@@ -6675,7 +4701,7 @@ M44.prototype = new Object;
  * @constructor
  */
 function M44$() {
-	this._ = new Float32Array(M44.ELEMS);
+	this._ = new Float32Array(16);
 };
 
 M44$.prototype = new M44;
@@ -6685,8 +4711,10 @@ M44$.prototype = new M44;
  * @param {M44} m
  */
 function M44$LM44$(m) {
-	this._ = new Float32Array(M44.ELEMS);
-	this.set$LM44$(m);
+	/** @type {Float32Array} */
+	var _$0;
+	_$0 = this._ = new Float32Array(16);
+	_$0.set(m._);
 };
 
 M44$LM44$.prototype = new M44;
@@ -6696,8 +4724,10 @@ M44$LM44$.prototype = new M44;
  * @param {Array.<undefined|!number>} m
  */
 function M44$AN(m) {
-	this._ = new Float32Array(M44.ELEMS);
-	this.set$AN(m);
+	/** @type {Float32Array} */
+	var _$0;
+	_$0 = this._ = new Float32Array(16);
+	_$0.set(m);
 };
 
 M44$AN.prototype = new M44;
@@ -6707,8 +4737,10 @@ M44$AN.prototype = new M44;
  * @param {Float32Array} m
  */
 function M44$LFloat32Array$(m) {
-	this._ = new Float32Array(M44.ELEMS);
-	this.set$LFloat32Array$(m);
+	/** @type {Float32Array} */
+	var _$0;
+	_$0 = this._ = new Float32Array(16);
+	_$0.set(m);
 };
 
 M44$LFloat32Array$.prototype = new M44;
@@ -6734,25 +4766,24 @@ M44$LFloat32Array$.prototype = new M44;
  */
 function M44$NNNNNNNNNNNNNNNN(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33) {
 	/** @type {Float32Array} */
-	var a;
-	this._ = new Float32Array(M44.ELEMS);
-	a = this.array$();
-	a[0] = m00;
-	a[1] = m10;
-	a[2] = m20;
-	a[3] = m30;
-	a[4] = m01;
-	a[5] = m11;
-	a[6] = m21;
-	a[7] = m31;
-	a[8] = m02;
-	a[9] = m12;
-	a[10] = m22;
-	a[11] = m32;
-	a[12] = m03;
-	a[13] = m13;
-	a[14] = m23;
-	a[15] = m33;
+	var _$0;
+	_$0 = this._ = new Float32Array(16);
+	_$0[0] = m00;
+	_$0[1] = m10;
+	_$0[2] = m20;
+	_$0[3] = m30;
+	_$0[4] = m01;
+	_$0[5] = m11;
+	_$0[6] = m21;
+	_$0[7] = m31;
+	_$0[8] = m02;
+	_$0[9] = m12;
+	_$0[10] = m22;
+	_$0[11] = m32;
+	_$0[12] = m03;
+	_$0[13] = m13;
+	_$0[14] = m23;
+	_$0[15] = m33;
 };
 
 M44$NNNNNNNNNNNNNNNN.prototype = new M44;
@@ -6765,8 +4796,8 @@ M44$NNNNNNNNNNNNNNNN.prototype = new M44;
  * @param {V4} v3
  */
 function M44$LV4$LV4$LV4$LV4$(v0, v1, v2, v3) {
-	this._ = new Float32Array(M44.ELEMS);
-	this.set$LV4$LV4$LV4$LV4$(v0, v1, v2, v3);
+	this._ = new Float32Array(16);
+	M44$set$LM44$LV4$LV4$LV4$LV4$(this, v0, v1, v2, v3);
 };
 
 M44$LV4$LV4$LV4$LV4$.prototype = new M44;
@@ -6778,8 +4809,8 @@ M44$LV4$LV4$LV4$LV4$.prototype = new M44;
  * @param {!number} m33
  */
 function M44$LM22$NN(m, m22, m33) {
-	this._ = new Float32Array(M44.ELEMS);
-	this.set$LM22$NN(m, m22, m33);
+	this._ = new Float32Array(16);
+	M44$set$LM44$LM22$NN(this, m, m22, m33);
 };
 
 M44$LM22$NN.prototype = new M44;
@@ -6790,46 +4821,56 @@ M44$LM22$NN.prototype = new M44;
  * @param {!number} m33
  */
 function M44$LM33$N(m, m33) {
-	this._ = new Float32Array(M44.ELEMS);
-	this.set$LM33$N(m, m33);
+	this._ = new Float32Array(16);
+	M44$set$LM44$LM33$N(this, m, m33);
 };
 
 M44$LM33$N.prototype = new M44;
 
 /**
+ * @param {M44} $this
  * @return {Float32Array}
  */
-M44.prototype.array$ = function () {
-	return this._;
+M44.array$LM44$ = function ($this) {
+	return $this._;
 };
 
+var M44$array$LM44$ = M44.array$LM44$;
+
 /**
+ * @param {M44} $this
  * @return {M22}
  */
-M44.prototype.m22$ = function () {
-	return new M22$LM44$(this);
+M44.m22$LM44$ = function ($this) {
+	return new M22$LM44$($this);
 };
 
+var M44$m22$LM44$ = M44.m22$LM44$;
+
 /**
+ * @param {M44} $this
  * @param {!number} m33
  * @return {M33}
  */
-M44.prototype.m33$N = function (m33) {
-	return new M33$LM44$(this);
+M44.m33$LM44$N = function ($this, m33) {
+	return new M33$LM44$($this);
 };
 
+var M44$m33$LM44$N = M44.m33$LM44$N;
+
 /**
+ * @param {M44} $this
  * @param {M22} m
  * @param {!number} m22
  * @param {!number} m33
  * @return {M44}
  */
-M44.prototype.set$LM22$NN = function (m, m22, m33) {
+M44.set$LM44$LM22$NN = function ($this, m, m22, m33) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
 	var b;
-	(a = this.array$(), b = m.array$());
+	(a = $this._, b = m._);
 	a[0] = b[0];
 	a[1] = b[1];
 	a[2] = 0;
@@ -6846,20 +4887,23 @@ M44.prototype.set$LM22$NN = function (m, m22, m33) {
 	a[13] = 0;
 	a[14] = 0;
 	a[15] = m33;
-	return this;
+	return $this;
 };
 
+var M44$set$LM44$LM22$NN = M44.set$LM44$LM22$NN;
+
 /**
+ * @param {M44} $this
  * @param {M33} m
  * @param {!number} m33
  * @return {M44}
  */
-M44.prototype.set$LM33$N = function (m, m33) {
+M44.set$LM44$LM33$N = function ($this, m, m33) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
 	var b;
-	(a = this.array$(), b = m.array$());
+	(a = $this._, b = m._);
 	a[0] = b[0];
 	a[1] = b[1];
 	a[2] = b[2];
@@ -6876,47 +4920,59 @@ M44.prototype.set$LM33$N = function (m, m33) {
 	a[13] = 0;
 	a[14] = 0;
 	a[15] = m33;
-	return this;
+	return $this;
 };
 
-/**
- * @return {M44}
- */
-M44.prototype.clone$ = function () {
-	return new M44$LM44$(this);
-};
+var M44$set$LM44$LM33$N = M44.set$LM44$LM33$N;
 
 /**
+ * @param {M44} $this
  * @return {M44}
  */
-M44.prototype.setZero$ = function () {
+M44.clone$LM44$ = function ($this) {
+	return new M44$LM44$($this);
+};
+
+var M44$clone$LM44$ = M44.clone$LM44$;
+
+/**
+ * @param {M44} $this
+ * @return {M44}
+ */
+M44.setZero$LM44$ = function ($this) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {!number} */
 	var i;
-	a = this.array$();
-	for (i = 0; i < M44.ELEMS; ++ i) {
+	a = $this._;
+	for (i = 0; i < 16; ++ i) {
 		a[i] = 0;
 	}
-	return this;
+	return $this;
 };
 
+var M44$setZero$LM44$ = M44.setZero$LM44$;
+
 /**
+ * @param {M44} $this
  * @return {M44}
  */
-M44.prototype.setIdentity$ = function () {
+M44.setIdentity$LM44$ = function ($this) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {!number} */
 	var i;
-	a = this.array$();
-	for (i = 0; i < M44.ELEMS; ++ i) {
-		a[i] = (i % (M44.ROWS + 1) === 0 ? 1 : 0);
+	a = $this._;
+	for (i = 0; i < 16; ++ i) {
+		a[i] = (i % 5 === 0 ? 1 : 0);
 	}
-	return this;
+	return $this;
 };
 
+var M44$setIdentity$LM44$ = M44.setIdentity$LM44$;
+
 /**
+ * @param {M44} $this
  * @param {!number} m00
  * @param {!number} m01
  * @param {!number} m02
@@ -6935,10 +4991,10 @@ M44.prototype.setIdentity$ = function () {
  * @param {!number} m33
  * @return {M44}
  */
-M44.prototype.set$NNNNNNNNNNNNNNNN = function (m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33) {
+M44.set$LM44$NNNNNNNNNNNNNNNN = function ($this, m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33) {
 	/** @type {Float32Array} */
 	var a;
-	a = this.array$();
+	a = $this._;
 	a[0] = m00;
 	a[1] = m10;
 	a[2] = m20;
@@ -6955,85 +5011,109 @@ M44.prototype.set$NNNNNNNNNNNNNNNN = function (m00, m01, m02, m03, m10, m11, m12
 	a[13] = m13;
 	a[14] = m23;
 	a[15] = m33;
-	return this;
+	return $this;
 };
 
+var M44$set$LM44$NNNNNNNNNNNNNNNN = M44.set$LM44$NNNNNNNNNNNNNNNN;
+
 /**
+ * @param {M44} $this
  * @param {V4} v0
  * @param {V4} v1
  * @param {V4} v2
  * @param {V4} v3
  * @return {M44}
  */
-M44.prototype.set$LV4$LV4$LV4$LV4$ = function (v0, v1, v2, v3) {
-	this._.set(v0._, 0);
-	this._.set(v1._, 4);
-	this._.set(v2._, 8);
-	this._.set(v3._, 12);
-	return this;
+M44.set$LM44$LV4$LV4$LV4$LV4$ = function ($this, v0, v1, v2, v3) {
+	$this._.set(v0._, 0);
+	$this._.set(v1._, 4);
+	$this._.set(v2._, 8);
+	$this._.set(v3._, 12);
+	return $this;
 };
 
+var M44$set$LM44$LV4$LV4$LV4$LV4$ = M44.set$LM44$LV4$LV4$LV4$LV4$;
+
 /**
+ * @param {M44} $this
  * @param {M44} m
  * @return {M44}
  */
-M44.prototype.set$LM44$ = function (m) {
-	this._.set(m._);
-	return this;
+M44.set$LM44$LM44$ = function ($this, m) {
+	$this._.set(m._);
+	return $this;
 };
 
+var M44$set$LM44$LM44$ = M44.set$LM44$LM44$;
+
 /**
+ * @param {M44} $this
  * @param {Array.<undefined|!number>} m
  * @return {M44}
  */
-M44.prototype.set$AN = function (m) {
-	this._.set(m);
-	return this;
+M44.set$LM44$AN = function ($this, m) {
+	$this._.set(m);
+	return $this;
 };
 
+var M44$set$LM44$AN = M44.set$LM44$AN;
+
 /**
+ * @param {M44} $this
  * @param {Float32Array} m
  * @return {M44}
  */
-M44.prototype.set$LFloat32Array$ = function (m) {
-	this._.set(m);
-	return this;
+M44.set$LM44$LFloat32Array$ = function ($this, m) {
+	$this._.set(m);
+	return $this;
 };
 
+var M44$set$LM44$LFloat32Array$ = M44.set$LM44$LFloat32Array$;
+
 /**
+ * @param {M44} $this
  * @param {Array.<undefined|!number>} m
  * @param {!number} offs
  * @return {M44}
  */
-M44.prototype.set$ANN = function (m, offs) {
-	this._.set(m, offs);
-	return this;
+M44.set$LM44$ANN = function ($this, m, offs) {
+	$this._.set(m, offs);
+	return $this;
 };
 
+var M44$set$LM44$ANN = M44.set$LM44$ANN;
+
 /**
+ * @param {M44} $this
  * @param {Float32Array} m
  * @param {!number} offs
  * @return {M44}
  */
-M44.prototype.set$LFloat32Array$N = function (m, offs) {
-	this._.set(m, offs);
-	return this;
+M44.set$LM44$LFloat32Array$N = function ($this, m, offs) {
+	$this._.set(m, offs);
+	return $this;
 };
 
+var M44$set$LM44$LFloat32Array$N = M44.set$LM44$LFloat32Array$N;
+
 /**
+ * @param {M44} $this
  * @param {M44} m
  * @return {!boolean}
  */
-M44.prototype.equals$LM44$ = function (m) {
-	return this.equals$LM44$N(m, MVQ.EQUAL_EPSILON);
+M44.equals$LM44$LM44$ = function ($this, m) {
+	return M44$equals$LM44$LM44$N($this, m, 0.000001);
 };
 
+var M44$equals$LM44$LM44$ = M44.equals$LM44$LM44$;
+
 /**
+ * @param {M44} $this
  * @param {M44} m
  * @param {!number} eps
  * @return {!boolean}
  */
-M44.prototype.equals$LM44$N = function (m, eps) {
+M44.equals$LM44$LM44$N = function ($this, m, eps) {
 	var $math_abs_t;
 	/** @type {Float32Array} */
 	var a;
@@ -7041,77 +5121,77 @@ M44.prototype.equals$LM44$N = function (m, eps) {
 	var b;
 	/** @type {!number} */
 	var i;
-	(a = this.array$(), b = m.array$());
-	for (i = 0; i < M44.ELEMS; ++ i) {
-		if ((($math_abs_t = (function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[mvq.jsx:890] null access");
-			}
-			return v;
-		}(b[i])) - (function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[mvq.jsx:890] null access");
-			}
-			return v;
-		}(a[i]))) >= 0 ? $math_abs_t : -$math_abs_t) >= eps) {
+	(a = $this._, b = m._);
+	for (i = 0; i < 16; ++ i) {
+		if ((($math_abs_t = b[i] - a[i]) >= 0 ? $math_abs_t : -$math_abs_t) >= eps) {
 			return false;
 		}
 	}
 	return true;
 };
 
+var M44$equals$LM44$LM44$N = M44.equals$LM44$LM44$N;
+
 /**
+ * @param {M44} $this
  * @param {M44} m
  * @return {M44}
  */
-M44.prototype.add$LM44$ = function (m) {
+M44.add$LM44$LM44$ = function ($this, m) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
 	var b;
 	/** @type {!number} */
 	var i;
-	(a = this.array$(), b = m.array$());
-	for (i = 0; i < M44.ELEMS; ++ i) {
+	(a = $this._, b = m._);
+	for (i = 0; i < 16; ++ i) {
 		a[i] += b[i];
 	}
-	return this;
+	return $this;
 };
 
+var M44$add$LM44$LM44$ = M44.add$LM44$LM44$;
+
 /**
+ * @param {M44} $this
  * @param {M44} m
  * @return {M44}
  */
-M44.prototype.sub$LM44$ = function (m) {
+M44.sub$LM44$LM44$ = function ($this, m) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
 	var b;
 	/** @type {!number} */
 	var i;
-	(a = this.array$(), b = m.array$());
-	for (i = 0; i < M44.ELEMS; ++ i) {
+	(a = $this._, b = m._);
+	for (i = 0; i < 16; ++ i) {
 		a[i] -= b[i];
 	}
-	return this;
+	return $this;
 };
 
+var M44$sub$LM44$LM44$ = M44.sub$LM44$LM44$;
+
 /**
+ * @param {M44} $this
  * @param {M44} m
  * @return {M44}
  */
-M44.prototype.mul$LM44$ = function (m) {
-	return this.mul$LM44$LM44$(this, m);
+M44.mul$LM44$LM44$ = function ($this, m) {
+	return M44$mul$LM44$LM44$LM44$($this, $this, m);
 };
 
+var M44$mul$LM44$LM44$ = M44.mul$LM44$LM44$;
+
 /**
+ * @param {M44} $this
  * @param {M44} m0
  * @param {M44} m1
  * @return {M44}
  */
-M44.prototype.mul$LM44$LM44$ = function (m0, m1) {
+M44.mul$LM44$LM44$LM44$ = function ($this, m0, m1) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {undefined|!number} */
@@ -7180,807 +5260,42 @@ M44.prototype.mul$LM44$LM44$ = function (m0, m1) {
 	var b23;
 	/** @type {undefined|!number} */
 	var b33;
-	a = m0.array$();
+	a = m0._;
 	(a00 = a[0], a10 = a[1], a20 = a[2], a30 = a[3]);
 	(a01 = a[4], a11 = a[5], a21 = a[6], a31 = a[7]);
 	(a02 = a[8], a12 = a[9], a22 = a[10], a32 = a[11]);
 	(a03 = a[12], a13 = a[13], a23 = a[14], a33 = a[15]);
-	b = m1.array$();
+	b = m1._;
 	(b00 = b[0], b10 = b[1], b20 = b[2], b30 = b[3]);
 	(b01 = b[4], b11 = b[5], b21 = b[6], b31 = b[7]);
 	(b02 = b[8], b12 = b[9], b22 = b[10], b32 = b[11]);
 	(b03 = b[12], b13 = b[13], b23 = b[14], b33 = b[15]);
-	a[0] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:918] null access");
-		}
-		return v;
-	}(a00)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:918] null access");
-		}
-		return v;
-	}(b00)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:918] null access");
-		}
-		return v;
-	}(a01)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:918] null access");
-		}
-		return v;
-	}(b10)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:918] null access");
-		}
-		return v;
-	}(a02)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:918] null access");
-		}
-		return v;
-	}(b20)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:918] null access");
-		}
-		return v;
-	}(a03)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:918] null access");
-		}
-		return v;
-	}(b30));
-	a[1] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:919] null access");
-		}
-		return v;
-	}(a10)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:919] null access");
-		}
-		return v;
-	}(b00)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:919] null access");
-		}
-		return v;
-	}(a11)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:919] null access");
-		}
-		return v;
-	}(b10)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:919] null access");
-		}
-		return v;
-	}(a12)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:919] null access");
-		}
-		return v;
-	}(b20)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:919] null access");
-		}
-		return v;
-	}(a13)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:919] null access");
-		}
-		return v;
-	}(b30));
-	a[2] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:920] null access");
-		}
-		return v;
-	}(a20)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:920] null access");
-		}
-		return v;
-	}(b00)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:920] null access");
-		}
-		return v;
-	}(a21)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:920] null access");
-		}
-		return v;
-	}(b10)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:920] null access");
-		}
-		return v;
-	}(a22)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:920] null access");
-		}
-		return v;
-	}(b20)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:920] null access");
-		}
-		return v;
-	}(a23)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:920] null access");
-		}
-		return v;
-	}(b30));
-	a[3] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:921] null access");
-		}
-		return v;
-	}(a30)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:921] null access");
-		}
-		return v;
-	}(b00)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:921] null access");
-		}
-		return v;
-	}(a31)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:921] null access");
-		}
-		return v;
-	}(b10)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:921] null access");
-		}
-		return v;
-	}(a32)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:921] null access");
-		}
-		return v;
-	}(b20)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:921] null access");
-		}
-		return v;
-	}(a33)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:921] null access");
-		}
-		return v;
-	}(b30));
-	a[4] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:922] null access");
-		}
-		return v;
-	}(a00)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:922] null access");
-		}
-		return v;
-	}(b01)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:922] null access");
-		}
-		return v;
-	}(a01)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:922] null access");
-		}
-		return v;
-	}(b11)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:922] null access");
-		}
-		return v;
-	}(a02)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:922] null access");
-		}
-		return v;
-	}(b21)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:922] null access");
-		}
-		return v;
-	}(a03)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:922] null access");
-		}
-		return v;
-	}(b31));
-	a[5] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:923] null access");
-		}
-		return v;
-	}(a10)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:923] null access");
-		}
-		return v;
-	}(b01)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:923] null access");
-		}
-		return v;
-	}(a11)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:923] null access");
-		}
-		return v;
-	}(b11)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:923] null access");
-		}
-		return v;
-	}(a12)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:923] null access");
-		}
-		return v;
-	}(b21)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:923] null access");
-		}
-		return v;
-	}(a13)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:923] null access");
-		}
-		return v;
-	}(b31));
-	a[6] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:924] null access");
-		}
-		return v;
-	}(a20)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:924] null access");
-		}
-		return v;
-	}(b01)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:924] null access");
-		}
-		return v;
-	}(a21)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:924] null access");
-		}
-		return v;
-	}(b11)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:924] null access");
-		}
-		return v;
-	}(a22)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:924] null access");
-		}
-		return v;
-	}(b21)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:924] null access");
-		}
-		return v;
-	}(a23)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:924] null access");
-		}
-		return v;
-	}(b31));
-	a[7] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:925] null access");
-		}
-		return v;
-	}(a30)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:925] null access");
-		}
-		return v;
-	}(b01)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:925] null access");
-		}
-		return v;
-	}(a31)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:925] null access");
-		}
-		return v;
-	}(b11)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:925] null access");
-		}
-		return v;
-	}(a32)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:925] null access");
-		}
-		return v;
-	}(b21)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:925] null access");
-		}
-		return v;
-	}(a33)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:925] null access");
-		}
-		return v;
-	}(b31));
-	a[8] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:926] null access");
-		}
-		return v;
-	}(a00)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:926] null access");
-		}
-		return v;
-	}(b02)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:926] null access");
-		}
-		return v;
-	}(a01)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:926] null access");
-		}
-		return v;
-	}(b12)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:926] null access");
-		}
-		return v;
-	}(a02)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:926] null access");
-		}
-		return v;
-	}(b22)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:926] null access");
-		}
-		return v;
-	}(a03)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:926] null access");
-		}
-		return v;
-	}(b32));
-	a[9] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:927] null access");
-		}
-		return v;
-	}(a10)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:927] null access");
-		}
-		return v;
-	}(b02)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:927] null access");
-		}
-		return v;
-	}(a11)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:927] null access");
-		}
-		return v;
-	}(b12)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:927] null access");
-		}
-		return v;
-	}(a12)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:927] null access");
-		}
-		return v;
-	}(b22)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:927] null access");
-		}
-		return v;
-	}(a13)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:927] null access");
-		}
-		return v;
-	}(b32));
-	a[10] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:928] null access");
-		}
-		return v;
-	}(a20)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:928] null access");
-		}
-		return v;
-	}(b02)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:928] null access");
-		}
-		return v;
-	}(a21)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:928] null access");
-		}
-		return v;
-	}(b12)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:928] null access");
-		}
-		return v;
-	}(a22)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:928] null access");
-		}
-		return v;
-	}(b22)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:928] null access");
-		}
-		return v;
-	}(a23)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:928] null access");
-		}
-		return v;
-	}(b32));
-	a[11] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:929] null access");
-		}
-		return v;
-	}(a30)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:929] null access");
-		}
-		return v;
-	}(b02)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:929] null access");
-		}
-		return v;
-	}(a31)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:929] null access");
-		}
-		return v;
-	}(b12)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:929] null access");
-		}
-		return v;
-	}(a32)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:929] null access");
-		}
-		return v;
-	}(b22)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:929] null access");
-		}
-		return v;
-	}(a33)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:929] null access");
-		}
-		return v;
-	}(b32));
-	a[12] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:930] null access");
-		}
-		return v;
-	}(a00)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:930] null access");
-		}
-		return v;
-	}(b03)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:930] null access");
-		}
-		return v;
-	}(a01)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:930] null access");
-		}
-		return v;
-	}(b13)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:930] null access");
-		}
-		return v;
-	}(a02)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:930] null access");
-		}
-		return v;
-	}(b23)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:930] null access");
-		}
-		return v;
-	}(a03)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:930] null access");
-		}
-		return v;
-	}(b33));
-	a[13] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:931] null access");
-		}
-		return v;
-	}(a10)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:931] null access");
-		}
-		return v;
-	}(b03)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:931] null access");
-		}
-		return v;
-	}(a11)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:931] null access");
-		}
-		return v;
-	}(b13)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:931] null access");
-		}
-		return v;
-	}(a12)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:931] null access");
-		}
-		return v;
-	}(b23)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:931] null access");
-		}
-		return v;
-	}(a13)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:931] null access");
-		}
-		return v;
-	}(b33));
-	a[14] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:932] null access");
-		}
-		return v;
-	}(a20)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:932] null access");
-		}
-		return v;
-	}(b03)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:932] null access");
-		}
-		return v;
-	}(a21)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:932] null access");
-		}
-		return v;
-	}(b13)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:932] null access");
-		}
-		return v;
-	}(a22)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:932] null access");
-		}
-		return v;
-	}(b23)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:932] null access");
-		}
-		return v;
-	}(a23)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:932] null access");
-		}
-		return v;
-	}(b33));
-	a[15] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:933] null access");
-		}
-		return v;
-	}(a30)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:933] null access");
-		}
-		return v;
-	}(b03)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:933] null access");
-		}
-		return v;
-	}(a31)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:933] null access");
-		}
-		return v;
-	}(b13)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:933] null access");
-		}
-		return v;
-	}(a32)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:933] null access");
-		}
-		return v;
-	}(b23)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:933] null access");
-		}
-		return v;
-	}(a33)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:933] null access");
-		}
-		return v;
-	}(b33));
-	return this;
+	a[0] = a00 * b00 + a01 * b10 + a02 * b20 + a03 * b30;
+	a[1] = a10 * b00 + a11 * b10 + a12 * b20 + a13 * b30;
+	a[2] = a20 * b00 + a21 * b10 + a22 * b20 + a23 * b30;
+	a[3] = a30 * b00 + a31 * b10 + a32 * b20 + a33 * b30;
+	a[4] = a00 * b01 + a01 * b11 + a02 * b21 + a03 * b31;
+	a[5] = a10 * b01 + a11 * b11 + a12 * b21 + a13 * b31;
+	a[6] = a20 * b01 + a21 * b11 + a22 * b21 + a23 * b31;
+	a[7] = a30 * b01 + a31 * b11 + a32 * b21 + a33 * b31;
+	a[8] = a00 * b02 + a01 * b12 + a02 * b22 + a03 * b32;
+	a[9] = a10 * b02 + a11 * b12 + a12 * b22 + a13 * b32;
+	a[10] = a20 * b02 + a21 * b12 + a22 * b22 + a23 * b32;
+	a[11] = a30 * b02 + a31 * b12 + a32 * b22 + a33 * b32;
+	a[12] = a00 * b03 + a01 * b13 + a02 * b23 + a03 * b33;
+	a[13] = a10 * b03 + a11 * b13 + a12 * b23 + a13 * b33;
+	a[14] = a20 * b03 + a21 * b13 + a22 * b23 + a23 * b33;
+	a[15] = a30 * b03 + a31 * b13 + a32 * b23 + a33 * b33;
+	return $this;
 };
 
+var M44$mul$LM44$LM44$LM44$ = M44.mul$LM44$LM44$LM44$;
+
 /**
+ * @param {M44} $this
  * @return {M44}
  */
-M44.prototype.transpose$ = function () {
+M44.transpose$LM44$ = function ($this) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {undefined|!number} */
@@ -7995,7 +5310,7 @@ M44.prototype.transpose$ = function () {
 	var a31;
 	/** @type {undefined|!number} */
 	var a32;
-	a = this.array$();
+	a = $this._;
 	(a10 = a[1], a20 = a[2], a30 = a[3], a21 = a[6], a31 = a[7], a32 = a[11]);
 	a[1] = a[4];
 	a[2] = a[8];
@@ -8009,19 +5324,22 @@ M44.prototype.transpose$ = function () {
 	a[12] = a30;
 	a[13] = a31;
 	a[14] = a32;
-	return this;
+	return $this;
 };
 
+var M44$transpose$LM44$ = M44.transpose$LM44$;
+
 /**
+ * @param {M44} $this
  * @param {M44} m
  * @return {M44}
  */
-M44.prototype.transpose$LM44$ = function (m) {
+M44.transpose$LM44$LM44$ = function ($this, m) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
 	var b;
-	(a = this.array$(), b = m.array$());
+	(a = $this._, b = m._);
 	a[0] = b[0];
 	a[1] = b[4];
 	a[2] = b[8];
@@ -8038,13 +5356,16 @@ M44.prototype.transpose$LM44$ = function (m) {
 	a[13] = b[7];
 	a[14] = b[11];
 	a[15] = b[15];
-	return this;
+	return $this;
 };
 
+var M44$transpose$LM44$LM44$ = M44.transpose$LM44$LM44$;
+
 /**
+ * @param {M44} $this
  * @return {!number}
  */
-M44.prototype.det$ = function () {
+M44.det$LM44$ = function ($this) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {undefined|!number} */
@@ -8079,594 +5400,21 @@ M44.prototype.det$ = function () {
 	var a32;
 	/** @type {undefined|!number} */
 	var a33;
-	a = this.array$();
+	a = $this._;
 	(a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3]);
 	(a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7]);
 	(a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11]);
 	(a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15]);
-	return (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:982] null access");
-		}
-		return v;
-	}(a30)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:982] null access");
-		}
-		return v;
-	}(a21)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:982] null access");
-		}
-		return v;
-	}(a12)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:982] null access");
-		}
-		return v;
-	}(a03)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:982] null access");
-		}
-		return v;
-	}(a20)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:982] null access");
-		}
-		return v;
-	}(a31)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:982] null access");
-		}
-		return v;
-	}(a12)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:982] null access");
-		}
-		return v;
-	}(a03)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:982] null access");
-		}
-		return v;
-	}(a30)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:982] null access");
-		}
-		return v;
-	}(a11)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:982] null access");
-		}
-		return v;
-	}(a22)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:982] null access");
-		}
-		return v;
-	}(a03)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:982] null access");
-		}
-		return v;
-	}(a10)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:982] null access");
-		}
-		return v;
-	}(a31)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:982] null access");
-		}
-		return v;
-	}(a22)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:982] null access");
-		}
-		return v;
-	}(a03)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:983] null access");
-		}
-		return v;
-	}(a20)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:983] null access");
-		}
-		return v;
-	}(a11)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:983] null access");
-		}
-		return v;
-	}(a32)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:983] null access");
-		}
-		return v;
-	}(a03)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:983] null access");
-		}
-		return v;
-	}(a10)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:983] null access");
-		}
-		return v;
-	}(a21)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:983] null access");
-		}
-		return v;
-	}(a32)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:983] null access");
-		}
-		return v;
-	}(a03)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:983] null access");
-		}
-		return v;
-	}(a30)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:983] null access");
-		}
-		return v;
-	}(a21)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:983] null access");
-		}
-		return v;
-	}(a02)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:983] null access");
-		}
-		return v;
-	}(a13)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:983] null access");
-		}
-		return v;
-	}(a20)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:983] null access");
-		}
-		return v;
-	}(a31)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:983] null access");
-		}
-		return v;
-	}(a02)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:983] null access");
-		}
-		return v;
-	}(a13)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:984] null access");
-		}
-		return v;
-	}(a30)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:984] null access");
-		}
-		return v;
-	}(a01)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:984] null access");
-		}
-		return v;
-	}(a22)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:984] null access");
-		}
-		return v;
-	}(a13)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:984] null access");
-		}
-		return v;
-	}(a00)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:984] null access");
-		}
-		return v;
-	}(a31)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:984] null access");
-		}
-		return v;
-	}(a22)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:984] null access");
-		}
-		return v;
-	}(a13)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:984] null access");
-		}
-		return v;
-	}(a20)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:984] null access");
-		}
-		return v;
-	}(a01)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:984] null access");
-		}
-		return v;
-	}(a32)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:984] null access");
-		}
-		return v;
-	}(a13)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:984] null access");
-		}
-		return v;
-	}(a00)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:984] null access");
-		}
-		return v;
-	}(a21)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:984] null access");
-		}
-		return v;
-	}(a32)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:984] null access");
-		}
-		return v;
-	}(a13)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:985] null access");
-		}
-		return v;
-	}(a30)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:985] null access");
-		}
-		return v;
-	}(a11)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:985] null access");
-		}
-		return v;
-	}(a02)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:985] null access");
-		}
-		return v;
-	}(a23)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:985] null access");
-		}
-		return v;
-	}(a10)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:985] null access");
-		}
-		return v;
-	}(a31)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:985] null access");
-		}
-		return v;
-	}(a02)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:985] null access");
-		}
-		return v;
-	}(a23)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:985] null access");
-		}
-		return v;
-	}(a30)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:985] null access");
-		}
-		return v;
-	}(a01)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:985] null access");
-		}
-		return v;
-	}(a12)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:985] null access");
-		}
-		return v;
-	}(a23)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:985] null access");
-		}
-		return v;
-	}(a00)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:985] null access");
-		}
-		return v;
-	}(a31)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:985] null access");
-		}
-		return v;
-	}(a12)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:985] null access");
-		}
-		return v;
-	}(a23)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:986] null access");
-		}
-		return v;
-	}(a10)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:986] null access");
-		}
-		return v;
-	}(a01)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:986] null access");
-		}
-		return v;
-	}(a32)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:986] null access");
-		}
-		return v;
-	}(a23)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:986] null access");
-		}
-		return v;
-	}(a00)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:986] null access");
-		}
-		return v;
-	}(a11)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:986] null access");
-		}
-		return v;
-	}(a32)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:986] null access");
-		}
-		return v;
-	}(a23)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:986] null access");
-		}
-		return v;
-	}(a20)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:986] null access");
-		}
-		return v;
-	}(a11)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:986] null access");
-		}
-		return v;
-	}(a02)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:986] null access");
-		}
-		return v;
-	}(a33)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:986] null access");
-		}
-		return v;
-	}(a10)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:986] null access");
-		}
-		return v;
-	}(a21)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:986] null access");
-		}
-		return v;
-	}(a02)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:986] null access");
-		}
-		return v;
-	}(a33)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:987] null access");
-		}
-		return v;
-	}(a20)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:987] null access");
-		}
-		return v;
-	}(a01)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:987] null access");
-		}
-		return v;
-	}(a12)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:987] null access");
-		}
-		return v;
-	}(a33)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:987] null access");
-		}
-		return v;
-	}(a00)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:987] null access");
-		}
-		return v;
-	}(a21)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:987] null access");
-		}
-		return v;
-	}(a12)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:987] null access");
-		}
-		return v;
-	}(a33)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:987] null access");
-		}
-		return v;
-	}(a10)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:987] null access");
-		}
-		return v;
-	}(a01)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:987] null access");
-		}
-		return v;
-	}(a22)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:987] null access");
-		}
-		return v;
-	}(a33)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:987] null access");
-		}
-		return v;
-	}(a00)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:987] null access");
-		}
-		return v;
-	}(a11)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:987] null access");
-		}
-		return v;
-	}(a22)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:987] null access");
-		}
-		return v;
-	}(a33));
+	return a30 * a21 * a12 * a03 - a20 * a31 * a12 * a03 - a30 * a11 * a22 * a03 + a10 * a31 * a22 * a03 + a20 * a11 * a32 * a03 - a10 * a21 * a32 * a03 - a30 * a21 * a02 * a13 + a20 * a31 * a02 * a13 + a30 * a01 * a22 * a13 - a00 * a31 * a22 * a13 - a20 * a01 * a32 * a13 + a00 * a21 * a32 * a13 + a30 * a11 * a02 * a23 - a10 * a31 * a02 * a23 - a30 * a01 * a12 * a23 + a00 * a31 * a12 * a23 + a10 * a01 * a32 * a23 - a00 * a11 * a32 * a23 - a20 * a11 * a02 * a33 + a10 * a21 * a02 * a33 + a20 * a01 * a12 * a33 - a00 * a21 * a12 * a33 - a10 * a01 * a22 * a33 + a00 * a11 * a22 * a33;
 };
 
+var M44$det$LM44$ = M44.det$LM44$;
+
 /**
+ * @param {M44} $this
  * @return {M44}
  */
-M44.prototype.inverse$ = function () {
+M44.inverse$LM44$ = function ($this) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {undefined|!number} */
@@ -8729,762 +5477,160 @@ M44.prototype.inverse$ = function () {
 	var d;
 	/** @type {!number} */
 	var invDet;
-	a = this.array$();
+	a = $this._;
 	(a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3], a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7], a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11], a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15]);
-	(b00 = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:998] null access");
-		}
-		return v;
-	}(a00)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:998] null access");
-		}
-		return v;
-	}(a11)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:998] null access");
-		}
-		return v;
-	}(a01)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:998] null access");
-		}
-		return v;
-	}(a10)), b01 = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:999] null access");
-		}
-		return v;
-	}(a00)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:999] null access");
-		}
-		return v;
-	}(a12)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:999] null access");
-		}
-		return v;
-	}(a02)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:999] null access");
-		}
-		return v;
-	}(a10)), b02 = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1000] null access");
-		}
-		return v;
-	}(a00)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1000] null access");
-		}
-		return v;
-	}(a13)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1000] null access");
-		}
-		return v;
-	}(a03)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1000] null access");
-		}
-		return v;
-	}(a10)), b03 = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1001] null access");
-		}
-		return v;
-	}(a01)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1001] null access");
-		}
-		return v;
-	}(a12)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1001] null access");
-		}
-		return v;
-	}(a02)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1001] null access");
-		}
-		return v;
-	}(a11)), b04 = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1002] null access");
-		}
-		return v;
-	}(a01)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1002] null access");
-		}
-		return v;
-	}(a13)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1002] null access");
-		}
-		return v;
-	}(a03)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1002] null access");
-		}
-		return v;
-	}(a11)), b05 = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1003] null access");
-		}
-		return v;
-	}(a02)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1003] null access");
-		}
-		return v;
-	}(a13)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1003] null access");
-		}
-		return v;
-	}(a03)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1003] null access");
-		}
-		return v;
-	}(a12)), b06 = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1004] null access");
-		}
-		return v;
-	}(a20)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1004] null access");
-		}
-		return v;
-	}(a31)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1004] null access");
-		}
-		return v;
-	}(a21)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1004] null access");
-		}
-		return v;
-	}(a30)), b07 = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1005] null access");
-		}
-		return v;
-	}(a20)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1005] null access");
-		}
-		return v;
-	}(a32)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1005] null access");
-		}
-		return v;
-	}(a22)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1005] null access");
-		}
-		return v;
-	}(a30)), b08 = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1006] null access");
-		}
-		return v;
-	}(a20)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1006] null access");
-		}
-		return v;
-	}(a33)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1006] null access");
-		}
-		return v;
-	}(a23)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1006] null access");
-		}
-		return v;
-	}(a30)), b09 = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1007] null access");
-		}
-		return v;
-	}(a21)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1007] null access");
-		}
-		return v;
-	}(a32)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1007] null access");
-		}
-		return v;
-	}(a22)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1007] null access");
-		}
-		return v;
-	}(a31)), b10 = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1008] null access");
-		}
-		return v;
-	}(a21)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1008] null access");
-		}
-		return v;
-	}(a33)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1008] null access");
-		}
-		return v;
-	}(a23)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1008] null access");
-		}
-		return v;
-	}(a31)), b11 = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1009] null access");
-		}
-		return v;
-	}(a22)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1009] null access");
-		}
-		return v;
-	}(a33)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1009] null access");
-		}
-		return v;
-	}(a23)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1009] null access");
-		}
-		return v;
-	}(a32)));
+	(b00 = a00 * a11 - a01 * a10, b01 = a00 * a12 - a02 * a10, b02 = a00 * a13 - a03 * a10, b03 = a01 * a12 - a02 * a11, b04 = a01 * a13 - a03 * a11, b05 = a02 * a13 - a03 * a12, b06 = a20 * a31 - a21 * a30, b07 = a20 * a32 - a22 * a30, b08 = a20 * a33 - a23 * a30, b09 = a21 * a32 - a22 * a31, b10 = a21 * a33 - a23 * a31, b11 = a22 * a33 - a23 * a32);
 	d = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
 	if (d === 0) {
 		return null;
 	}
 	invDet = 1 / d;
-	a[0] = ((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1016] null access");
-		}
-		return v;
-	}(a11)) * b11 - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1016] null access");
-		}
-		return v;
-	}(a12)) * b10 + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1016] null access");
-		}
-		return v;
-	}(a13)) * b09) * invDet;
-	a[1] = (- a01 * b11 + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1017] null access");
-		}
-		return v;
-	}(a02)) * b10 - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1017] null access");
-		}
-		return v;
-	}(a03)) * b09) * invDet;
-	a[2] = ((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1018] null access");
-		}
-		return v;
-	}(a31)) * b05 - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1018] null access");
-		}
-		return v;
-	}(a32)) * b04 + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1018] null access");
-		}
-		return v;
-	}(a33)) * b03) * invDet;
-	a[3] = (- a21 * b05 + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1019] null access");
-		}
-		return v;
-	}(a22)) * b04 - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1019] null access");
-		}
-		return v;
-	}(a23)) * b03) * invDet;
-	a[4] = (- a10 * b11 + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1020] null access");
-		}
-		return v;
-	}(a12)) * b08 - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1020] null access");
-		}
-		return v;
-	}(a13)) * b07) * invDet;
-	a[5] = ((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1021] null access");
-		}
-		return v;
-	}(a00)) * b11 - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1021] null access");
-		}
-		return v;
-	}(a02)) * b08 + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1021] null access");
-		}
-		return v;
-	}(a03)) * b07) * invDet;
-	a[6] = (- a30 * b05 + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1022] null access");
-		}
-		return v;
-	}(a32)) * b02 - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1022] null access");
-		}
-		return v;
-	}(a33)) * b01) * invDet;
-	a[7] = ((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1023] null access");
-		}
-		return v;
-	}(a20)) * b05 - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1023] null access");
-		}
-		return v;
-	}(a22)) * b02 + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1023] null access");
-		}
-		return v;
-	}(a23)) * b01) * invDet;
-	a[8] = ((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1024] null access");
-		}
-		return v;
-	}(a10)) * b10 - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1024] null access");
-		}
-		return v;
-	}(a11)) * b08 + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1024] null access");
-		}
-		return v;
-	}(a13)) * b06) * invDet;
-	a[9] = (- a00 * b10 + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1025] null access");
-		}
-		return v;
-	}(a01)) * b08 - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1025] null access");
-		}
-		return v;
-	}(a03)) * b06) * invDet;
-	a[10] = ((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1026] null access");
-		}
-		return v;
-	}(a30)) * b04 - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1026] null access");
-		}
-		return v;
-	}(a31)) * b02 + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1026] null access");
-		}
-		return v;
-	}(a33)) * b00) * invDet;
-	a[11] = (- a20 * b04 + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1027] null access");
-		}
-		return v;
-	}(a21)) * b02 - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1027] null access");
-		}
-		return v;
-	}(a23)) * b00) * invDet;
-	a[12] = (- a10 * b09 + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1028] null access");
-		}
-		return v;
-	}(a11)) * b07 - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1028] null access");
-		}
-		return v;
-	}(a12)) * b06) * invDet;
-	a[13] = ((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1029] null access");
-		}
-		return v;
-	}(a00)) * b09 - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1029] null access");
-		}
-		return v;
-	}(a01)) * b07 + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1029] null access");
-		}
-		return v;
-	}(a02)) * b06) * invDet;
-	a[14] = (- a30 * b03 + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1030] null access");
-		}
-		return v;
-	}(a31)) * b01 - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1030] null access");
-		}
-		return v;
-	}(a32)) * b00) * invDet;
-	a[15] = ((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1031] null access");
-		}
-		return v;
-	}(a20)) * b03 - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1031] null access");
-		}
-		return v;
-	}(a21)) * b01 + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1031] null access");
-		}
-		return v;
-	}(a22)) * b00) * invDet;
-	return this;
+	a[0] = (a11 * b11 - a12 * b10 + a13 * b09) * invDet;
+	a[1] = (- a01 * b11 + a02 * b10 - a03 * b09) * invDet;
+	a[2] = (a31 * b05 - a32 * b04 + a33 * b03) * invDet;
+	a[3] = (- a21 * b05 + a22 * b04 - a23 * b03) * invDet;
+	a[4] = (- a10 * b11 + a12 * b08 - a13 * b07) * invDet;
+	a[5] = (a00 * b11 - a02 * b08 + a03 * b07) * invDet;
+	a[6] = (- a30 * b05 + a32 * b02 - a33 * b01) * invDet;
+	a[7] = (a20 * b05 - a22 * b02 + a23 * b01) * invDet;
+	a[8] = (a10 * b10 - a11 * b08 + a13 * b06) * invDet;
+	a[9] = (- a00 * b10 + a01 * b08 - a03 * b06) * invDet;
+	a[10] = (a30 * b04 - a31 * b02 + a33 * b00) * invDet;
+	a[11] = (- a20 * b04 + a21 * b02 - a23 * b00) * invDet;
+	a[12] = (- a10 * b09 + a11 * b07 - a12 * b06) * invDet;
+	a[13] = (a00 * b09 - a01 * b07 + a02 * b06) * invDet;
+	a[14] = (- a30 * b03 + a31 * b01 - a32 * b00) * invDet;
+	a[15] = (a20 * b03 - a21 * b01 + a22 * b00) * invDet;
+	return $this;
 };
 
+var M44$inverse$LM44$ = M44.inverse$LM44$;
+
 /**
+ * @param {M44} $this
  * @param {!number} x
  * @param {!number} y
  * @param {!number} z
  * @return {M44}
  */
-M44.prototype.setTranslate$NNN = function (x, y, z) {
-	this.setIdentity$();
-	this._[12] = x;
-	this._[13] = y;
-	this._[14] = z;
-	return this;
+M44.setTranslate$LM44$NNN = function ($this, x, y, z) {
+	M44$setIdentity$LM44$($this);
+	$this._[12] = x;
+	$this._[13] = y;
+	$this._[14] = z;
+	return $this;
 };
 
+var M44$setTranslate$LM44$NNN = M44.setTranslate$LM44$NNN;
+
 /**
+ * @param {M44} $this
  * @param {V3} v
  * @return {M44}
  */
-M44.prototype.setTranslate$LV3$ = function (v) {
-	return this.setTranslate$NNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1043] null access");
-		}
-		return v;
-	}(v._[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1043] null access");
-		}
-		return v;
-	}(v._[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1043] null access");
-		}
-		return v;
-	}(v._[2])));
+M44.setTranslate$LM44$LV3$ = function ($this, v) {
+	/** @type {Float32Array} */
+	var _$0;
+	return M44$setTranslate$LM44$NNN($this, (_$0 = v._)[0], _$0[1], _$0[2]);
 };
 
+var M44$setTranslate$LM44$LV3$ = M44.setTranslate$LM44$LV3$;
+
 /**
+ * @param {M44} $this
  * @param {Array.<undefined|!number>} v
  * @return {M44}
  */
-M44.prototype.setTranslate$AN = function (v) {
-	return this.setTranslate$NNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1044] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1044] null access");
-		}
-		return v;
-	}(v[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1044] null access");
-		}
-		return v;
-	}(v[2])));
+M44.setTranslate$LM44$AN = function ($this, v) {
+	return M44$setTranslate$LM44$NNN($this, v[0], v[1], v[2]);
 };
 
+var M44$setTranslate$LM44$AN = M44.setTranslate$LM44$AN;
+
 /**
+ * @param {M44} $this
  * @param {Float32Array} v
  * @return {M44}
  */
-M44.prototype.setTranslate$LFloat32Array$ = function (v) {
-	return this.setTranslate$NNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1045] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1045] null access");
-		}
-		return v;
-	}(v[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1045] null access");
-		}
-		return v;
-	}(v[2])));
+M44.setTranslate$LM44$LFloat32Array$ = function ($this, v) {
+	return M44$setTranslate$LM44$NNN($this, v[0], v[1], v[2]);
 };
 
+var M44$setTranslate$LM44$LFloat32Array$ = M44.setTranslate$LM44$LFloat32Array$;
+
 /**
+ * @param {M44} $this
  * @param {!number} s
  * @return {M44}
  */
-M44.prototype.setScale$N = function (s) {
-	return this.setScale$NNN(s, s, s);
+M44.setScale$LM44$N = function ($this, s) {
+	return M44$setScale$LM44$NNN($this, s, s, s);
 };
 
+var M44$setScale$LM44$N = M44.setScale$LM44$N;
+
 /**
+ * @param {M44} $this
  * @param {!number} x
  * @param {!number} y
  * @param {!number} z
  * @return {M44}
  */
-M44.prototype.setScale$NNN = function (x, y, z) {
-	this.setZero$();
-	this._[0] = x;
-	this._[5] = y;
-	this._[10] = z;
-	this._[15] = 1;
-	return this;
+M44.setScale$LM44$NNN = function ($this, x, y, z) {
+	M44$setZero$LM44$($this);
+	$this._[0] = x;
+	$this._[5] = y;
+	$this._[10] = z;
+	$this._[15] = 1;
+	return $this;
 };
 
+var M44$setScale$LM44$NNN = M44.setScale$LM44$NNN;
+
 /**
+ * @param {M44} $this
  * @param {V3} v
  * @return {M44}
  */
-M44.prototype.setScale$LV3$ = function (v) {
-	return this.setScale$NNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1056] null access");
-		}
-		return v;
-	}(v._[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1056] null access");
-		}
-		return v;
-	}(v._[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1056] null access");
-		}
-		return v;
-	}(v._[2])));
+M44.setScale$LM44$LV3$ = function ($this, v) {
+	/** @type {Float32Array} */
+	var _$0;
+	return M44$setScale$LM44$NNN($this, (_$0 = v._)[0], _$0[1], _$0[2]);
 };
 
+var M44$setScale$LM44$LV3$ = M44.setScale$LM44$LV3$;
+
 /**
+ * @param {M44} $this
  * @param {Array.<undefined|!number>} v
  * @return {M44}
  */
-M44.prototype.setScale$AN = function (v) {
-	return this.setScale$NNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1057] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1057] null access");
-		}
-		return v;
-	}(v[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1057] null access");
-		}
-		return v;
-	}(v[2])));
+M44.setScale$LM44$AN = function ($this, v) {
+	return M44$setScale$LM44$NNN($this, v[0], v[1], v[2]);
 };
 
+var M44$setScale$LM44$AN = M44.setScale$LM44$AN;
+
 /**
+ * @param {M44} $this
  * @param {Float32Array} v
  * @return {M44}
  */
-M44.prototype.setScale$LFloat32Array$ = function (v) {
-	return this.setScale$NNN((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1058] null access");
-		}
-		return v;
-	}(v[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1058] null access");
-		}
-		return v;
-	}(v[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1058] null access");
-		}
-		return v;
-	}(v[2])));
+M44.setScale$LM44$LFloat32Array$ = function ($this, v) {
+	return M44$setScale$LM44$NNN($this, v[0], v[1], v[2]);
 };
 
+var M44$setScale$LM44$LFloat32Array$ = M44.setScale$LM44$LFloat32Array$;
+
 /**
+ * @param {M44} $this
  * @param {!number} rad
  * @param {!number} x
  * @param {!number} y
  * @param {!number} z
  * @return {M44}
  */
-M44.prototype.setRotate$NNNN = function (rad, x, y, z) {
+M44.setRotate$LM44$NNNN = function ($this, rad, x, y, z) {
 	/** @type {!number} */
 	var l;
 	/** @type {!number} */
@@ -9505,7 +5651,7 @@ M44.prototype.setRotate$NNNN = function (rad, x, y, z) {
 	x *= il;
 	y *= il;
 	z *= il;
-	a = this.array$();
+	a = $this._;
 	(c = Math.cos(rad), s = Math.sin(rad));
 	_c = 1 - c;
 	a[0] = x * x * _c + c;
@@ -9519,115 +5665,84 @@ M44.prototype.setRotate$NNNN = function (rad, x, y, z) {
 	a[10] = z * z * _c + c;
 	a[3] = a[7] = a[11] = a[12] = a[13] = a[14] = 0;
 	a[15] = 1;
-	return this;
+	return $this;
 };
 
+var M44$setRotate$LM44$NNNN = M44.setRotate$LM44$NNNN;
+
 /**
+ * @param {M44} $this
  * @param {!number} rad
  * @param {V3} a
  * @return {M44}
  */
-M44.prototype.setRotate$NLV3$ = function (rad, a) {
-	return this.setRotate$NNNN(rad, (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1083] null access");
-		}
-		return v;
-	}(a._[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1083] null access");
-		}
-		return v;
-	}(a._[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1083] null access");
-		}
-		return v;
-	}(a._[2])));
+M44.setRotate$LM44$NLV3$ = function ($this, rad, a) {
+	/** @type {Float32Array} */
+	var _$0;
+	return M44$setRotate$LM44$NNNN($this, rad, (_$0 = a._)[0], _$0[1], _$0[2]);
 };
 
+var M44$setRotate$LM44$NLV3$ = M44.setRotate$LM44$NLV3$;
+
 /**
+ * @param {M44} $this
  * @param {!number} rad
  * @param {Array.<undefined|!number>} a
  * @return {M44}
  */
-M44.prototype.setRotate$NAN = function (rad, a) {
-	return this.setRotate$NNNN(rad, (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1084] null access");
-		}
-		return v;
-	}(a[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1084] null access");
-		}
-		return v;
-	}(a[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1084] null access");
-		}
-		return v;
-	}(a[2])));
+M44.setRotate$LM44$NAN = function ($this, rad, a) {
+	return M44$setRotate$LM44$NNNN($this, rad, a[0], a[1], a[2]);
 };
 
+var M44$setRotate$LM44$NAN = M44.setRotate$LM44$NAN;
+
 /**
+ * @param {M44} $this
  * @param {!number} rad
  * @param {Float32Array} a
  * @return {M44}
  */
-M44.prototype.setRotate$NLFloat32Array$ = function (rad, a) {
-	return this.setRotate$NNNN(rad, (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1085] null access");
-		}
-		return v;
-	}(a[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1085] null access");
-		}
-		return v;
-	}(a[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1085] null access");
-		}
-		return v;
-	}(a[2])));
+M44.setRotate$LM44$NLFloat32Array$ = function ($this, rad, a) {
+	return M44$setRotate$LM44$NNNN($this, rad, a[0], a[1], a[2]);
 };
 
+var M44$setRotate$LM44$NLFloat32Array$ = M44.setRotate$LM44$NLFloat32Array$;
+
 /**
+ * @param {M44} $this
  * @param {!number} rad
  * @return {M44}
  */
-M44.prototype.setRotateX$N = function (rad) {
-	return this.setRotate$NNNN(rad, 1, 0, 0);
+M44.setRotateX$LM44$N = function ($this, rad) {
+	return M44$setRotate$LM44$NNNN($this, rad, 1, 0, 0);
 };
 
+var M44$setRotateX$LM44$N = M44.setRotateX$LM44$N;
+
 /**
+ * @param {M44} $this
  * @param {!number} rad
  * @return {M44}
  */
-M44.prototype.setRotateY$N = function (rad) {
-	return this.setRotate$NNNN(rad, 0, 1, 0);
+M44.setRotateY$LM44$N = function ($this, rad) {
+	return M44$setRotate$LM44$NNNN($this, rad, 0, 1, 0);
 };
 
+var M44$setRotateY$LM44$N = M44.setRotateY$LM44$N;
+
 /**
+ * @param {M44} $this
  * @param {!number} rad
  * @return {M44}
  */
-M44.prototype.setRotateZ$N = function (rad) {
-	return this.setRotate$NNNN(rad, 0, 0, 1);
+M44.setRotateZ$LM44$N = function ($this, rad) {
+	return M44$setRotate$LM44$NNNN($this, rad, 0, 0, 1);
 };
 
+var M44$setRotateZ$LM44$N = M44.setRotateZ$LM44$N;
+
 /**
+ * @param {M44} $this
  * @param {!number} l
  * @param {!number} r
  * @param {!number} b
@@ -9636,7 +5751,7 @@ M44.prototype.setRotateZ$N = function (rad) {
  * @param {!number} f
  * @return {M44}
  */
-M44.prototype.setFrustum$NNNNNN = function (l, r, b, t, n, f) {
+M44.setFrustum$LM44$NNNNNN = function ($this, l, r, b, t, n, f) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {!number} */
@@ -9645,20 +5760,23 @@ M44.prototype.setFrustum$NNNNNN = function (l, r, b, t, n, f) {
 	var tb;
 	/** @type {!number} */
 	var fn;
-	a = this.array$();
+	a = $this._;
 	(rl = r - l, tb = t - b, fn = f - n);
 	a[0] = 2 * n / rl;
 	a[5] = 2 * n / tb;
 	a[8] = (r + l) / rl;
 	a[9] = (t + b) / tb;
 	a[10] = - (f + n) / fn;
-	a[11] = - 1;
-	a[14] = - 2 * f * n / fn;
+	a[11] = -1;
+	a[14] = -2 * f * n / fn;
 	a[1] = a[2] = a[3] = a[4] = a[6] = a[7] = a[12] = a[13] = a[15] = 0;
-	return this;
+	return $this;
 };
 
+var M44$setFrustum$LM44$NNNNNN = M44.setFrustum$LM44$NNNNNN;
+
 /**
+ * @param {M44} $this
  * @param {!number} l
  * @param {!number} r
  * @param {!number} b
@@ -9667,7 +5785,7 @@ M44.prototype.setFrustum$NNNNNN = function (l, r, b, t, n, f) {
  * @param {!number} f
  * @return {M44}
  */
-M44.prototype.setOrtho$NNNNNN = function (l, r, b, t, n, f) {
+M44.setOrtho$LM44$NNNNNN = function ($this, l, r, b, t, n, f) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {!number} */
@@ -9676,33 +5794,34 @@ M44.prototype.setOrtho$NNNNNN = function (l, r, b, t, n, f) {
 	var tb;
 	/** @type {!number} */
 	var fn;
-	a = this.array$();
+	a = $this._;
 	(rl = r - l, tb = t - b, fn = f - n);
 	a[0] = 2 / rl;
 	a[5] = 2 / tb;
-	a[10] = - 2 / fn;
+	a[10] = -2 / fn;
 	a[12] = - (r + l) / rl;
 	a[13] = - (t + b) / tb;
 	a[14] = - (f + n) / fn;
 	a[1] = a[2] = a[3] = a[4] = a[6] = a[7] = a[8] = a[9] = a[11] = 0;
 	a[15] = 1;
-	return this;
+	return $this;
 };
 
+var M44$setOrtho$LM44$NNNNNN = M44.setOrtho$LM44$NNNNNN;
+
 /**
+ * @param {M44} $this
  * @return {M44}
  */
-M44.prototype.dump$ = function () {
-	/** @type {Float32Array} */
-	var a;
+M44.dump$LM44$ = function ($this) {
 	/** @type {!number} */
 	var i;
-	a = this.array$();
 	for (i = 0; i < 4; ++ i) {
-		console.log(a[i].toString() + ', ' + a[i + 4].toString() + ', ' + a[i + 8].toString() + ', ' + a[i + 12].toString());
 	}
-	return this;
+	return $this;
 };
+
+var M44$dump$LM44$ = M44.dump$LM44$;
 
 /**
  * class Quat extends Object
@@ -9716,7 +5835,7 @@ Quat.prototype = new Object;
  * @constructor
  */
 function Quat$() {
-	this._ = new Float32Array(Quat.ELEMS);
+	this._ = new Float32Array(4);
 };
 
 Quat$.prototype = new Quat;
@@ -9726,8 +5845,10 @@ Quat$.prototype = new Quat;
  * @param {Quat} q
  */
 function Quat$LQuat$(q) {
-	this._ = new Float32Array(Quat.ELEMS);
-	this.set$LQuat$(q);
+	/** @type {Float32Array} */
+	var _$0;
+	_$0 = this._ = new Float32Array(4);
+	_$0.set(q._);
 };
 
 Quat$LQuat$.prototype = new Quat;
@@ -9737,8 +5858,10 @@ Quat$LQuat$.prototype = new Quat;
  * @param {Array.<undefined|!number>} q
  */
 function Quat$AN(q) {
-	this._ = new Float32Array(Quat.ELEMS);
-	this.set$AN(q);
+	/** @type {Float32Array} */
+	var _$0;
+	_$0 = this._ = new Float32Array(4);
+	_$0.set(q);
 };
 
 Quat$AN.prototype = new Quat;
@@ -9748,8 +5871,10 @@ Quat$AN.prototype = new Quat;
  * @param {Float32Array} q
  */
 function Quat$LFloat32Array$(q) {
-	this._ = new Float32Array(Quat.ELEMS);
-	this.set$LFloat32Array$(q);
+	/** @type {Float32Array} */
+	var _$0;
+	_$0 = this._ = new Float32Array(4);
+	_$0.set(q);
 };
 
 Quat$LFloat32Array$.prototype = new Quat;
@@ -9762,123 +5887,138 @@ Quat$LFloat32Array$.prototype = new Quat;
  * @param {!number} z
  */
 function Quat$NNNN(w, x, y, z) {
-	this._ = new Float32Array(Quat.ELEMS);
-	this.set$NNNN(w, x, y, z);
+	this._ = new Float32Array(4);
+	Quat$set$LQuat$NNNN(this, w, x, y, z);
 };
 
 Quat$NNNN.prototype = new Quat;
 
 /**
+ * @param {Quat} $this
  * @return {Float32Array}
  */
-Quat.prototype.array$ = function () {
-	return this._;
+Quat.array$LQuat$ = function ($this) {
+	return $this._;
 };
 
+var Quat$array$LQuat$ = Quat.array$LQuat$;
+
 /**
+ * @param {Quat} $this
  * @return {Quat}
  */
-Quat.prototype.clone$ = function () {
-	return new Quat$LQuat$(this);
+Quat.clone$LQuat$ = function ($this) {
+	return new Quat$LQuat$($this);
 };
 
+var Quat$clone$LQuat$ = Quat.clone$LQuat$;
+
 /**
+ * @param {Quat} $this
  * @return {Quat}
  */
-Quat.prototype.setZero$ = function () {
-	return this.set$NNNN(0, 0, 0, 0);
+Quat.setZero$LQuat$ = function ($this) {
+	return Quat$set$LQuat$NNNN($this, 0, 0, 0, 0);
 };
 
+var Quat$setZero$LQuat$ = Quat.setZero$LQuat$;
+
 /**
+ * @param {Quat} $this
  * @return {Quat}
  */
-Quat.prototype.setIdentity$ = function () {
-	return this.set$NNNN(1, 0, 0, 0);
+Quat.setIdentity$LQuat$ = function ($this) {
+	return Quat$set$LQuat$NNNN($this, 1, 0, 0, 0);
 };
 
+var Quat$setIdentity$LQuat$ = Quat.setIdentity$LQuat$;
+
 /**
+ * @param {Quat} $this
  * @param {!number} w
  * @param {!number} x
  * @param {!number} y
  * @param {!number} z
  * @return {Quat}
  */
-Quat.prototype.set$NNNN = function (w, x, y, z) {
-	this._[0] = w;
-	this._[1] = x;
-	this._[2] = y;
-	this._[3] = z;
-	return this;
+Quat.set$LQuat$NNNN = function ($this, w, x, y, z) {
+	$this._[0] = w;
+	$this._[1] = x;
+	$this._[2] = y;
+	$this._[3] = z;
+	return $this;
 };
 
+var Quat$set$LQuat$NNNN = Quat.set$LQuat$NNNN;
+
 /**
+ * @param {Quat} $this
  * @param {Quat} q
  * @return {Quat}
  */
-Quat.prototype.set$LQuat$ = function (q) {
-	this._.set(q._);
-	return this;
+Quat.set$LQuat$LQuat$ = function ($this, q) {
+	$this._.set(q._);
+	return $this;
 };
 
+var Quat$set$LQuat$LQuat$ = Quat.set$LQuat$LQuat$;
+
 /**
+ * @param {Quat} $this
  * @param {Array.<undefined|!number>} q
  * @return {Quat}
  */
-Quat.prototype.set$AN = function (q) {
-	this._.set(q);
-	return this;
+Quat.set$LQuat$AN = function ($this, q) {
+	$this._.set(q);
+	return $this;
 };
 
+var Quat$set$LQuat$AN = Quat.set$LQuat$AN;
+
 /**
+ * @param {Quat} $this
  * @param {Float32Array} q
  * @return {Quat}
  */
-Quat.prototype.set$LFloat32Array$ = function (q) {
-	this._.set(q);
-	return this;
+Quat.set$LQuat$LFloat32Array$ = function ($this, q) {
+	$this._.set(q);
+	return $this;
 };
 
+var Quat$set$LQuat$LFloat32Array$ = Quat.set$LQuat$LFloat32Array$;
+
 /**
+ * @param {Quat} $this
  * @param {!number} w
  * @param {V3} v
  * @return {Quat}
  */
-Quat.prototype.set$NLV3$ = function (w, v) {
-	return this.set$NNNN(w, (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1153] null access");
-		}
-		return v;
-	}(v._[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1153] null access");
-		}
-		return v;
-	}(v._[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1153] null access");
-		}
-		return v;
-	}(v._[2])));
+Quat.set$LQuat$NLV3$ = function ($this, w, v) {
+	/** @type {Float32Array} */
+	var _$0;
+	return Quat$set$LQuat$NNNN($this, w, (_$0 = v._)[0], _$0[1], _$0[2]);
 };
 
+var Quat$set$LQuat$NLV3$ = Quat.set$LQuat$NLV3$;
+
 /**
+ * @param {Quat} $this
  * @param {Quat} q
  * @return {!boolean}
  */
-Quat.prototype.equals$LQuat$ = function (q) {
-	return this.equals$LQuat$N(q, MVQ.EQUAL_EPSILON);
+Quat.equals$LQuat$LQuat$ = function ($this, q) {
+	return Quat$equals$LQuat$LQuat$N($this, q, 0.000001);
 };
 
+var Quat$equals$LQuat$LQuat$ = Quat.equals$LQuat$LQuat$;
+
 /**
+ * @param {Quat} $this
  * @param {Quat} q
  * @param {!number} eps
  * @return {!boolean}
  */
-Quat.prototype.equals$LQuat$N = function (q, eps) {
+Quat.equals$LQuat$LQuat$N = function ($this, q, eps) {
 	var $math_abs_t;
 	/** @type {Float32Array} */
 	var a;
@@ -9886,87 +6026,37 @@ Quat.prototype.equals$LQuat$N = function (q, eps) {
 	var b;
 	/** @type {!number} */
 	var i;
-	(a = this.array$(), b = q.array$());
-	for (i = 0; i < Quat.ELEMS; ++ i) {
-		if ((($math_abs_t = (function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[mvq.jsx:1160] null access");
-			}
-			return v;
-		}(b[i])) - (function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[mvq.jsx:1160] null access");
-			}
-			return v;
-		}(a[i]))) >= 0 ? $math_abs_t : -$math_abs_t) >= eps) {
+	(a = $this._, b = q._);
+	for (i = 0; i < 4; ++ i) {
+		if ((($math_abs_t = b[i] - a[i]) >= 0 ? $math_abs_t : -$math_abs_t) >= eps) {
 			return false;
 		}
 	}
 	return true;
 };
 
+var Quat$equals$LQuat$LQuat$N = Quat.equals$LQuat$LQuat$N;
+
 /**
+ * @param {Quat} $this
  * @param {Quat} q
  * @return {!number}
  */
-Quat.prototype.dot$LQuat$ = function (q) {
-	return (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1165] null access");
-		}
-		return v;
-	}(this._[0])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1165] null access");
-		}
-		return v;
-	}(q._[0])) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1165] null access");
-		}
-		return v;
-	}(this._[1])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1165] null access");
-		}
-		return v;
-	}(q._[1])) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1165] null access");
-		}
-		return v;
-	}(this._[2])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1165] null access");
-		}
-		return v;
-	}(q._[2])) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1165] null access");
-		}
-		return v;
-	}(this._[3])) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1165] null access");
-		}
-		return v;
-	}(q._[3]));
+Quat.dot$LQuat$LQuat$ = function ($this, q) {
+	/** @type {Float32Array} */
+	var _$0;
+	/** @type {Float32Array} */
+	var _$1;
+	return (_$0 = $this._)[0] * (_$1 = q._)[0] + _$0[1] * _$1[1] + _$0[2] * _$1[2] + _$0[3] * _$1[3];
 };
 
+var Quat$dot$LQuat$LQuat$ = Quat.dot$LQuat$LQuat$;
+
 /**
+ * @param {Quat} $this
  * @return {Quat}
  */
-Quat.prototype.inverse$ = function () {
+Quat.inverse$LQuat$ = function ($this) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {undefined|!number} */
@@ -9981,57 +6071,9 @@ Quat.prototype.inverse$ = function () {
 	var dot;
 	/** @type {!number} */
 	var invDot;
-	a = this.array$();
+	a = $this._;
 	(q0 = a[0], q1 = a[1], q2 = a[2], q3 = a[3]);
-	dot = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1171] null access");
-		}
-		return v;
-	}(q0)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1171] null access");
-		}
-		return v;
-	}(q0)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1171] null access");
-		}
-		return v;
-	}(q1)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1171] null access");
-		}
-		return v;
-	}(q1)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1171] null access");
-		}
-		return v;
-	}(q2)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1171] null access");
-		}
-		return v;
-	}(q2)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1171] null access");
-		}
-		return v;
-	}(q3)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1171] null access");
-		}
-		return v;
-	}(q3));
+	dot = q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3;
 	if (dot === 0) {
 		return null;
 	}
@@ -10040,33 +6082,42 @@ Quat.prototype.inverse$ = function () {
 	a[1] *= - invDot;
 	a[2] *= - invDot;
 	a[3] *= - invDot;
-	return this;
+	return $this;
 };
 
+var Quat$inverse$LQuat$ = Quat.inverse$LQuat$;
+
 /**
+ * @param {Quat} $this
  * @return {Quat}
  */
-Quat.prototype.conjugate$ = function () {
+Quat.conjugate$LQuat$ = function ($this) {
 	/** @type {Float32Array} */
 	var a;
-	a = this.array$();
-	a[1] *= - 1;
-	a[2] *= - 1;
-	a[3] *= - 1;
-	return this;
+	a = $this._;
+	a[1] *= -1;
+	a[2] *= -1;
+	a[3] *= -1;
+	return $this;
 };
 
-/**
- * @return {!number}
- */
-Quat.prototype.len$ = function () {
-	return Math.sqrt(this.len2$());
-};
+var Quat$conjugate$LQuat$ = Quat.conjugate$LQuat$;
 
 /**
+ * @param {Quat} $this
  * @return {!number}
  */
-Quat.prototype.len2$ = function () {
+Quat.len$LQuat$ = function ($this) {
+	return Math.sqrt(Quat$len2$LQuat$($this));
+};
+
+var Quat$len$LQuat$ = Quat.len$LQuat$;
+
+/**
+ * @param {Quat} $this
+ * @return {!number}
+ */
+Quat.len2$LQuat$ = function ($this) {
 	/** @type {undefined|!number} */
 	var w;
 	/** @type {undefined|!number} */
@@ -10075,62 +6126,19 @@ Quat.prototype.len2$ = function () {
 	var y;
 	/** @type {undefined|!number} */
 	var z;
-	(w = this._[0], x = this._[1], y = this._[2], z = this._[3]);
-	return (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1195] null access");
-		}
-		return v;
-	}(w)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1195] null access");
-		}
-		return v;
-	}(w)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1195] null access");
-		}
-		return v;
-	}(x)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1195] null access");
-		}
-		return v;
-	}(x)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1195] null access");
-		}
-		return v;
-	}(y)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1195] null access");
-		}
-		return v;
-	}(y)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1195] null access");
-		}
-		return v;
-	}(z)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1195] null access");
-		}
-		return v;
-	}(z));
+	/** @type {Float32Array} */
+	var _$0;
+	(w = (_$0 = $this._)[0], x = _$0[1], y = _$0[2], z = _$0[3]);
+	return w * w + x * x + y * y + z * z;
 };
 
+var Quat$len2$LQuat$ = Quat.len2$LQuat$;
+
 /**
+ * @param {Quat} $this
  * @return {Quat}
  */
-Quat.prototype.normalize$ = function () {
+Quat.normalize$LQuat$ = function ($this) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {undefined|!number} */
@@ -10145,57 +6153,9 @@ Quat.prototype.normalize$ = function () {
 	var l;
 	/** @type {!number} */
 	var il;
-	a = this.array$();
+	a = $this._;
 	(w = a[0], x = a[1], y = a[2], z = a[3]);
-	l = Math.sqrt((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1201] null access");
-		}
-		return v;
-	}(x)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1201] null access");
-		}
-		return v;
-	}(x)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1201] null access");
-		}
-		return v;
-	}(y)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1201] null access");
-		}
-		return v;
-	}(y)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1201] null access");
-		}
-		return v;
-	}(z)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1201] null access");
-		}
-		return v;
-	}(z)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1201] null access");
-		}
-		return v;
-	}(w)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1201] null access");
-		}
-		return v;
-	}(w)));
+	l = Math.sqrt(x * x + y * y + z * z + w * w);
 	if (l === 0) {
 		return null;
 	}
@@ -10204,50 +6164,59 @@ Quat.prototype.normalize$ = function () {
 	a[1] *= il;
 	a[2] *= il;
 	a[3] *= il;
-	return this;
+	return $this;
 };
 
+var Quat$normalize$LQuat$ = Quat.normalize$LQuat$;
+
 /**
+ * @param {Quat} $this
  * @param {Quat} q
  * @return {Quat}
  */
-Quat.prototype.add$LQuat$ = function (q) {
+Quat.add$LQuat$LQuat$ = function ($this, q) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
 	var b;
 	/** @type {!number} */
 	var i;
-	(a = this.array$(), b = q.array$());
-	for (i = 0; i < Quat.ELEMS; ++ i) {
+	(a = $this._, b = q._);
+	for (i = 0; i < 4; ++ i) {
 		a[i] += b[i];
 	}
-	return this;
+	return $this;
 };
 
+var Quat$add$LQuat$LQuat$ = Quat.add$LQuat$LQuat$;
+
 /**
+ * @param {Quat} $this
  * @param {Quat} q
  * @return {Quat}
  */
-Quat.prototype.sub$LQuat$ = function (q) {
+Quat.sub$LQuat$LQuat$ = function ($this, q) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
 	var b;
 	/** @type {!number} */
 	var i;
-	(a = this.array$(), b = q.array$());
-	for (i = 0; i < Quat.ELEMS; ++ i) {
+	(a = $this._, b = q._);
+	for (i = 0; i < 4; ++ i) {
 		a[i] -= b[i];
 	}
-	return this;
+	return $this;
 };
 
+var Quat$sub$LQuat$LQuat$ = Quat.sub$LQuat$LQuat$;
+
 /**
+ * @param {Quat} $this
  * @param {Quat} q
  * @return {Quat}
  */
-Quat.prototype.mul$LQuat$ = function (q) {
+Quat.mul$LQuat$LQuat$ = function ($this, q) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
@@ -10268,230 +6237,44 @@ Quat.prototype.mul$LQuat$ = function (q) {
 	var by;
 	/** @type {undefined|!number} */
 	var bz;
-	(a = this.array$(), b = q.array$());
+	(a = $this._, b = q._);
 	(aw = a[0], ax = a[1], ay = a[2], az = a[3]);
 	(bw = b[0], bx = b[1], by = b[2], bz = b[3]);
-	a[0] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1225] null access");
-		}
-		return v;
-	}(aw)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1225] null access");
-		}
-		return v;
-	}(bw)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1225] null access");
-		}
-		return v;
-	}(ax)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1225] null access");
-		}
-		return v;
-	}(bx)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1225] null access");
-		}
-		return v;
-	}(ay)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1225] null access");
-		}
-		return v;
-	}(by)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1225] null access");
-		}
-		return v;
-	}(az)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1225] null access");
-		}
-		return v;
-	}(bz));
-	a[1] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1226] null access");
-		}
-		return v;
-	}(aw)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1226] null access");
-		}
-		return v;
-	}(bx)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1226] null access");
-		}
-		return v;
-	}(ax)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1226] null access");
-		}
-		return v;
-	}(bw)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1226] null access");
-		}
-		return v;
-	}(ay)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1226] null access");
-		}
-		return v;
-	}(bz)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1226] null access");
-		}
-		return v;
-	}(az)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1226] null access");
-		}
-		return v;
-	}(by));
-	a[2] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1227] null access");
-		}
-		return v;
-	}(aw)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1227] null access");
-		}
-		return v;
-	}(by)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1227] null access");
-		}
-		return v;
-	}(ax)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1227] null access");
-		}
-		return v;
-	}(bz)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1227] null access");
-		}
-		return v;
-	}(ay)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1227] null access");
-		}
-		return v;
-	}(bw)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1227] null access");
-		}
-		return v;
-	}(az)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1227] null access");
-		}
-		return v;
-	}(bx));
-	a[3] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1228] null access");
-		}
-		return v;
-	}(aw)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1228] null access");
-		}
-		return v;
-	}(bz)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1228] null access");
-		}
-		return v;
-	}(ax)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1228] null access");
-		}
-		return v;
-	}(by)) - (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1228] null access");
-		}
-		return v;
-	}(ay)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1228] null access");
-		}
-		return v;
-	}(bx)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1228] null access");
-		}
-		return v;
-	}(az)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1228] null access");
-		}
-		return v;
-	}(bw));
-	return this;
+	a[0] = aw * bw - ax * bx - ay * by - az * bz;
+	a[1] = aw * bx + ax * bw + ay * bz - az * by;
+	a[2] = aw * by - ax * bz + ay * bw + az * bx;
+	a[3] = aw * bz + ax * by - ay * bx + az * bw;
+	return $this;
 };
 
+var Quat$mul$LQuat$LQuat$ = Quat.mul$LQuat$LQuat$;
+
 /**
+ * @param {Quat} $this
  * @param {!number} s
  * @return {Quat}
  */
-Quat.prototype.mul$N = function (s) {
+Quat.mul$LQuat$N = function ($this, s) {
 	/** @type {Float32Array} */
 	var a;
-	a = this.array$();
+	a = $this._;
 	a[0] *= s;
 	a[1] *= s;
 	a[2] *= s;
 	a[3] *= s;
-	return this;
+	return $this;
 };
 
+var Quat$mul$LQuat$N = Quat.mul$LQuat$N;
+
 /**
+ * @param {Quat} $this
  * @param {Quat} q0
  * @param {Quat} q1
  * @param {!number} slerp
  * @return {Quat}
  */
-Quat.prototype.slerp$LQuat$LQuat$N = function (q0, q1, slerp) {
+Quat.slerp$LQuat$LQuat$LQuat$N = function ($this, q0, q1, slerp) {
 	/** @type {Float32Array} */
 	var a;
 	/** @type {Float32Array} */
@@ -10524,174 +6307,32 @@ Quat.prototype.slerp$LQuat$LQuat$N = function (q0, q1, slerp) {
 	var ratioA;
 	/** @type {!number} */
 	var ratioB;
-	(a = q0.array$(), b = q1.array$(), c = this.array$());
+	(a = q0._, b = q1._, c = $this._);
 	(aw = a[0], ax = a[1], ay = a[2], az = a[3]);
 	(bw = b[0], bx = b[1], by = b[2], bz = b[3]);
-	cosHalfTheta = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1245] null access");
-		}
-		return v;
-	}(aw)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1245] null access");
-		}
-		return v;
-	}(bw)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1245] null access");
-		}
-		return v;
-	}(ax)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1245] null access");
-		}
-		return v;
-	}(bx)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1245] null access");
-		}
-		return v;
-	}(ay)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1245] null access");
-		}
-		return v;
-	}(by)) + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1245] null access");
-		}
-		return v;
-	}(az)) * (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1245] null access");
-		}
-		return v;
-	}(bz));
+	cosHalfTheta = aw * bw + ax * bx + ay * by + az * bz;
 	if ((cosHalfTheta >= 0 ? cosHalfTheta : - cosHalfTheta) >= 1.0) {
-		return this;
+		return $this;
 	}
 	halfTheta = Math.acos(cosHalfTheta);
 	sinHalfTheta = Math.sqrt(1.0 - cosHalfTheta * cosHalfTheta);
 	if ((sinHalfTheta >= 0 ? sinHalfTheta : - sinHalfTheta) < 0.001) {
-		c[0] = ((function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[mvq.jsx:1252] null access");
-			}
-			return v;
-		}(aw)) + (function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[mvq.jsx:1252] null access");
-			}
-			return v;
-		}(bw))) / 2;
-		c[1] = ((function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[mvq.jsx:1253] null access");
-			}
-			return v;
-		}(ax)) + (function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[mvq.jsx:1253] null access");
-			}
-			return v;
-		}(bx))) / 2;
-		c[2] = ((function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[mvq.jsx:1254] null access");
-			}
-			return v;
-		}(ay)) + (function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[mvq.jsx:1254] null access");
-			}
-			return v;
-		}(by))) / 2;
-		c[3] = ((function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[mvq.jsx:1255] null access");
-			}
-			return v;
-		}(az)) + (function (v) {
-			if (! (v != null)) {
-				debugger;
-				throw new Error("[mvq.jsx:1255] null access");
-			}
-			return v;
-		}(bz))) / 2;
-		return this;
+		c[0] = (aw + bw) / 2;
+		c[1] = (ax + bx) / 2;
+		c[2] = (ay + by) / 2;
+		c[3] = (az + bz) / 2;
+		return $this;
 	}
 	ratioA = Math.sin((1 - slerp) * halfTheta) / sinHalfTheta;
 	ratioB = Math.sin(slerp * halfTheta) / sinHalfTheta;
-	c[0] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1262] null access");
-		}
-		return v;
-	}(aw)) * ratioA + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1262] null access");
-		}
-		return v;
-	}(bw)) * ratioB;
-	c[1] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1263] null access");
-		}
-		return v;
-	}(ax)) * ratioA + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1263] null access");
-		}
-		return v;
-	}(bx)) * ratioB;
-	c[2] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1264] null access");
-		}
-		return v;
-	}(ay)) * ratioA + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1264] null access");
-		}
-		return v;
-	}(by)) * ratioB;
-	c[3] = (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1265] null access");
-		}
-		return v;
-	}(az)) * ratioA + (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[mvq.jsx:1265] null access");
-		}
-		return v;
-	}(bz)) * ratioB;
-	return this;
+	c[0] = aw * ratioA + bw * ratioB;
+	c[1] = ax * ratioA + bx * ratioB;
+	c[2] = ay * ratioA + by * ratioB;
+	c[3] = az * ratioA + bz * ratioB;
+	return $this;
 };
+
+var Quat$slerp$LQuat$LQuat$LQuat$N = Quat.slerp$LQuat$LQuat$LQuat$N;
 
 /**
  * class _Main extends Object
@@ -10715,8 +6356,6 @@ _Main$.prototype = new _Main;
 _Main.main$AS = function (args) {
 	/** @type {V3} */
 	var v;
-	/** @type {V3} */
-	var v2;
 	/** @type {M44} */
 	var m;
 	/** @type {Float32Array} */
@@ -10725,25 +6364,44 @@ _Main.main$AS = function (args) {
 	var im;
 	/** @type {M44} */
 	var iim;
+	/** @type {Array.<undefined|!number>} */
+	var m$0;
+	/** @type {M44} */
+	var m$1;
+	/** @type {M44} */
+	var this$0;
+	/** @type {M44} */
+	var m$2;
+	/** @type {M44} */
+	var this$1;
+	/** @type {M44} */
+	var this$2;
+	/** @type {M44} */
+	var this$3;
 	v = new V3$NNN(1, 2, 3);
-	v2 = new V3$LV3$(v);
-	console.log(v.dist$LV3$(v2));
-	m = new M44$();
-	m.set$AN([ 1, 2, 43, 5 ]);
+	new V3$LV3$(v);
+	m = {_: new Float32Array(16)};
+	m$0 = [ 1, 2, 43, 5 ];
+	m._.set(m$0);
 	ta = new Float32Array(5);
 	ta[4] = 100;
-	m.set$LFloat32Array$(ta);
-	m.setIdentity$();
-	m.mul$LM44$(new M44$().setRotateX$N(10));
-	m = new M44$().setTranslate$NNN(1, 2, 3).mul$LM44$(m);
-	m.mul$LM44$(new M44$().setScale$N(100));
-	im = new M44$LM44$(m).inverse$();
+	m._.set(ta);
+	M44$setIdentity$LM44$(m);
+	this$2 = {_: new Float32Array(16)};
+	m$1 = M44$setRotate$LM44$NNNN(this$2, 10, 1, 0, 0);
+	M44$mul$LM44$LM44$LM44$(m, m, m$1);
+	this$0 = M44$setTranslate$LM44$NNN({_: new Float32Array(16)}, 1, 2, 3);
+	m = M44$mul$LM44$LM44$LM44$(this$0, this$0, m);
+	this$3 = {_: new Float32Array(16)};
+	m$2 = M44$setScale$LM44$NNN(this$3, 100, 100, 100);
+	M44$mul$LM44$LM44$LM44$(m, m, m$2);
+	im = M44$inverse$LM44$(new M44$LM44$(m));
 	_Main$dump$LM44$(m);
 	_Main$dump$LM44$(im);
-	iim = new M44$LM44$(m).mul$LM44$(im);
+	this$1 = new M44$LM44$(m);
+	iim = M44$mul$LM44$LM44$LM44$(this$1, this$1, im);
 	_Main$dump$LM44$(iim);
-	console.log(iim.equals$LM44$(new M44$().setIdentity$()));
-	_Main$dump$LM44$(m.set$LV4$LV4$LV4$LV4$(new V4$NNNN(0, 1, 2, 3), new V4$NNNN(4, 5, 6, 7), new V4$NNNN(8, 9, 10, 11), new V4$NNNN(12, 13, 14, 16)));
+	_Main$dump$LM44$(M44$set$LM44$LV4$LV4$LV4$LV4$(m, new V4$NNNN(0, 1, 2, 3), new V4$NNNN(4, 5, 6, 7), new V4$NNNN(8, 9, 10, 11), new V4$NNNN(12, 13, 14, 16)));
 };
 
 var _Main$main$AS = _Main.main$AS;
@@ -10755,7 +6413,6 @@ _Main.dump$LM44$ = function (m) {
 	/** @type {!number} */
 	var i;
 	for (i = 0; i < 4; ++ i) {
-		console.log(m._[i].toString() + ', ' + m._[i + 4].toString() + ', ' + m._[i + 8].toString() + ', ' + m._[i + 12].toString());
 	}
 };
 
@@ -10819,33 +6476,42 @@ _Part.createIndexBuffer$AI = function (a) {
 var _Part$createIndexBuffer$AI = _Part.createIndexBuffer$AI;
 
 /**
+ * @param {_Part} $this
  * @param {Array.<undefined|!number>} v
  * @return {_Part}
  */
-_Part.prototype.setVertex$AN = function (v) {
-	this.vbuf = _Part$createArrayBuffer$AN(v);
-	this.numv = (v.length / 3 | 0);
-	return this;
+_Part.setVertex$L_Part$AN = function ($this, v) {
+	$this.vbuf = _Part$createArrayBuffer$AN(v);
+	$this.numv = (v.length / 3 | 0);
+	return $this;
 };
 
+var _Part$setVertex$L_Part$AN = _Part.setVertex$L_Part$AN;
+
 /**
+ * @param {_Part} $this
  * @param {Array.<undefined|!number>} n
  * @return {_Part}
  */
-_Part.prototype.setNormal$AN = function (n) {
-	this.nbuf = _Part$createArrayBuffer$AN(n);
-	return this;
+_Part.setNormal$L_Part$AN = function ($this, n) {
+	$this.nbuf = _Part$createArrayBuffer$AN(n);
+	return $this;
 };
 
+var _Part$setNormal$L_Part$AN = _Part.setNormal$L_Part$AN;
+
 /**
+ * @param {_Part} $this
  * @param {Array.<undefined|!number>} i
  * @return {_Part}
  */
-_Part.prototype.setIndex$AI = function (i) {
-	this.ibuf = _Part$createIndexBuffer$AI(i);
-	this.numi = (i.length | 0);
-	return this;
+_Part.setIndex$L_Part$AI = function ($this, i) {
+	$this.ibuf = _Part$createIndexBuffer$AI(i);
+	$this.numi = (i.length | 0);
+	return $this;
 };
+
+var _Part$setIndex$L_Part$AI = _Part.setIndex$L_Part$AI;
 
 /**
  * class Kingyo extends Object
@@ -10859,13 +6525,13 @@ Kingyo.prototype = new Object;
  * @constructor
  */
 function Kingyo$() {
-	this._pos = new V3$();
+	this._pos = {_: new Float32Array(3)};
 	this._vangle = 0;
 	this._velo = 0;
 	this._anim = 0;
 	this._state = '';
-	this._spinMat = new M44$();
-	this._spinAxis = new V3$();
+	this._spinMat = {_: new Float32Array(16)};
+	this._spinAxis = {_: new Float32Array(3)};
 	this._spinSpeed = 0;
 	this._vz = 0;
 	this._color = [ 0.7, 0, 0 ];
@@ -10896,20 +6562,118 @@ Kingyo.initWithGL$LWebGLRenderingContext$ = function (gl) {
 	var ey;
 	/** @type {!number} */
 	var ez;
+	/** @type {Array.<undefined|!number>} */
+	var i$0;
+	/** @type {Array.<undefined|!number>} */
+	var i$1;
+	/** @type {Array.<undefined|!number>} */
+	var i$2;
+	/** @type {Array.<undefined|!number>} */
+	var i$3;
+	/** @type {Array.<undefined|!number>} */
+	var i$4;
+	/** @type {Array.<undefined|!number>} */
+	var i$5;
+	/** @type {Array.<undefined|!number>} */
+	var n$0;
+	/** @type {Array.<undefined|!number>} */
+	var n$1;
+	/** @type {Array.<undefined|!number>} */
+	var n$2;
+	/** @type {Array.<undefined|!number>} */
+	var n$3;
+	/** @type {Array.<undefined|!number>} */
+	var n$4;
+	/** @type {_Part} */
+	var this$11;
+	/** @type {Array.<undefined|!number>} */
+	var v$0;
+	/** @type {_Part} */
+	var this$12;
+	/** @type {Array.<undefined|!number>} */
+	var v$1;
+	/** @type {_Part} */
+	var this$13;
+	/** @type {Array.<undefined|!number>} */
+	var v$2;
+	/** @type {_Part} */
+	var this$14;
+	/** @type {Array.<undefined|!number>} */
+	var v$3;
+	/** @type {_Part} */
+	var this$15;
+	/** @type {Array.<undefined|!number>} */
+	var v$4;
+	/** @type {_Part} */
+	var this$16;
+	/** @type {Array.<undefined|!number>} */
+	var v$5;
 	Kingyo.gl = gl;
 	Kingyo.prog = Util$getProgram$SS('kbody.vs', 'kbody.fs');
-	Kingyo.body = new _Part$().setVertex$AN([ 0, 0, 1, 0.7, 0, 0, 0, 1, 0, - 0.7, 0, 0, 0, - 1, 0, 0, 0, - 1 ]).setNormal$AN([ 0, 0, 1, 1, 0, 0, 0, 1, 0, - 1, 0, 0, 0, - 1, 0, 0, 0, - 1 ]).setIndex$AI([ 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 1, 5, 2, 1, 5, 3, 2, 5, 4, 3, 5, 1, 4 ]);
-	Kingyo.lfin = new _Part$().setVertex$AN([ 0, 0, 0, 0.5, - 0.25, 0, 0.8, 0.25, 0 ]).setNormal$AN([ 0, 0, 1, 0, 0, 1, 0, 0, 1 ]).setIndex$AI([ 0, 1, 2 ]);
-	Kingyo.rfin = new _Part$().setVertex$AN([ 0, 0, 0, - 0.8, 0.25, 0, - 0.5, - 0.25, 0 ]).setNormal$AN([ 0, 0, 1, 0, 0, 1, 0, 0, 1 ]).setIndex$AI([ 0, 1, 2 ]);
-	Kingyo.bfin = new _Part$().setVertex$AN([ 0, 0, 0, 0, - 0.5, - 1, 0, 0.5, - 0.8 ]).setNormal$AN([ 1, 0, 0, 1, 0, 0, 1, 0, 0 ]).setIndex$AI([ 0, 1, 2 ]);
-	Kingyo.tfin = new _Part$().setVertex$AN([ 0, 0, 0, 0.8, - 0.5, - 1, 0, 0.4, - 0.8, - 0.8, - 0.5, - 1 ]).setNormal$AN([ 0, 1, 1, 1, 1, 1, 0, 1, 0, - 1, 1, 1 ]).setIndex$AI([ 0, 1, 2, 0, 2, 3 ]);
+	this$12 = {vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0};
+	v$1 = [ 0, 0, 1, 0.7, 0, 0, 0, 1, 0, -0.7, 0, 0, 0, -1, 0, 0, 0, -1 ];
+	this$12.vbuf = _Part$createArrayBuffer$AN(v$1);
+	this$12.numv = (v$1.length / 3 | 0);
+	n$0 = [ 0, 0, 1, 1, 0, 0, 0, 1, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1 ];
+	this$12.nbuf = _Part$createArrayBuffer$AN(n$0);
+	i$0 = [ 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 1, 5, 2, 1, 5, 3, 2, 5, 4, 3, 5, 1, 4 ];
+	this$12.ibuf = _Part$createIndexBuffer$AI(i$0);
+	this$12.numi = (i$0.length | 0);
+	Kingyo.body = this$12;
+	this$13 = {vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0};
+	v$2 = [ 0, 0, 0, 0.5, -0.25, 0, 0.8, 0.25, 0 ];
+	this$13.vbuf = _Part$createArrayBuffer$AN(v$2);
+	this$13.numv = (v$2.length / 3 | 0);
+	n$1 = [ 0, 0, 1, 0, 0, 1, 0, 0, 1 ];
+	this$13.nbuf = _Part$createArrayBuffer$AN(n$1);
+	i$1 = [ 0, 1, 2 ];
+	this$13.ibuf = _Part$createIndexBuffer$AI(i$1);
+	this$13.numi = (i$1.length | 0);
+	Kingyo.lfin = this$13;
+	this$14 = {vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0};
+	v$3 = [ 0, 0, 0, -0.8, 0.25, 0, -0.5, -0.25, 0 ];
+	this$14.vbuf = _Part$createArrayBuffer$AN(v$3);
+	this$14.numv = (v$3.length / 3 | 0);
+	n$2 = [ 0, 0, 1, 0, 0, 1, 0, 0, 1 ];
+	this$14.nbuf = _Part$createArrayBuffer$AN(n$2);
+	i$2 = [ 0, 1, 2 ];
+	this$14.ibuf = _Part$createIndexBuffer$AI(i$2);
+	this$14.numi = (i$2.length | 0);
+	Kingyo.rfin = this$14;
+	this$15 = {vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0};
+	v$4 = [ 0, 0, 0, 0, -0.5, -1, 0, 0.5, -0.8 ];
+	this$15.vbuf = _Part$createArrayBuffer$AN(v$4);
+	this$15.numv = (v$4.length / 3 | 0);
+	n$3 = [ 1, 0, 0, 1, 0, 0, 1, 0, 0 ];
+	this$15.nbuf = _Part$createArrayBuffer$AN(n$3);
+	i$3 = [ 0, 1, 2 ];
+	this$15.ibuf = _Part$createIndexBuffer$AI(i$3);
+	this$15.numi = (i$3.length | 0);
+	Kingyo.bfin = this$15;
+	this$16 = {vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0};
+	v$5 = [ 0, 0, 0, 0.8, -0.5, -1, 0, 0.4, -0.8, -0.8, -0.5, -1 ];
+	this$16.vbuf = _Part$createArrayBuffer$AN(v$5);
+	this$16.numv = (v$5.length / 3 | 0);
+	n$4 = [ 0, 1, 1, 1, 1, 1, 0, 1, 0, -1, 1, 1 ];
+	this$16.nbuf = _Part$createArrayBuffer$AN(n$4);
+	i$4 = [ 0, 1, 2, 0, 2, 3 ];
+	this$16.ibuf = _Part$createIndexBuffer$AI(i$4);
+	this$16.numi = (i$4.length | 0);
+	Kingyo.tfin = this$16;
 	Kingyo.ulocs = Util$getUniformLocations$LWebGLProgram$(Kingyo.prog);
 	Kingyo.alocs = Util$getAttribLocations$LWebGLProgram$(Kingyo.prog);
 	Kingyo.eyeProg = Util$getProgram$SS('keye.vs', 'keye.fs');
 	Kingyo.eyeULocs = Util$getUniformLocations$LWebGLProgram$(Kingyo.eyeProg);
 	Kingyo.eyeALocs = Util$getAttribLocations$LWebGLProgram$(Kingyo.eyeProg);
 	(ex = 0.3, ey = 0.15, ez = 0.5);
-	Kingyo.eyes = new _Part$().setVertex$AN([ - ex, ey, ez, 0, - ex, ey, ez, 1, - ex, ey, ez, 2, - ex, ey, ez, 3, ex, ey, ez, 4, ex, ey, ez, 5, ex, ey, ez, 6, ex, ey, ez, 7 ]).setIndex$AI([ 0, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7 ]);
+	this$11 = {vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0};
+	v$0 = [ - ex, ey, ez, 0, - ex, ey, ez, 1, - ex, ey, ez, 2, - ex, ey, ez, 3, ex, ey, ez, 4, ex, ey, ez, 5, ex, ey, ez, 6, ex, ey, ez, 7 ];
+	this$11.vbuf = _Part$createArrayBuffer$AN(v$0);
+	this$11.numv = (v$0.length / 3 | 0);
+	i$5 = [ 0, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7 ];
+	this$11.ibuf = _Part$createIndexBuffer$AI(i$5);
+	this$11.numi = (i$5.length | 0);
+	Kingyo.eyes = this$11;
 };
 
 var Kingyo$initWithGL$LWebGLRenderingContext$ = Kingyo.initWithGL$LWebGLRenderingContext$;
@@ -11005,12 +6769,11 @@ var Kingyo$drawAboveWater$LM44$LM44$ = Kingyo.drawAboveWater$LM44$LM44$;
 /**
  * @param {M44} projMat
  * @param {M44} viewMat
+ * @param {*} pred
  */
 Kingyo.draw$LM44$LM44$F$LKingyo$B$ = function (projMat, viewMat, pred) {
 	/** @type {WebGLRenderingContext} */
 	var gl;
-	/** @type {WebGLProgram} */
-	var prog;
 	/** @type {Object.<string, undefined|WebGLUniformLocation>} */
 	var ulocs;
 	/** @type {Object.<string, undefined|!number>} */
@@ -11024,82 +6787,39 @@ Kingyo.draw$LM44$LM44$F$LKingyo$B$ = function (projMat, viewMat, pred) {
 	/** @type {Object.<string, undefined|!number>} */
 	var ealocs;
 	gl = Kingyo.gl;
-	prog = Kingyo.prog;
 	ulocs = Kingyo.ulocs;
 	alocs = Kingyo.alocs;
 	gl.useProgram(Kingyo.prog);
-	gl.uniformMatrix4fv(ulocs.projectionMatrix, false, projMat.array$());
-	gl.uniformMatrix4fv(ulocs.viewMatrix, false, viewMat.array$());
+	gl.uniformMatrix4fv(ulocs.projectionMatrix, false, projMat._);
+	gl.uniformMatrix4fv(ulocs.viewMatrix, false, viewMat._);
 	gl.uniform4fv(ulocs.lightPosition, [ 0, 1, 1, 0 ]);
-	gl.enableVertexAttribArray((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[kingyo.jsx:136] null access");
-		}
-		return v;
-	}(alocs.vertex)));
-	gl.enableVertexAttribArray((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[kingyo.jsx:137] null access");
-		}
-		return v;
-	}(alocs.normal)));
+	gl.enableVertexAttribArray(alocs.vertex);
+	gl.enableVertexAttribArray(alocs.normal);
 	for (i = 0; i < Kingyo.all.length; ++ i) {
 		k = Kingyo.all[i];
 		if (pred(k)) {
 			k._draw$();
 		}
 	}
-	gl.disableVertexAttribArray((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[kingyo.jsx:144] null access");
-		}
-		return v;
-	}(alocs.vertex)));
-	gl.disableVertexAttribArray((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[kingyo.jsx:145] null access");
-		}
-		return v;
-	}(alocs.normal)));
+	gl.disableVertexAttribArray(alocs.vertex);
+	gl.disableVertexAttribArray(alocs.normal);
 	eulocs = Kingyo.eyeULocs;
 	ealocs = Kingyo.eyeALocs;
 	gl.useProgram(Kingyo.eyeProg);
-	gl.uniformMatrix4fv(eulocs.projectionMatrix, false, projMat.array$());
-	gl.uniformMatrix4fv(eulocs.viewMatrix, false, viewMat.array$());
+	gl.uniformMatrix4fv(eulocs.projectionMatrix, false, projMat._);
+	gl.uniformMatrix4fv(eulocs.viewMatrix, false, viewMat._);
 	gl.uniform4fv(eulocs.lightPosition, [ 0, 1, 1, 0 ]);
 	gl.uniform1f(eulocs.radius, 0.2);
 	gl.bindBuffer(gl.ARRAY_BUFFER, Kingyo.eyes.vbuf);
-	gl.vertexAttribPointer((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[kingyo.jsx:156] null access");
-		}
-		return v;
-	}(ealocs.position)), 4, gl.FLOAT, false, 0, 0);
-	gl.enableVertexAttribArray((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[kingyo.jsx:157] null access");
-		}
-		return v;
-	}(ealocs.position)));
+	gl.vertexAttribPointer(ealocs.position, 4, gl.FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray(ealocs.position);
 	for (i = 0; i < Kingyo.all.length; ++ i) {
 		k = Kingyo.all[i];
 		if (pred(k)) {
 			k._drawEyes$();
 		}
 	}
-	gl.disableVertexAttribArray((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[kingyo.jsx:164] null access");
-		}
-		return v;
-	}(ealocs.position)));
+	gl.disableVertexAttribArray(ealocs.position);
 };
 
 var Kingyo$draw$LM44$LM44$F$LKingyo$B$ = Kingyo.draw$LM44$LM44$F$LKingyo$B$;
@@ -11128,8 +6848,8 @@ Kingyo.hit$NN = function (x, y) {
 		if (k._state !== 'swimming') {
 			continue;
 		}
-		dx = k._pos.x$() - x;
-		dy = k._pos.y$() - y;
+		dx = V3$x$LV3$(k._pos) - x;
+		dy = V3$y$LV3$(k._pos) - y;
 		r = Math.sqrt(dx * dx + dy * dy);
 		if (r < 2) {
 			h.push(k);
@@ -11162,15 +6882,29 @@ Kingyo.prototype.init$ = function () {
 	var x;
 	/** @type {!number} */
 	var y;
-	this._setRandom$();
+	/** @type {V3} */
+	var this$0;
+	/** @type {!number} */
+	var z$0;
+	/** @type {V3} */
+	var this$1;
+	this._vangle = Math.random() * 2 * 3.141592653589793;
+	this._velo = Math.random() * 15 + 1;
 	r = 8 * Math.random();
 	x = r * Math.cos(this._vangle);
 	y = r * Math.sin(this._vangle);
-	this._pos.set$NNN(x, y, - 2 - Math.random() * 3);
+	this$0 = this._pos;
+	z$0 = -2 - Math.random() * 3;
+	this$0._[0] = x;
+	this$0._[1] = y;
+	this$0._[2] = z$0;
 	this._anim = 0;
 	this._state = 'swimming';
-	this._spinMat.setIdentity$();
-	this._spinAxis.set$NNN(0, 0, 0);
+	M44$setIdentity$LM44$(this._spinMat);
+	this$1 = this._spinAxis;
+	this$1._[0] = 0;
+	this$1._[1] = 0;
+	this$1._[2] = 0;
 	this._spinSpeed = 0;
 	this._vz = 0;
 };
@@ -11178,7 +6912,7 @@ Kingyo.prototype.init$ = function () {
 /**
  */
 Kingyo.prototype._setRandom$ = function () {
-	this._vangle = Math.random() * 2 * Math.PI;
+	this._vangle = Math.random() * 2 * 3.141592653589793;
 	this._velo = Math.random() * 15 + 1;
 };
 
@@ -11187,13 +6921,30 @@ Kingyo.prototype._setRandom$ = function () {
 Kingyo.prototype._fished$ = function () {
 	/** @type {!number} */
 	var a;
+	/** @type {V3} */
+	var this$0;
+	/** @type {V3} */
+	var this$1;
+	/** @type {!number} */
+	var x$0;
+	/** @type {!number} */
+	var y$0;
+	/** @type {!number} */
+	var z$0;
 	this._state = 'flying';
-	this._pos.z$N(2);
+	this$0 = this._pos;
+	this$0._[2] = 2;
 	this._vz = 150 + Math.random() * 50;
 	this._velo = 12;
-	this._spinMat.setIdentity$();
-	a = 2 * Math.PI * Math.random();
-	this._spinAxis.set$NNN(Math.cos(a), Math.sin(a), Math.random() - 0.5);
+	M44$setIdentity$LM44$(this._spinMat);
+	a = 6.283185307179586 * Math.random();
+	this$1 = this._spinAxis;
+	x$0 = Math.cos(a);
+	y$0 = Math.sin(a);
+	z$0 = Math.random() - 0.5;
+	this$1._[0] = x$0;
+	this$1._[1] = y$0;
+	this$1._[2] = z$0;
 	this._spinSpeed = 10 * Math.random() + 2;
 };
 
@@ -11211,37 +6962,76 @@ Kingyo.prototype._update$N = function (dt) {
 	var num_listed;
 	/** @type {!number} */
 	var i;
+	/** @type {V3} */
+	var this$0;
+	/** @type {V3} */
+	var this$1;
+	/** @type {V3} */
+	var this$2;
+	/** @type {!number} */
+	var val$0;
+	/** @type {M44} */
+	var this$3;
+	/** @type {M44} */
+	var m$0;
+	/** @type {V3} */
+	var this$4;
+	/** @type {!number} */
+	var x$0;
+	/** @type {M44} */
+	var this$5;
+	/** @type {!number} */
+	var rad$0;
+	/** @type {V3} */
+	var a$0;
+	/** @type {V3} */
+	var _pos$0;
+	/** @type {Float32Array} */
+	var _$0;
 	switch (this._state) {
 	default:
 		break;
 	case 'swimming':
-		x = this._pos.x$() + Math.cos(this._vangle) * this._velo * dt;
-		y = this._pos.y$() + Math.sin(this._vangle) * this._velo * dt;
-		b = Kingyo.bound;
-		if (x < - b) {
+		x = V3$x$LV3$(this._pos) + Math.cos(this._vangle) * this._velo * dt;
+		y = V3$y$LV3$(this._pos) + Math.sin(this._vangle) * this._velo * dt;
+		b = 10;
+		if (x < -10) {
 			x = - b;
-			this._setRandom$();
+			this._vangle = Math.random() * 2 * 3.141592653589793;
+			this._velo = Math.random() * 15 + 1;
 		}
 		if (y < - b) {
 			y = - b;
-			this._setRandom$();
+			this._vangle = Math.random() * 2 * 3.141592653589793;
+			this._velo = Math.random() * 15 + 1;
 		}
 		if (x > b) {
 			x = b;
-			this._setRandom$();
+			this._vangle = Math.random() * 2 * 3.141592653589793;
+			this._velo = Math.random() * 15 + 1;
 		}
 		if (y > b) {
 			y = b;
-			this._setRandom$();
+			this._vangle = Math.random() * 2 * 3.141592653589793;
+			this._velo = Math.random() * 15 + 1;
 		}
-		this._pos.x$N(x);
-		this._pos.y$N(y);
+		this$0 = this._pos;
+		this$0._[0] = x;
+		this$1 = this._pos;
+		this$1._[1] = y;
 		break;
 	case 'flying':
 		this._vz -= 300 * dt;
-		this._pos.z$N(this._pos.z$() + this._vz * dt);
-		this._spinMat.mul$LM44$(new M44$().setRotate$NLV3$(dt * this._spinSpeed, this._spinAxis));
-		if (this._pos.z$() >= 2) {
+		this$2 = _pos$0 = this._pos;
+		val$0 = V3$z$LV3$(_pos$0) + this._vz * dt;
+		this$2._[2] = val$0;
+		this$3 = this._spinMat;
+		this$5 = {_: new Float32Array(16)};
+		rad$0 = dt * this._spinSpeed;
+		a$0 = this._spinAxis;
+		m$0 = M44$setRotate$LM44$NNNN(this$5, rad$0, (_$0 = a$0._)[0], _$0[1], _$0[2]);
+		M44$mul$LM44$LM44$LM44$(this$3, this$3, m$0);
+		if (V3$z$LV3$(this._pos) >= 2) {
 			break;
 		}
 		num_listed = 0;
@@ -11250,9 +7040,13 @@ Kingyo.prototype._update$N = function (dt) {
 				++ num_listed;
 			}
 		}
-		this._pos.set$NNN(num_listed * 1.5 - Kingyo.bound - 4.25, 3 + Kingyo.bound, 2);
-		this._vangle = Math.PI / 2;
-		this._spinMat.setIdentity$();
+		this$4 = this._pos;
+		x$0 = num_listed * 1.5 - 10 - 4.25;
+		this$4._[0] = x$0;
+		this$4._[1] = 13;
+		this$4._[2] = 2;
+		this._vangle = 1.5707963267948966;
+		M44$setIdentity$LM44$(this._spinMat);
 		this._velo = 2;
 		this._state = 'listed';
 	case 'listed':
@@ -11266,8 +7060,6 @@ Kingyo.prototype._update$N = function (dt) {
 Kingyo.prototype._draw$ = function () {
 	/** @type {WebGLRenderingContext} */
 	var gl;
-	/** @type {WebGLProgram} */
-	var prog;
 	/** @type {WebGLUniformLocation} */
 	var modelMatLoc;
 	/** @type {!number} */
@@ -11282,27 +7074,118 @@ Kingyo.prototype._draw$ = function () {
 	var bfinMat;
 	/** @type {M44} */
 	var tfinMat;
+	/** @type {M44} */
+	var this$0;
+	/** @type {M44} */
+	var m$0;
+	/** @type {M44} */
+	var this$1;
+	/** @type {M44} */
+	var m$1;
+	/** @type {M44} */
+	var this$2;
+	/** @type {M44} */
+	var m$2;
+	/** @type {M44} */
+	var this$3;
+	/** @type {M44} */
+	var m$3;
+	/** @type {M44} */
+	var this$4;
+	/** @type {M44} */
+	var m$4;
+	/** @type {M44} */
+	var this$5;
+	/** @type {M44} */
+	var m$5;
+	/** @type {M44} */
+	var this$6;
+	/** @type {M44} */
+	var this$7;
+	/** @type {M44} */
+	var m$6;
+	/** @type {M44} */
+	var this$8;
+	/** @type {M44} */
+	var m$7;
+	/** @type {M44} */
+	var this$9;
+	/** @type {M44} */
+	var m$8;
+	/** @type {M44} */
+	var this$10;
+	/** @type {M44} */
+	var m$9;
+	/** @type {M44} */
+	var this$11;
+	/** @type {M44} */
+	var m$10;
+	/** @type {M44} */
+	var this$12;
+	/** @type {M44} */
+	var this$13;
+	/** @type {M44} */
+	var m$11;
+	/** @type {M44} */
+	var this$14;
+	/** @type {!number} */
+	var rad$0;
+	/** @type {M44} */
+	var this$15;
+	/** @type {V3} */
+	var v$0;
+	/** @type {Float32Array} */
+	var _$0;
 	gl = Kingyo.gl;
-	prog = Kingyo.prog;
 	gl.uniform3fv(Kingyo.ulocs.color, this._color);
 	gl.uniform3fv(Kingyo.ulocs.color2, this._color2);
 	gl.uniform4fv(Kingyo.ulocs.color2pos, this._color2pos);
 	modelMatLoc = Kingyo.ulocs.modelMatrix;
 	s = Math.sin(this._anim * 5);
-	bodyMat = new M44$().setTranslate$LV3$(this._pos).mul$LM44$(this._spinMat).mul$LM44$(new M44$().setRotateZ$N(this._vangle - s / 10)).mul$LM44$(new M44$().setRotateX$N(Math.PI / 2)).mul$LM44$(new M44$().setRotateY$N(Math.PI / 2));
-	gl.uniformMatrix4fv(modelMatLoc, false, bodyMat.array$());
+	this$15 = {_: new Float32Array(16)};
+	v$0 = this._pos;
+	this$13 = M44$setTranslate$LM44$NNN(this$15, (_$0 = v$0._)[0], _$0[1], _$0[2]);
+	m$11 = this._spinMat;
+	this$11 = M44$mul$LM44$LM44$LM44$(this$13, this$13, m$11);
+	this$14 = {_: new Float32Array(16)};
+	rad$0 = this._vangle - s / 10;
+	m$10 = M44$setRotate$LM44$NNNN(this$14, rad$0, 0, 0, 1);
+	this$5 = M44$mul$LM44$LM44$LM44$(this$11, this$11, m$10);
+	this$12 = {_: new Float32Array(16)};
+	m$5 = M44$setRotate$LM44$NNNN(this$12, 1.5707963267948966, 1, 0, 0);
+	this$0 = M44$mul$LM44$LM44$LM44$(this$5, this$5, m$5);
+	this$6 = {_: new Float32Array(16)};
+	m$0 = M44$setRotate$LM44$NNNN(this$6, 1.5707963267948966, 0, 1, 0);
+	bodyMat = M44$mul$LM44$LM44$LM44$(this$0, this$0, m$0);
+	gl.uniformMatrix4fv(modelMatLoc, false, bodyMat._);
 	this._drawPart$L_Part$(Kingyo.body);
-	lfinMat = bodyMat.clone$().mul$LM44$(new M44$().setTranslate$NNN(0.5, - 0.3, 0)).mul$LM44$(new M44$().setRotate$NNNN(1 + s / 2, 0.2, 1, - 0.5));
-	gl.uniformMatrix4fv(modelMatLoc, false, lfinMat.array$());
+	this$7 = new M44$LM44$(bodyMat);
+	m$6 = M44$setTranslate$LM44$NNN({_: new Float32Array(16)}, 0.5, -0.3, 0);
+	this$1 = M44$mul$LM44$LM44$LM44$(this$7, this$7, m$6);
+	m$1 = M44$setRotate$LM44$NNNN({_: new Float32Array(16)}, 1 + s / 2, 0.2, 1, -0.5);
+	lfinMat = M44$mul$LM44$LM44$LM44$(this$1, this$1, m$1);
+	gl.uniformMatrix4fv(modelMatLoc, false, lfinMat._);
 	this._drawPart$L_Part$(Kingyo.lfin);
-	rfinMat = bodyMat.clone$().mul$LM44$(new M44$().setTranslate$NNN(- 0.5, - 0.3, 0)).mul$LM44$(new M44$().setRotate$NNNN(- 1 - s / 2, - 0.2, 1, - 0.5));
-	gl.uniformMatrix4fv(modelMatLoc, false, rfinMat.array$());
+	this$8 = new M44$LM44$(bodyMat);
+	m$7 = M44$setTranslate$LM44$NNN({_: new Float32Array(16)}, -0.5, -0.3, 0);
+	this$2 = M44$mul$LM44$LM44$LM44$(this$8, this$8, m$7);
+	m$2 = M44$setRotate$LM44$NNNN({_: new Float32Array(16)}, -1 - s / 2, -0.2, 1, -0.5);
+	rfinMat = M44$mul$LM44$LM44$LM44$(this$2, this$2, m$2);
+	gl.uniformMatrix4fv(modelMatLoc, false, rfinMat._);
 	this._drawPart$L_Part$(Kingyo.rfin);
-	bfinMat = bodyMat.clone$().mul$LM44$(new M44$().setTranslate$NNN(0, 0.7, 0)).mul$LM44$(new M44$().setRotate$NNNN(s / 2, 0, 1, 1));
-	gl.uniformMatrix4fv(modelMatLoc, false, bfinMat.array$());
+	this$9 = new M44$LM44$(bodyMat);
+	m$8 = M44$setTranslate$LM44$NNN({_: new Float32Array(16)}, 0, 0.7, 0);
+	this$3 = M44$mul$LM44$LM44$LM44$(this$9, this$9, m$8);
+	m$3 = M44$setRotate$LM44$NNNN({_: new Float32Array(16)}, s / 2, 0, 1, 1);
+	bfinMat = M44$mul$LM44$LM44$LM44$(this$3, this$3, m$3);
+	gl.uniformMatrix4fv(modelMatLoc, false, bfinMat._);
 	this._drawPart$L_Part$(Kingyo.bfin);
-	tfinMat = bodyMat.clone$().mul$LM44$(new M44$().setTranslate$NNN(0, 0, - 0.7)).mul$LM44$(new M44$().setRotate$NNNN(s / 2, 0, 1, 0));
-	gl.uniformMatrix4fv(modelMatLoc, false, tfinMat.array$());
+	this$10 = new M44$LM44$(bodyMat);
+	m$9 = M44$setTranslate$LM44$NNN({_: new Float32Array(16)}, 0, 0, -0.7);
+	this$4 = M44$mul$LM44$LM44$LM44$(this$10, this$10, m$9);
+	m$4 = M44$setRotate$LM44$NNNN({_: new Float32Array(16)}, s / 2, 0, 1, 0);
+	tfinMat = M44$mul$LM44$LM44$LM44$(this$4, this$4, m$4);
+	gl.uniformMatrix4fv(modelMatLoc, false, tfinMat._);
 	this._drawPart$L_Part$(Kingyo.tfin);
 };
 
@@ -11312,26 +7195,11 @@ Kingyo.prototype._draw$ = function () {
 Kingyo.prototype._drawPart$L_Part$ = function (p) {
 	/** @type {WebGLRenderingContext} */
 	var gl;
-	/** @type {WebGLProgram} */
-	var prog;
 	gl = Kingyo.gl;
-	prog = Kingyo.prog;
 	gl.bindBuffer(gl.ARRAY_BUFFER, p.vbuf);
-	gl.vertexAttribPointer((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[kingyo.jsx:332] null access");
-		}
-		return v;
-	}(Kingyo.alocs.vertex)), 3, gl.FLOAT, false, 0, 0);
+	gl.vertexAttribPointer(Kingyo.alocs.vertex, 3, gl.FLOAT, false, 0, 0);
 	gl.bindBuffer(gl.ARRAY_BUFFER, p.nbuf);
-	gl.vertexAttribPointer((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[kingyo.jsx:335] null access");
-		}
-		return v;
-	}(Kingyo.alocs.normal)), 3, gl.FLOAT, false, 0, 0);
+	gl.vertexAttribPointer(Kingyo.alocs.normal, 3, gl.FLOAT, false, 0, 0);
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, p.ibuf);
 	gl.drawElements(gl.TRIANGLES, p.numi, gl.UNSIGNED_SHORT, 0);
 };
@@ -11341,24 +7209,62 @@ Kingyo.prototype._drawPart$L_Part$ = function (p) {
 Kingyo.prototype._drawEyes$ = function () {
 	/** @type {WebGLRenderingContext} */
 	var gl;
-	/** @type {WebGLProgram} */
-	var prog;
 	/** @type {Object.<string, undefined|WebGLUniformLocation>} */
 	var ulocs;
-	/** @type {Object.<string, undefined|!number>} */
-	var alocs;
 	/** @type {!number} */
 	var s;
 	/** @type {M44} */
 	var bodyMat;
+	/** @type {M44} */
+	var this$0;
+	/** @type {M44} */
+	var m$0;
+	/** @type {M44} */
+	var this$1;
+	/** @type {M44} */
+	var m$1;
+	/** @type {M44} */
+	var this$2;
+	/** @type {M44} */
+	var this$3;
+	/** @type {M44} */
+	var m$2;
+	/** @type {M44} */
+	var this$4;
+	/** @type {M44} */
+	var this$5;
+	/** @type {M44} */
+	var m$3;
+	/** @type {M44} */
+	var this$6;
+	/** @type {!number} */
+	var rad$0;
+	/** @type {M44} */
+	var this$7;
+	/** @type {V3} */
+	var v$0;
+	/** @type {Float32Array} */
+	var _$0;
 	gl = Kingyo.gl;
-	prog = Kingyo.eyeProg;
 	ulocs = Kingyo.eyeULocs;
-	alocs = Kingyo.eyeALocs;
 	gl.uniform3fv(ulocs.color, this._color);
 	s = Math.sin(this._anim * 5);
-	bodyMat = new M44$().setTranslate$LV3$(this._pos).mul$LM44$(this._spinMat).mul$LM44$(new M44$().setRotateZ$N(this._vangle - s / 10)).mul$LM44$(new M44$().setRotateX$N(Math.PI / 2)).mul$LM44$(new M44$().setRotateY$N(Math.PI / 2));
-	gl.uniformMatrix4fv(ulocs.modelMatrix, false, bodyMat.array$());
+	this$7 = {_: new Float32Array(16)};
+	v$0 = this._pos;
+	this$5 = M44$setTranslate$LM44$NNN(this$7, (_$0 = v$0._)[0], _$0[1], _$0[2]);
+	m$3 = this._spinMat;
+	this$3 = M44$mul$LM44$LM44$LM44$(this$5, this$5, m$3);
+	this$6 = {_: new Float32Array(16)};
+	rad$0 = this._vangle - s / 10;
+	m$2 = M44$setRotate$LM44$NNNN(this$6, rad$0, 0, 0, 1);
+	this$1 = M44$mul$LM44$LM44$LM44$(this$3, this$3, m$2);
+	this$4 = {_: new Float32Array(16)};
+	m$1 = M44$setRotate$LM44$NNNN(this$4, 1.5707963267948966, 1, 0, 0);
+	this$0 = M44$mul$LM44$LM44$LM44$(this$1, this$1, m$1);
+	this$2 = {_: new Float32Array(16)};
+	m$0 = M44$setRotate$LM44$NNNN(this$2, 1.5707963267948966, 0, 1, 0);
+	bodyMat = M44$mul$LM44$LM44$LM44$(this$0, this$0, m$0);
+	gl.uniformMatrix4fv(ulocs.modelMatrix, false, bodyMat._);
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, Kingyo.eyes.ibuf);
 	gl.drawElements(gl.TRIANGLES, 12, gl.UNSIGNED_SHORT, 0);
 };
@@ -11392,7 +7298,7 @@ Poi.initWithGL$LWebGLRenderingContext$ = function (gl) {
 	Poi.prog = Util$getProgram$SS('vt.vs', 'vt.fs');
 	Poi.vtbuf = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, Poi.vtbuf);
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ - 2, - 6, 2, - 6, 2, 2, - 2, 2, 0, 0, 1, 0, 1, 1, 0, 1 ]), gl.STATIC_DRAW);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ -2, -6, 2, -6, 2, 2, -2, 2, 0, 0, 1, 0, 1, 1, 0, 1 ]), gl.STATIC_DRAW);
 	Poi.tex = Poi$loadTex$S('poi.png');
 	Poi.texx = Poi$loadTex$S('poix.png');
 };
@@ -11412,7 +7318,7 @@ Poi.loadTex$S = function (filename) {
 	var image;
 	gl = Poi.gl;
 	tex = gl.createTexture();
-	image = (function (o) { return o instanceof HTMLImageElement ? o : null; })(dom.window.document.createElement('img'));
+	image = dom.window.document.createElement('img');
 	image.onload = (function (e) {
 		gl.bindTexture(gl.TEXTURE_2D, tex);
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
@@ -11430,53 +7336,69 @@ Poi.loadTex$S = function (filename) {
 var Poi$loadTex$S = Poi.loadTex$S;
 
 /**
+ * @param {Poi} $this
  * @param {!number} x
  * @param {!number} y
  * @return {Poi}
  */
-Poi.prototype.setPosition$NN = function (x, y) {
-	this._x = x;
-	this._y = y;
-	return this;
+Poi.setPosition$LPoi$NN = function ($this, x, y) {
+	$this._x = x;
+	$this._y = y;
+	return $this;
 };
 
+var Poi$setPosition$LPoi$NN = Poi.setPosition$LPoi$NN;
+
 /**
+ * @param {Poi} $this
  * @param {!boolean} d
  * @return {Poi}
  */
-Poi.prototype.down$B = function (d) {
-	this._down = d;
-	return this;
+Poi.down$LPoi$B = function ($this, d) {
+	$this._down = d;
+	return $this;
 };
 
+var Poi$down$LPoi$B = Poi.down$LPoi$B;
+
 /**
+ * @param {Poi} $this
  * @return {!boolean}
  */
-Poi.prototype.down$ = function () {
-	return this._down;
+Poi.down$LPoi$ = function ($this) {
+	return $this._down;
 };
 
+var Poi$down$LPoi$ = Poi.down$LPoi$;
+
 /**
+ * @param {Poi} $this
  * @param {!boolean} t
  * @return {Poi}
  */
-Poi.prototype.tear$B = function (t) {
-	this._live = ! t;
-	return this;
+Poi.tear$LPoi$B = function ($this, t) {
+	$this._live = ! t;
+	return $this;
 };
 
+var Poi$tear$LPoi$B = Poi.tear$LPoi$B;
+
 /**
+ * @param {Poi} $this
  * @return {!boolean}
  */
-Poi.prototype.tearing$ = function () {
-	return ! this._live;
+Poi.tearing$LPoi$ = function ($this) {
+	return ! $this._live;
 };
 
+var Poi$tearing$LPoi$ = Poi.tearing$LPoi$;
+
 /**
+ * @param {Poi} $this
  * @param {M44} projMat
  * @param {M44} viewMat
  */
-Poi.prototype.draw$LM44$LM44$ = function (projMat, viewMat) {
+Poi.draw$LPoi$LM44$LM44$ = function ($this, projMat, viewMat) {
 	/** @type {WebGLRenderingContext} */
 	var gl;
 	/** @type {WebGLProgram} */
@@ -11487,27 +7409,47 @@ Poi.prototype.draw$LM44$LM44$ = function (projMat, viewMat) {
 	var vloc;
 	/** @type {!number} */
 	var tloc;
+	/** @type {M44} */
+	var this$0;
+	/** @type {M44} */
+	var m$0;
+	/** @type {M44} */
+	var this$1;
+	/** @type {M44} */
+	var m$1;
+	/** @type {M44} */
+	var m$2;
+	/** @type {M44} */
+	var this$2;
 	gl = Poi.gl;
 	prog = Poi.prog;
 	gl.useProgram(prog);
-	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, projMat.array$());
-	mvMat = new M44$LM44$(viewMat).mul$LM44$(new M44$().setTranslate$NNN(this._x, this._y, this._z));
-	if (this._down) {
-		mvMat.mul$LM44$(new M44$().setTranslate$NNN(0, 0, - 7)).mul$LM44$(new M44$().setRotateX$N(- 0.1));
+	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, projMat._);
+	this$0 = new M44$LM44$(viewMat);
+	m$0 = M44$setTranslate$LM44$NNN({_: new Float32Array(16)}, $this._x, $this._y, $this._z);
+	mvMat = M44$mul$LM44$LM44$LM44$(this$0, this$0, m$0);
+	if ($this._down) {
+		m$2 = M44$setTranslate$LM44$NNN({_: new Float32Array(16)}, 0, 0, -7);
+		this$1 = M44$mul$LM44$LM44$LM44$(mvMat, mvMat, m$2);
+		this$2 = {_: new Float32Array(16)};
+		m$1 = M44$setRotate$LM44$NNNN(this$2, -0.1, 1, 0, 0);
+		M44$mul$LM44$LM44$LM44$(this$1, this$1, m$1);
 	}
-	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'modelviewMatrix'), false, mvMat.array$());
+	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'modelviewMatrix'), false, mvMat._);
 	gl.bindBuffer(gl.ARRAY_BUFFER, Poi.vtbuf);
 	vloc = gl.getAttribLocation(prog, 'vertex');
 	tloc = gl.getAttribLocation(prog, 'texcoord');
 	gl.vertexAttribPointer(vloc, 2, gl.FLOAT, false, 0, 0);
-	gl.vertexAttribPointer(tloc, 2, gl.FLOAT, false, 0, 4 * 8);
+	gl.vertexAttribPointer(tloc, 2, gl.FLOAT, false, 0, 32);
 	gl.enableVertexAttribArray(vloc);
 	gl.enableVertexAttribArray(tloc);
-	gl.bindTexture(gl.TEXTURE_2D, this._live ? Poi.tex : Poi.texx);
+	gl.bindTexture(gl.TEXTURE_2D, $this._live ? Poi.tex : Poi.texx);
 	gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
 	gl.disableVertexAttribArray(vloc);
 	gl.disableVertexAttribArray(tloc);
 };
+
+var Poi$draw$LPoi$LM44$LM44$ = Poi.draw$LPoi$LM44$LM44$;
 
 /**
  * class Water extends Object
@@ -11549,14 +7491,14 @@ function Water$() {
 	this.depthbuffer = null;
 	this.width = 0;
 	this.height = 0;
-	this._ix = - 1;
-	this._iy = - 1;
+	this._ix = -1;
+	this._iy = -1;
 	this._ir = 0;
 	this._iz = 0;
 	this._next_step_time = 0;
 	gl = Water.gl;
-	w = Water.tsize;
-	h = Water.tsize;
+	w = 64;
+	h = 64;
 	framebuffer = gl.createFramebuffer();
 	gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
 	for (i = 0; i < 2; ++ i) {
@@ -11608,7 +7550,7 @@ Water.initWithGL$LWebGLRenderingContext$ = function (gl) {
 	Water.drawProg = Util$getProgram$SS('vt.vs', 'refr.fs');
 	Water.drawVBuf = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, Water.drawVBuf);
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ - 20, - 20, 20, - 20, 20, 20, - 20, 20 ]), gl.STATIC_DRAW);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ -20, -20, 20, -20, 20, 20, -20, 20 ]), gl.STATIC_DRAW);
 	Water.drawTBuf = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, Water.drawTBuf);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ 0, 0, 1, 0, 1, 1, 0, 1 ]), gl.STATIC_DRAW);
@@ -11636,50 +7578,28 @@ Water.prototype.step$N = function (t) {
 	var gl;
 	/** @type {Int32Array} */
 	var vp;
+	/** @type {!number} */
+	var _next_step_time$0;
 	if (! this._next_step_time) {
 		this._next_step_time = t;
 	}
 	if (t < this._next_step_time) {
 		return;
 	}
-	this._next_step_time += Water.time_step;
-	if (this._next_step_time < t) {
+	_next_step_time$0 = this._next_step_time += 0.02;
+	if (_next_step_time$0 < t) {
 		this._next_step_time = t;
 	}
 	gl = Water.gl;
-	vp = (function (o) { return o instanceof Int32Array ? o : null; })(gl.getParameter(gl.VIEWPORT));
+	vp = gl.getParameter(gl.VIEWPORT);
 	if (! vp) {
-		vp = new Int32Array((function (o) { return o instanceof Array ? o : null; })(gl.getParameter(gl.VIEWPORT)));
+		vp = new Int32Array(gl.getParameter(gl.VIEWPORT));
 	}
 	gl.disable(gl.BLEND);
 	gl.disable(gl.DEPTH_TEST);
 	this._step$LWebGLProgram$(Water.progDisp);
 	this._step$LWebGLProgram$(Water.progVelo);
-	gl.viewport((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[water.jsx:129] null access");
-		}
-		return v;
-	}(vp[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[water.jsx:129] null access");
-		}
-		return v;
-	}(vp[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[water.jsx:129] null access");
-		}
-		return v;
-	}(vp[2])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[water.jsx:129] null access");
-		}
-		return v;
-	}(vp[3])));
+	gl.viewport(vp[0], vp[1], vp[2], vp[3]);
 	gl.enable(gl.BLEND);
 	gl.enable(gl.DEPTH_TEST);
 	if (this._ir > 0) {
@@ -11708,7 +7628,7 @@ Water.prototype._step$LWebGLProgram$ = function (prog) {
 	if (impLoc) {
 		gl.uniform4f(impLoc, this._ix, this._iy, this._iz, this._ir);
 	}
-	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, new M44$().setOrtho$NNNNNN(0, 1, 0, 1, - 1, 1).array$());
+	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, M44$array$LM44$(M44$setOrtho$LM44$NNNNNN({_: new Float32Array(16)}, 0, 1, 0, 1, -1, 1)));
 	gl.uniform2f(gl.getUniformLocation(prog, 'sampleStep'), 1 / this.width, 1 / this.height);
 	gl.bindTexture(gl.TEXTURE_2D, this.texture);
 	gl.bindBuffer(gl.ARRAY_BUFFER, Water.vbuf);
@@ -11737,7 +7657,7 @@ Water.prototype.debugDraw$ = function () {
 	prog = Water.progDisp;
 	vloc = gl.getAttribLocation(prog, 'vertex');
 	gl.useProgram(prog);
-	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, new M44$().setOrtho$NNNNNN(0, 1, 0, 1, - 1, 1).array$());
+	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, M44$array$LM44$(M44$setOrtho$LM44$NNNNNN({_: new Float32Array(16)}, 0, 1, 0, 1, -1, 1)));
 	gl.uniform2f(gl.getUniformLocation(prog, 'sampleStep'), 1 / this.width, 1 / this.height);
 	gl.bindTexture(gl.TEXTURE_2D, this.texture);
 	gl.bindBuffer(gl.ARRAY_BUFFER, Water.vbuf);
@@ -11768,8 +7688,8 @@ Water.prototype.draw$LM44$LM44$LWebGLTexture$NN = function (projMat, viewMat, bg
 	vloc = gl.getAttribLocation(prog, 'vertex');
 	tloc = gl.getAttribLocation(prog, 'texcoord');
 	gl.useProgram(prog);
-	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, projMat.array$());
-	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'modelviewMatrix'), false, viewMat.array$());
+	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, projMat._);
+	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'modelviewMatrix'), false, viewMat._);
 	gl.uniform2f(gl.getUniformLocation(prog, 'texSize'), w, h);
 	gl.activeTexture(gl.TEXTURE1);
 	gl.bindTexture(gl.TEXTURE_2D, this.texture);
@@ -11876,16 +7796,12 @@ RenderTexture.prototype.destroy$ = function () {
 RenderTexture.prototype.begin$ = function () {
 	/** @type {WebGLRenderingContext} */
 	var gl;
+	/** @type {Int32Array} */
+	var _viewport$0;
 	gl = RenderTexture.gl;
-	this._viewport = (function (o) { return o instanceof Int32Array ? o : null; })(gl.getParameter(gl.VIEWPORT));
-	if (! this._viewport) {
-		this._viewport = new Int32Array((function (v) {
-			if (! (v == null || v instanceof Array)) {
-				debugger;
-				throw new Error("[rendertexture.jsx:64] detected invalid cast, value is not an Array or null");
-			}
-			return v;
-		}(gl.getParameter(gl.VIEWPORT))));
+	_viewport$0 = this._viewport = gl.getParameter(gl.VIEWPORT);
+	if (! _viewport$0) {
+		this._viewport = new Int32Array(gl.getParameter(gl.VIEWPORT));
 	}
 	gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
 	gl.viewport(0, 0, this.width, this.height);
@@ -11902,31 +7818,7 @@ RenderTexture.prototype.end$ = function () {
 	gl = RenderTexture.gl;
 	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 	vp = this._viewport;
-	gl.viewport((function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[rendertexture.jsx:79] null access");
-		}
-		return v;
-	}(vp[0])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[rendertexture.jsx:79] null access");
-		}
-		return v;
-	}(vp[1])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[rendertexture.jsx:79] null access");
-		}
-		return v;
-	}(vp[2])), (function (v) {
-		if (! (v != null)) {
-			debugger;
-			throw new Error("[rendertexture.jsx:79] null access");
-		}
-		return v;
-	}(vp[3])));
+	gl.viewport(vp[0], vp[1], vp[2], vp[3]);
 };
 
 /**
@@ -11944,10 +7836,10 @@ Game.fovh = 0.2;
 Game.fovv = 0.2;
 Game.gl = null;
 $__jsx_lazy_init(Game, "projMat", function () {
-	return new M44$().setFrustum$NNNNNN(- Game.near * Game.fovh, Game.near * Game.fovh, - Game.near * Game.fovv, Game.near * Game.fovv, Game.near, Game.far);
+	return M44$setFrustum$LM44$NNNNNN({_: new Float32Array(16)}, - Game.near * Game.fovh, Game.near * Game.fovh, - Game.near * Game.fovv, Game.near * Game.fovv, Game.near, Game.far);
 });
 $__jsx_lazy_init(Game, "viewMat", function () {
-	return new M44$().setTranslate$NNN(0, 0, - Game.viewDistance).mul$LM44$(new M44$().setRotateX$N(- Game.viewLean));
+	return M44$mul$LM44$LM44$(M44$setTranslate$LM44$NNN({_: new Float32Array(16)}, 0, 0, - Game.viewDistance), M44$setRotateX$LM44$N({_: new Float32Array(16)}, - Game.viewLean));
 });
 Game.poi = null;
 Game.water = null;
@@ -11965,18 +7857,11 @@ Game.life_bar_width = 100;
 Game.status_text = null;
 Game.startTime = 0;
 js.global = (function () { return this; })();
-
 $__jsx_lazy_init(dom, "window", function () {
 	return js.global.window;
 });
 $__jsx_lazy_init(dom, "document", function () {
-	return (function (v) {
-		if (! (v == null || v instanceof HTMLDocument)) {
-			debugger;
-			throw new Error("[/Users/haga.takeshi/Documents/JSX/lib/js/js/web.jsx:16] detected invalid cast, value is not an instance of the designated type or null");
-		}
-		return v;
-	}(js.global.document));
+	return js.global.document;
 });
 $__jsx_lazy_init(Timer, "_requestAnimationFrame", function () {
 	return Timer$_getRequestAnimationFrameImpl$B(true);
@@ -11988,19 +7873,13 @@ Util.gl = null;
 MVQ.EQUAL_EPSILON = 0.000001;
 M22.ROWS = 2;
 M22.COLS = 2;
-$__jsx_lazy_init(M22, "ELEMS", function () {
-	return M22.ROWS * M22.COLS;
-});
+M22.ELEMS = 4;
 M33.ROWS = 3;
 M33.COLS = 3;
-$__jsx_lazy_init(M33, "ELEMS", function () {
-	return M33.ROWS * M33.COLS;
-});
+M33.ELEMS = 9;
 M44.ROWS = 4;
 M44.COLS = 4;
-$__jsx_lazy_init(M44, "ELEMS", function () {
-	return M44.ROWS * M44.COLS;
-});
+M44.ELEMS = 16;
 Quat.ELEMS = 4;
 Kingyo.bound = 10;
 Kingyo.gl = null;
