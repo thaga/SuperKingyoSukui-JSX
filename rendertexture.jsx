@@ -58,10 +58,15 @@ class RenderTexture {
 	function begin() : void {
 		var gl = RenderTexture.gl;
 
-		this._viewport = gl.getParameter(gl.VIEWPORT) as Int32Array;
-
+		//this._viewport = gl.getParameter(gl.VIEWPORT) as Int32Array;
 		// XXX: workaround fod Firefox
-		if (!this._viewport) this._viewport = new Int32Array(gl.getParameter(gl.VIEWPORT) as __noconvert__ Array.<int>);
+		this._viewport = null;
+		var tmp_vp = gl.getParameter(gl.VIEWPORT);
+		if (tmp_vp instanceof Int32Array) {
+			this._viewport = tmp_vp as __noconvert__ Int32Array;
+		} else {
+			this._viewport = new Int32Array(tmp_vp as __noconvert__ Array.<int>);
+		}
 
 		// draw begin
 		gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);

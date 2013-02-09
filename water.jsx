@@ -114,10 +114,15 @@ class Water {
 		var gl = Water.gl;
 
 		// get viewport
-		var vp = gl.getParameter(gl.VIEWPORT) as Int32Array;
-
+		//var vp = gl.getParameter(gl.VIEWPORT) as Int32Array;
 		// XXX: workaround fod Firefox
-		if (!vp) vp = new Int32Array(gl.getParameter(gl.VIEWPORT) as Array.<int>);
+		var vp = null:Int32Array;
+		var tmp_vp = gl.getParameter(gl.VIEWPORT);
+		if (tmp_vp instanceof Int32Array) {
+			vp = tmp_vp as __noconvert__ Int32Array;
+		} else {
+			vp = new Int32Array(tmp_vp as __noconvert__ Array.<int>);
+		}
 
 		gl.disable(gl.BLEND);
 		gl.disable(gl.DEPTH_TEST);
