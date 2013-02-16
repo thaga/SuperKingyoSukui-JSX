@@ -1,4 +1,4 @@
-// generatedy by JSX compiler 0.9.5 (2013-02-07 01:53:24 +0900; d6f0f15e5b4635f12712ab16698272b96fd59eff)
+// generatedy by JSX compiler 0.9.7 (2013-02-16 14:36:56 +0900; 1b916f8c2382483cfa3d3b6979c6499bc79216b7)
 var JSX = {};
 (function (JSX) {
 /**
@@ -40,8 +40,7 @@ function $__jsx_div_assign(obj, prop, divisor) {
 }
 
 /*
- * global functions called by JSX
- * (enamed so that they do not conflict with local variable names)
+ * global functions, renamed to avoid conflict with local variable names
  */
 var $__jsx_parseInt = parseInt;
 var $__jsx_parseFloat = parseFloat;
@@ -91,13 +90,36 @@ JSX.resetProfileResults = function () {
 };
 JSX.DEBUG = false;
 /**
+ * class _Main extends Object
+ * @constructor
+ */
+function _Main() {
+}
+
+/**
+ * @constructor
+ */
+function _Main$() {
+};
+
+_Main$.prototype = new _Main;
+
+/**
+ * @param {Array.<undefined|!string>} args
+ */
+_Main.main$AS = function (args) {
+	Game$main$SS('webgl-canvas', 'life-bar');
+};
+
+var _Main$main$AS = _Main.main$AS;
+
+/**
  * class Game extends Object
  * @constructor
  */
 function Game() {
 }
 
-Game.prototype = new Object;
 /**
  * @constructor
  */
@@ -532,7 +554,6 @@ var Game$main$SS = Game.main$SS;
 function js() {
 }
 
-js.prototype = new Object;
 /**
  * @constructor
  */
@@ -548,7 +569,6 @@ js$.prototype = new js;
 function dom() {
 }
 
-dom.prototype = new Object;
 /**
  * @constructor
  */
@@ -594,7 +614,6 @@ var dom$createElement$S = dom.createElement$S;
 function EventInit() {
 }
 
-EventInit.prototype = new Object;
 /**
  * @constructor
  */
@@ -631,7 +650,6 @@ CustomEventInit$.prototype = new CustomEventInit;
 function MutationObserverInit() {
 }
 
-MutationObserverInit.prototype = new Object;
 /**
  * @constructor
  */
@@ -674,7 +692,6 @@ UIEventInit$.prototype = new UIEventInit;
 function FocusEventInit() {
 }
 
-FocusEventInit.prototype = new Object;
 /**
  * @constructor
  */
@@ -727,7 +744,6 @@ MouseEventInit$.prototype = new MouseEventInit;
 function WheelEventInit() {
 }
 
-WheelEventInit.prototype = new Object;
 /**
  * @constructor
  */
@@ -762,7 +778,6 @@ WheelEventInit$.prototype = new WheelEventInit;
 function KeyboardEventInit() {
 }
 
-KeyboardEventInit.prototype = new Object;
 /**
  * @constructor
  */
@@ -794,7 +809,6 @@ KeyboardEventInit$.prototype = new KeyboardEventInit;
 function CompositionEventInit() {
 }
 
-CompositionEventInit.prototype = new Object;
 /**
  * @constructor
  */
@@ -837,7 +851,6 @@ ProgressEventInit$.prototype = new ProgressEventInit;
 function XMLHttpRequestOptions() {
 }
 
-XMLHttpRequestOptions.prototype = new Object;
 /**
  * @constructor
  */
@@ -1051,7 +1064,6 @@ ErrorEventInit$.prototype = new ErrorEventInit;
 function EventSourceInit() {
 }
 
-EventSourceInit.prototype = new Object;
 /**
  * @constructor
  */
@@ -1068,7 +1080,6 @@ EventSourceInit$.prototype = new EventSourceInit;
 function IDBObjectStoreParameters() {
 }
 
-IDBObjectStoreParameters.prototype = new Object;
 /**
  * @constructor
  */
@@ -1086,7 +1097,6 @@ IDBObjectStoreParameters$.prototype = new IDBObjectStoreParameters;
 function IDBIndexParameters() {
 }
 
-IDBIndexParameters.prototype = new Object;
 /**
  * @constructor
  */
@@ -1124,7 +1134,6 @@ IDBVersionChangeEventInit$.prototype = new IDBVersionChangeEventInit;
 function NotificationOptions() {
 }
 
-NotificationOptions.prototype = new Object;
 /**
  * @constructor
  */
@@ -1145,7 +1154,6 @@ NotificationOptions$.prototype = new NotificationOptions;
 function RTCSessionDescriptionInit() {
 }
 
-RTCSessionDescriptionInit.prototype = new Object;
 /**
  * @constructor
  */
@@ -1163,7 +1171,6 @@ RTCSessionDescriptionInit$.prototype = new RTCSessionDescriptionInit;
 function RTCIceCandidateInit() {
 }
 
-RTCIceCandidateInit.prototype = new Object;
 /**
  * @constructor
  */
@@ -1182,7 +1189,6 @@ RTCIceCandidateInit$.prototype = new RTCIceCandidateInit;
 function RTCIceServer() {
 }
 
-RTCIceServer.prototype = new Object;
 /**
  * @constructor
  */
@@ -1200,7 +1206,6 @@ RTCIceServer$.prototype = new RTCIceServer;
 function RTCConfiguration() {
 }
 
-RTCConfiguration.prototype = new Object;
 /**
  * @constructor
  */
@@ -1217,7 +1222,6 @@ RTCConfiguration$.prototype = new RTCConfiguration;
 function DataChannelInit() {
 }
 
-DataChannelInit.prototype = new Object;
 /**
  * @constructor
  */
@@ -1291,7 +1295,6 @@ DataChannelEventInit$.prototype = new DataChannelEventInit;
 function MediaStreamConstraints() {
 }
 
-MediaStreamConstraints.prototype = new Object;
 /**
  * @constructor
  */
@@ -1309,7 +1312,6 @@ MediaStreamConstraints$.prototype = new MediaStreamConstraints;
 function MediaTrackConstraints() {
 }
 
-MediaTrackConstraints.prototype = new Object;
 /**
  * @constructor
  */
@@ -1327,7 +1329,6 @@ MediaTrackConstraints$.prototype = new MediaTrackConstraints;
 function HitRegionOptions() {
 }
 
-HitRegionOptions.prototype = new Object;
 /**
  * @constructor
  */
@@ -1350,7 +1351,6 @@ HitRegionOptions$.prototype = new HitRegionOptions;
 function WebGLContextAttributes() {
 }
 
-WebGLContextAttributes.prototype = new Object;
 /**
  * @constructor
  */
@@ -1435,7 +1435,6 @@ DeviceMotionEventInit$.prototype = new DeviceMotionEventInit;
 function Timer() {
 }
 
-Timer.prototype = new Object;
 /**
  * @constructor
  */
@@ -1619,7 +1618,6 @@ var Timer$_getCancelAnimationFrameImpl$B = Timer._getCancelAnimationFrameImpl$B;
 function TimerHandle() {
 }
 
-TimerHandle.prototype = new Object;
 /**
  * @constructor
  */
@@ -1635,7 +1633,6 @@ TimerHandle$.prototype = new TimerHandle;
 function Util() {
 }
 
-Util.prototype = new Object;
 /**
  * @constructor
  */
@@ -1828,7 +1825,6 @@ var Util$getAttribLocations$LWebGLProgram$ = Util.getAttribLocations$LWebGLProgr
 function MVQ() {
 }
 
-MVQ.prototype = new Object;
 /**
  * @constructor
  */
@@ -1844,7 +1840,6 @@ MVQ$.prototype = new MVQ;
 function V2() {
 }
 
-V2.prototype = new Object;
 /**
  * @constructor
  */
@@ -2431,7 +2426,6 @@ V2.prototype.toString = function () {
 function V3() {
 }
 
-V3.prototype = new Object;
 /**
  * @constructor
  */
@@ -3135,7 +3129,6 @@ V3.prototype.toString = function () {
 function V4() {
 }
 
-V4.prototype = new Object;
 /**
  * @constructor
  */
@@ -3851,7 +3844,6 @@ V4.prototype.toString = function () {
 function M22() {
 }
 
-M22.prototype = new Object;
 /**
  * @constructor
  */
@@ -4383,7 +4375,6 @@ M22.prototype.toString = function () {
 function M33() {
 }
 
-M33.prototype = new Object;
 /**
  * @constructor
  */
@@ -5122,7 +5113,6 @@ M33.prototype.toString = function () {
 function M44() {
 }
 
-M44.prototype = new Object;
 /**
  * @constructor
  */
@@ -6306,7 +6296,6 @@ M44.prototype.toString = function () {
 function Quat() {
 }
 
-Quat.prototype = new Object;
 /**
  * @constructor
  */
@@ -6726,28 +6715,27 @@ Quat.prototype.toString = function () {
 };
 
 /**
- * class _Main extends Object
+ * class _Main$0 extends Object
  * @constructor
  */
-function _Main() {
+function _Main$0() {
 }
 
-_Main.prototype = new Object;
 /**
  * @constructor
  */
-function _Main$() {
+function _Main$0$() {
 };
 
-_Main$.prototype = new _Main;
+_Main$0$.prototype = new _Main$0;
 
 /**
  * @param {Array.<undefined|!string>} args
  */
-_Main.main$AS = function (args) {
+_Main$0.main$AS = function (args) {
 };
 
-var _Main$main$AS = _Main.main$AS;
+var _Main$0$main$AS = _Main$0.main$AS;
 
 /**
  * class _Part extends Object
@@ -6756,7 +6744,6 @@ var _Main$main$AS = _Main.main$AS;
 function _Part() {
 }
 
-_Part.prototype = new Object;
 /**
  * @constructor
  */
@@ -6875,7 +6862,6 @@ var _Part$setIndex$L_Part$AI = _Part.setIndex$L_Part$AI;
 function Kingyo() {
 }
 
-Kingyo.prototype = new Object;
 /**
  * @constructor
  */
@@ -7575,7 +7561,6 @@ Kingyo.prototype._drawEyes$ = function () {
 function Poi() {
 }
 
-Poi.prototype = new Object;
 /**
  * @constructor
  */
@@ -7780,7 +7765,6 @@ var Poi$draw$LPoi$LM44$LM44$ = Poi.draw$LPoi$LM44$LM44$;
 function Water() {
 }
 
-Water.prototype = new Object;
 /**
  * @constructor
  */
@@ -8055,7 +8039,6 @@ Water.prototype.setImpulse$NNNN = function (x, y, r, z) {
 function RenderTexture() {
 }
 
-RenderTexture.prototype = new Object;
 /**
  * @constructor
  * @param {!number} w
@@ -8236,6 +8219,8 @@ Water.time_step = 0.02;
 RenderTexture.gl = null;
 var $__jsx_classMap = {
 	"game.jsx": {
+		_Main: _Main,
+		_Main$: _Main$,
 		Game: Game,
 		Game$: Game$
 	},
@@ -8400,8 +8385,8 @@ var $__jsx_classMap = {
 		Quat$AN: Quat$AN,
 		Quat$LFloat32Array$: Quat$LFloat32Array$,
 		Quat$NNNN: Quat$NNNN,
-		_Main: _Main,
-		_Main$: _Main$
+		_Main: _Main$0,
+		_Main$: _Main$0$
 	},
 	"kingyo.jsx": {
 		_Part: _Part,
@@ -8430,14 +8415,13 @@ var $__jsx_classMap = {
 JSX.runMain = function (sourceFile, args) {
 	var module = JSX.require(sourceFile);
 	if (! module) {
-		throw new Error("entry point module not found in " + sourceFile);
+		throw new ReferenceError("entry point module not found in " + sourceFile);
 	}
-
 	if (! module._Main) {
-		throw new Error("entry point _Main not found in " + sourceFile);
+		throw new ReferenceError("entry point _Main not found in " + sourceFile);
 	}
 	if (! module._Main.main$AS) {
-		throw new Error("entry point _Main.main(:string[]):void not found in " + sourceFile);
+		throw new ReferenceError("entry point _Main.main(:string[]):void not found in " + sourceFile);
 	}
 	module._Main.main$AS(args);
 };
