@@ -5,4 +5,7 @@ all:
 	jsx --release --executable web --output game.jsx.js game.jsx
 
 debug:
+	jsx --executable web --output game.jsx.js game.jsx
+
+debug-with-source-map:
 	jsx --enable-source-map --executable web --output game.jsx.js game.jsx
