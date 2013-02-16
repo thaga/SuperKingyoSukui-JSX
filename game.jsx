@@ -8,6 +8,12 @@ import 'poi.jsx';
 import 'water.jsx';
 import 'rendertexture.jsx';
 
+class _Main {
+	static function main(args:string[]) : void {
+		Game.main('webgl-canvas', 'life-bar');
+	}
+}
+
 class Game {
 	static const viewDistance = 80;
 	static const viewLean = 0.2;
