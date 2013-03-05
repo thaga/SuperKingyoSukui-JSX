@@ -157,6 +157,8 @@ Game.main$SS = function (canvas_id, life_id) {
 	var touchEnd;
 	/** @type {*} */
 	var touchMove;
+	/** @type {!boolean} */
+	var raf;
 	/** @type {*} */
 	var update_render;
 	canvas = dom.document.getElementById(canvas_id);
@@ -447,6 +449,9 @@ Game.main$SS = function (canvas_id, life_id) {
 	canvas.style.cursor = 'none';
 	Game.canvas = canvas;
 	Game.renderTex = new RenderTexture$II(canvas.width, canvas.height);
+	raf = dom.window.location.hash === "#raf";
+	Timer._requestAnimationFrame = Timer$_getRequestAnimationFrameImpl$B(raf);
+	Timer._cancelAnimationFrame = Timer$_getCancelAnimationFrameImpl$B(raf);
 	function update_render(time) {
 		Game$update$();
 		Game$render$();

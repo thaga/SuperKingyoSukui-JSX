@@ -205,6 +205,10 @@ class Game {
 
 		Game.renderTex = new RenderTexture(canvas.width, canvas.height);
 
+		var raf = (dom.window.location.hash == "#raf");
+		log "use native RAF: " + raf as string;
+		Timer.useNativeRAF(raf);
+
 		function update_render(time:number) : void {
 			Game.update();
 			Game.render();
