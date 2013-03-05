@@ -153,7 +153,7 @@ class Water {
 			gl.uniform4f(impLoc, this._ix, this._iy, this._iz, this._ir);
 		}
 
-		gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, new M44.setOrtho(0, 1, 0, 1, -1, 1).array());
+		gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, new M44().setOrtho(0, 1, 0, 1, -1, 1).array());
 		gl.uniform2f(gl.getUniformLocation(prog, 'sampleStep'), 1/this.width, 1/this.height);
 		gl.bindTexture(gl.TEXTURE_2D, this.texture);
 		gl.bindBuffer(gl.ARRAY_BUFFER, Water.vbuf);
@@ -181,7 +181,7 @@ class Water {
 		var vloc = gl.getAttribLocation(prog, 'vertex');
 
 		gl.useProgram(prog);
-		gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, new M44.setOrtho(0, 1, 0, 1, -1, 1).array());
+		gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, new M44().setOrtho(0, 1, 0, 1, -1, 1).array());
 		gl.uniform2f(gl.getUniformLocation(prog, 'sampleStep'), 1/this.width, 1/this.height);
 		gl.bindTexture(gl.TEXTURE_2D, this.texture);
 		gl.bindBuffer(gl.ARRAY_BUFFER, Water.vbuf);

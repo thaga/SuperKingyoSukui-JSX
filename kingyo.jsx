@@ -54,27 +54,27 @@ class Kingyo {
 		Kingyo.prog = Util.getProgram('kbody.vs', 'kbody.fs');
 
 		Kingyo.body =
-			new _Part
+			new _Part()
 			.setVertex([0,0,1, 0.7,0,0, 0,1,0, -0.7,0,0, 0,-1,0, 0,0,-1])
 			.setNormal([0,0,1, 1,0,0, 0,1,0, -1,0,0, 0,-1,0, 0,0,-1])
 			.setIndex([0,1,2, 0,2,3, 0,3,4, 0,4,1, 5,2,1, 5,3,2, 5,4,3, 5,1,4]:int[]);
 		Kingyo.lfin =
-			new _Part
+			new _Part()
 			.setVertex([0,0,0, 0.5,-0.25,0, 0.8,0.25,0])
 			.setNormal([0,0,1, 0,0,1, 0,0,1])
 			.setIndex([0,1,2]:int[]);
 		Kingyo.rfin =
-			new _Part
+			new _Part()
 			.setVertex([0,0,0, -0.8,0.25,0, -0.5,-0.25,0])
 			.setNormal([0,0,1, 0,0,1, 0,0,1])
 			.setIndex([0,1,2]:int[]);
 		Kingyo.bfin =
-			new _Part
+			new _Part()
 			.setVertex([0,0,0, 0,-0.5,-1, 0,0.5,-0.8])
 			.setNormal([1,0,0, 1,0,0, 1,0,0])
 			.setIndex([0,1,2]:int[]);
 		Kingyo.tfin =
-			new _Part
+			new _Part()
 			.setVertex([0,0,0, 0.8,-0.5,-1, 0,0.4,-0.8, -0.8,-0.5,-1])
 			.setNormal([0,1,1, 1,1,1, 0,1,0, -1,1,1])
 			.setIndex([0,1,2, 0,2,3]:int[]);
@@ -87,13 +87,13 @@ class Kingyo {
 		Kingyo.eyeALocs = Util.getAttribLocations(Kingyo.eyeProg);
 		var ex = 0.3, ey = 0.15, ez = 0.5;
 		Kingyo.eyes =
-			new _Part
+			new _Part()
 			.setVertex([-ex,ey,ez,0, -ex,ey,ez,1, -ex,ey,ez,2, -ex,ey,ez,3, ex,ey,ez,4, ex,ey,ez,5, ex,ey,ez,6, ex,ey,ez,7])
 			.setIndex([0,1,2, 0,2,3, 4,5,6, 4,6,7]:int[]);
 	}
 
 	static function init(num_kingyos:int) : void {
-		for (var i = 0; i < num_kingyos; ++i) Kingyo.all.push(new Kingyo);
+		for (var i = 0; i < num_kingyos; ++i) Kingyo.all.push(new Kingyo());
 	}
 
 	static function reset() : void {
@@ -183,13 +183,13 @@ class Kingyo {
 		}
 	}
 
-	var _pos = new V3;
+	var _pos = new V3();
 	var _vangle = 0;
 	var _velo = 0;
 	var _anim = 0;
 	var _state = ''; // 'swimming', 'flying' and 'listed'
-	var _spinMat = new M44;
-	var _spinAxis = new V3;
+	var _spinMat = new M44();
+	var _spinAxis = new V3();
 	var _spinSpeed = 0;
 	var _vz = 0;
 	var _color = [0.7, 0, 0]; // default color
@@ -260,7 +260,7 @@ class Kingyo {
 		case 'flying':
 			this._vz -= 300 * dt;
 			this._pos.z = this._pos.z + this._vz * dt;
-			this._spinMat.mul(new M44.setRotate(dt * this._spinSpeed, this._spinAxis));
+			this._spinMat.mul(new M44().setRotate(dt * this._spinSpeed, this._spinAxis));
 			if (this._pos.z >= 2) break;
 			var num_listed = 0; for (var i = 0; i < Kingyo.all.length; ++i) if (Kingyo.all[i]._state == 'listed') ++num_listed;
 			this._pos.set(num_listed * 1.5 - Kingyo.bound - 4.25, 3 + Kingyo.bound, 2);
@@ -288,39 +288,39 @@ class Kingyo {
 		var s = Math.sin(this._anim * 5); // swing
 
 		var bodyMat =
-			new M44.setTranslate(this._pos)
+			new M44().setTranslate(this._pos)
 			.mul(this._spinMat)
-			.mul(new M44.setRotateZ(this._vangle - s/10))
-			.mul(new M44.setRotateX(Math.PI/2))  // JSON kingyo model is +Z front and +Y up.
-			.mul(new M44.setRotateY(Math.PI/2)); // These two lines transform model to +X front and +Z up.
+			.mul(new M44().setRotateZ(this._vangle - s/10))
+			.mul(new M44().setRotateX(Math.PI/2))  // JSON kingyo model is +Z front and +Y up.
+			.mul(new M44().setRotateY(Math.PI/2)); // These two lines transform model to +X front and +Z up.
 		gl.uniformMatrix4fv(modelMatLoc, false, bodyMat.array());
 		this._drawPart(Kingyo.body);
 
 		var lfinMat =
 			bodyMat.clone()
-			.mul(new M44.setTranslate(0.5, -0.3, 0))
-			.mul(new M44.setRotate(1+s/2, 0.2, 1, -0.5));
+			.mul(new M44().setTranslate(0.5, -0.3, 0))
+			.mul(new M44().setRotate(1+s/2, 0.2, 1, -0.5));
 		gl.uniformMatrix4fv(modelMatLoc, false, lfinMat.array());
 		this._drawPart(Kingyo.lfin);
 
 		var rfinMat =
 			bodyMat.clone()
-			.mul(new M44.setTranslate(-0.5, -0.3, 0))
-			.mul(new M44.setRotate(-1-s/2, -0.2, 1, -0.5));
+			.mul(new M44().setTranslate(-0.5, -0.3, 0))
+			.mul(new M44().setRotate(-1-s/2, -0.2, 1, -0.5));
 		gl.uniformMatrix4fv(modelMatLoc, false, rfinMat.array());
 		this._drawPart(Kingyo.rfin);
 
 		var bfinMat =
 			bodyMat.clone()
-			.mul(new M44.setTranslate(0, 0.7, 0))
-			.mul(new M44.setRotate(s/2, 0, 1, 1));
+			.mul(new M44().setTranslate(0, 0.7, 0))
+			.mul(new M44().setRotate(s/2, 0, 1, 1));
 		gl.uniformMatrix4fv(modelMatLoc, false, bfinMat.array());
 		this._drawPart(Kingyo.bfin);
 
 		var tfinMat =
 			bodyMat.clone()
-			.mul(new M44.setTranslate(0,0,-0.7))
-			.mul(new M44.setRotate(s/2, 0, 1, 0));
+			.mul(new M44().setTranslate(0,0,-0.7))
+			.mul(new M44().setRotate(s/2, 0, 1, 0));
 		gl.uniformMatrix4fv(modelMatLoc, false, tfinMat.array());
 		this._drawPart(Kingyo.tfin);
 	}
@@ -349,11 +349,11 @@ class Kingyo {
 		var s = Math.sin(this._anim * 5); // swing
 
 		var bodyMat =
-			new M44.setTranslate(this._pos)
+			new M44().setTranslate(this._pos)
 			.mul(this._spinMat)
-			.mul(new M44.setRotateZ(this._vangle - s/10))
-			.mul(new M44.setRotateX(Math.PI/2))  // JSON kingyo model is +Z front and +Y up.
-			.mul(new M44.setRotateY(Math.PI/2)); // These two lines transform model to +X front and +Z up.
+			.mul(new M44().setRotateZ(this._vangle - s/10))
+			.mul(new M44().setRotateX(Math.PI/2))  // JSON kingyo model is +Z front and +Y up.
+			.mul(new M44().setRotateY(Math.PI/2)); // These two lines transform model to +X front and +Z up.
 		gl.uniformMatrix4fv(ulocs['modelMatrix'], false, bodyMat.array());
 
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, Kingyo.eyes.ibuf);

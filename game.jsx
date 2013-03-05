@@ -23,7 +23,7 @@ class Game {
 	static const fovv = 0.2;
 	static var gl = null:WebGLRenderingContext;
 	static var projMat =
-		new M44.setFrustum(
+		new M44().setFrustum(
 			-Game.near * Game.fovh,
 			Game.near * Game.fovh,
 			-Game.near * Game.fovv,
@@ -32,8 +32,8 @@ class Game {
 			Game.far
 		);
 	static var viewMat =
-		new M44.setTranslate(0, 0, -Game.viewDistance)
-		.mul(new M44.setRotateX(-Game.viewLean));
+		new M44().setTranslate(0, 0, -Game.viewDistance)
+		.mul(new M44().setRotateX(-Game.viewLean));
 	static var poi = null:Poi;
 	static var water = null:Water;
 	static var canvas = null:HTMLCanvasElement;
@@ -72,9 +72,9 @@ class Game {
 		Water.initWithGL(gl);
 		RenderTexture.initWithGL(gl);
 
-		Game.poi = new Poi;
+		Game.poi = new Poi();
 		Kingyo.init(20);
-		Game.water = new Water;
+		Game.water = new Water();
 
 		Game.bltProg = Util.getProgram('vt.vs', 'vt.fs');
 		Game.bltULocs = Util.getUniformLocations(Game.bltProg);
@@ -112,9 +112,9 @@ class Game {
 			var wx = p[0] / canvas.width * 2 - 1;
 			var wy = -p[1] / canvas.height * 2 + 1;
 			// eye position
-			var epos = new V3(0, 0, Game.viewDistance).transformBy(new M33.setRotateX(Game.viewLean));
+			var epos = new V3(0, 0, Game.viewDistance).transformBy(new M33().setRotateX(Game.viewLean));
 			// pointer direction
-			var pdir = new V3(Game.fovh * wx, Game.fovv * wy, -1).transformBy(new M33.setRotateX(Game.viewLean)).normalize();
+			var pdir = new V3(Game.fovh * wx, Game.fovv * wy, -1).transformBy(new M33().setRotateX(Game.viewLean)).normalize();
 			// hit position
 			var hpos = pdir.clone().mul(epos.z / -pdir.z).add(epos);
 			return [hpos.x, hpos.y];
@@ -267,8 +267,8 @@ class Game {
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 			gl.uniform1i(Game.bltULocs['texture'], 0);
 
-			gl.uniformMatrix4fv(Game.bltULocs['projectionMatrix'], false, new M44.setOrtho(0,1,0,1,-1,0).array());
-			gl.uniformMatrix4fv(Game.bltULocs['modelviewMatrix'], false, new M44.setIdentity().array());
+			gl.uniformMatrix4fv(Game.bltULocs['projectionMatrix'], false, new M44().setOrtho(0,1,0,1,-1,0).array());
+			gl.uniformMatrix4fv(Game.bltULocs['modelviewMatrix'], false, new M44().setIdentity().array());
 
 			gl.bindBuffer(gl.ARRAY_BUFFER, Game.bltVTBuf);
 			gl.vertexAttribPointer(Game.bltALocs['vertex'], 2, gl.FLOAT, false, 0, 0);

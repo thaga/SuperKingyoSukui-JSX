@@ -26,7 +26,7 @@ class Util {
 	}
 
 	static function getFile(url:string) : string {
-		var xhr = new XMLHttpRequest;
+		var xhr = new XMLHttpRequest();
 		xhr.open("GET", url, false);
 		xhr.send();
 		return xhr.responseText;
