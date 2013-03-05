@@ -146,8 +146,6 @@ Game.main$SS = function (canvas_id, life_id) {
 	/** @type {WebGLRenderingContext} */
 	var gl;
 	/** @type {*} */
-	var playSound;
-	/** @type {*} */
 	var getPoint;
 	/** @type {Array.<undefined|!number>} */
 	var lastTouchPos;
@@ -159,10 +157,6 @@ Game.main$SS = function (canvas_id, life_id) {
 	var touchEnd;
 	/** @type {*} */
 	var touchMove;
-	/** @type {*} */
-	var update;
-	/** @type {*} */
-	var render;
 	/** @type {*} */
 	var update_render;
 	canvas = dom.document.getElementById(canvas_id);
@@ -190,13 +184,6 @@ Game.main$SS = function (canvas_id, life_id) {
 	Game.bltVTBuf = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, Game.bltVTBuf);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ 0, 0, 1, 0, 1, 1, 0, 1 ]), gl.STATIC_DRAW);
-	playSound = (function (url) {
-		/** @type {HTMLAudioElement} */
-		var s;
-		s = dom.window.document.createElement('audio');
-		s.src = url;
-		s.play();
-	});
 	getPoint = (function (e) {
 		/** @type {!number} */
 		var px;
@@ -284,6 +271,8 @@ Game.main$SS = function (canvas_id, life_id) {
 		var this$2;
 		/** @type {Poi} */
 		var this$3;
+		/** @type {HTMLAudioElement} */
+		var s$0;
 		/** @type {Water} */
 		var this$4;
 		/** @type {!number} */
@@ -318,7 +307,9 @@ Game.main$SS = function (canvas_id, life_id) {
 			if (hit.length > 0) {
 				this$3 = Game.poi;
 				this$3._live = ! true;
-				playSound('tear.mp3');
+				s$0 = dom.document.createElement('audio');
+				s$0.src = 'tear.mp3';
+				s$0.play();
 				Game.startTime = 0;
 			}
 			this$4 = Game.water;
@@ -345,6 +336,8 @@ Game.main$SS = function (canvas_id, life_id) {
 		var y$0;
 		/** @type {Poi} */
 		var this$1;
+		/** @type {HTMLAudioElement} */
+		var s$0;
 		/** @type {Water} */
 		var this$2;
 		/** @type {!number} */
@@ -369,7 +362,9 @@ Game.main$SS = function (canvas_id, life_id) {
 				hit = Kingyo$hit$NN(pos[0], pos[1]);
 				Kingyo$fish$ALKingyo$(hit);
 				if (hit.length > 0) {
-					playSound('fish.mp3');
+					s$0 = dom.document.createElement('audio');
+					s$0.src = 'fish.mp3';
+					s$0.play();
 				}
 				if (Kingyo$numRests$() === 0) {
 					Game.startTime = 0;
@@ -452,96 +447,123 @@ Game.main$SS = function (canvas_id, life_id) {
 	canvas.style.cursor = 'none';
 	Game.canvas = canvas;
 	Game.renderTex = new RenderTexture$II(canvas.width, canvas.height);
-	function update() {
-		/** @type {!number} */
-		var t;
-		/** @type {Poi} */
-		var this$0;
-		/** @type {Poi} */
-		var this$1;
-		t = Date.now() / 1000;
-		Kingyo$update$N(t);
-		Game.water.step$N(t);
-		this$0 = Game.poi;
-		if (this$0._down) {
-			Game.life -= (t - Game.poi_down_time) * 0.5;
-			Game.poi_down_time = t;
-			if (Game.life < 0 && ! Poi$tearing$LPoi$(Game.poi)) {
-				Game.life = 0;
-				this$1 = Game.poi;
-				this$1._live = ! true;
-				playSound('tear.mp3');
-				Game.startTime = 0;
-			}
-			Game.life_bar.style.width = (Game.life * Game.life_bar_width).toString() + "px";
-		}
-		if (Game.startTime > 0) {
-			Game.status_text.innerHTML = ((Date.now() - Game.startTime | 0) / 1000).toString() + '[s]';
-		}
-	};
-	function render() {
-		/** @type {WebGLRenderingContext} */
-		var gl;
-		/** @type {Poi} */
-		var this$0;
-		/** @type {RenderTexture} */
-		var this$1;
-		/** @type {WebGLRenderingContext} */
-		var gl$0;
-		/** @type {Int32Array} */
-		var vp$0;
-		update();
-		gl = Game.gl;
-		Game.renderTex.begin$();
-		gl.clearColor(0.2, 0.6, 0.8, 1);
-		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-		gl.enable(gl.DEPTH_TEST);
-		gl.enable(gl.BLEND);
-		gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE);
-		Kingyo$drawUnderWater$LM44$LM44$(Game.projMat, Game.viewMat);
-		this$0 = Game.poi;
-		if (this$0._down) {
-			Poi$draw$LPoi$LM44$LM44$(Game.poi, Game.projMat, Game.viewMat);
-		}
-		this$1 = Game.renderTex;
-		gl$0 = RenderTexture.gl;
-		gl$0.bindFramebuffer(gl$0.FRAMEBUFFER, null);
-		vp$0 = this$1._viewport;
-		gl$0.viewport(vp$0[0], vp$0[1], vp$0[2], vp$0[3]);
-		gl.clear(gl.DEPTH_BUFFER_BIT);
-		gl.useProgram(Game.bltProg);
-		gl.bindTexture(gl.TEXTURE_2D, Game.renderTex.texture$());
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-		gl.uniform1i(Game.bltULocs.texture, 0);
-		gl.uniformMatrix4fv(Game.bltULocs.projectionMatrix, false, new M44$().setOrtho$NNNNNN(0, 1, 0, 1, -1, 0).array$());
-		gl.uniformMatrix4fv(Game.bltULocs.modelviewMatrix, false, new M44$().setIdentity$().array$());
-		gl.bindBuffer(gl.ARRAY_BUFFER, Game.bltVTBuf);
-		gl.vertexAttribPointer(Game.bltALocs.vertex, 2, gl.FLOAT, false, 0, 0);
-		gl.vertexAttribPointer(Game.bltALocs.texcoord, 2, gl.FLOAT, false, 0, 0);
-		gl.enableVertexAttribArray(Game.bltALocs.vertex);
-		gl.enableVertexAttribArray(Game.bltALocs.texcoord);
-		gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
-		gl.disableVertexAttribArray(Game.bltALocs.vertex);
-		gl.disableVertexAttribArray(Game.bltALocs.texcoord);
-		Game.water.draw$LM44$LM44$LWebGLTexture$NN(Game.projMat, Game.viewMat, Game.renderTex.texture$(), Game.canvas.offsetWidth, Game.canvas.offsetHeight);
-		Kingyo$drawAboveWater$LM44$LM44$(Game.projMat, Game.viewMat);
-		if (! Poi$down$LPoi$(Game.poi)) {
-			Poi$draw$LPoi$LM44$LM44$(Game.poi, Game.projMat, Game.viewMat);
-		}
-		Util$checkGLError$();
-	};
 	function update_render(time) {
-		update();
-		render();
+		Game$update$();
+		Game$render$();
 		Timer._requestAnimationFrame(update_render);
 	};
 	update_render(0);
 };
 
 var Game$main$SS = Game.main$SS;
+
+/**
+ * @param {!string} url
+ */
+Game.playSound$S = function (url) {
+	/** @type {HTMLAudioElement} */
+	var s;
+	s = dom.document.createElement('audio');
+	s.src = url;
+	s.play();
+};
+
+var Game$playSound$S = Game.playSound$S;
+
+/**
+ */
+Game.update$ = function () {
+	/** @type {!number} */
+	var t;
+	/** @type {Poi} */
+	var this$0;
+	/** @type {Poi} */
+	var this$1;
+	/** @type {HTMLAudioElement} */
+	var s$0;
+	t = Date.now() / 1000;
+	Kingyo$update$N(t);
+	Game.water.step$N(t);
+	this$0 = Game.poi;
+	if (this$0._down) {
+		Game.life -= (t - Game.poi_down_time) * 0.5;
+		Game.poi_down_time = t;
+		if (Game.life < 0 && ! Poi$tearing$LPoi$(Game.poi)) {
+			Game.life = 0;
+			this$1 = Game.poi;
+			this$1._live = ! true;
+			s$0 = dom.document.createElement('audio');
+			s$0.src = 'tear.mp3';
+			s$0.play();
+			Game.startTime = 0;
+		}
+		Game.life_bar.style.width = (Game.life * Game.life_bar_width).toString() + "px";
+	}
+	if (Game.startTime > 0) {
+		Game.status_text.innerHTML = ((Date.now() - Game.startTime | 0) / 1000).toString() + '[s]';
+	}
+};
+
+var Game$update$ = Game.update$;
+
+/**
+ */
+Game.render$ = function () {
+	/** @type {WebGLRenderingContext} */
+	var gl;
+	/** @type {Poi} */
+	var this$0;
+	/** @type {RenderTexture} */
+	var this$1;
+	/** @type {WebGLRenderingContext} */
+	var gl$0;
+	/** @type {Int32Array} */
+	var vp$0;
+	Game$update$();
+	gl = Game.gl;
+	Game.renderTex.begin$();
+	gl.clearColor(0.2, 0.6, 0.8, 1);
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	gl.enable(gl.DEPTH_TEST);
+	gl.enable(gl.BLEND);
+	gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE);
+	Kingyo$drawUnderWater$LM44$LM44$(Game.projMat, Game.viewMat);
+	this$0 = Game.poi;
+	if (this$0._down) {
+		Poi$draw$LPoi$LM44$LM44$(Game.poi, Game.projMat, Game.viewMat);
+	}
+	this$1 = Game.renderTex;
+	gl$0 = RenderTexture.gl;
+	gl$0.bindFramebuffer(gl$0.FRAMEBUFFER, null);
+	vp$0 = this$1._viewport;
+	gl$0.viewport(vp$0[0], vp$0[1], vp$0[2], vp$0[3]);
+	gl.clear(gl.DEPTH_BUFFER_BIT);
+	gl.useProgram(Game.bltProg);
+	gl.bindTexture(gl.TEXTURE_2D, Game.renderTex.texture$());
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+	gl.uniform1i(Game.bltULocs.texture, 0);
+	gl.uniformMatrix4fv(Game.bltULocs.projectionMatrix, false, new M44$().setOrtho$NNNNNN(0, 1, 0, 1, -1, 0).array$());
+	gl.uniformMatrix4fv(Game.bltULocs.modelviewMatrix, false, new M44$().setIdentity$().array$());
+	gl.bindBuffer(gl.ARRAY_BUFFER, Game.bltVTBuf);
+	gl.vertexAttribPointer(Game.bltALocs.vertex, 2, gl.FLOAT, false, 0, 0);
+	gl.vertexAttribPointer(Game.bltALocs.texcoord, 2, gl.FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray(Game.bltALocs.vertex);
+	gl.enableVertexAttribArray(Game.bltALocs.texcoord);
+	gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+	gl.disableVertexAttribArray(Game.bltALocs.vertex);
+	gl.disableVertexAttribArray(Game.bltALocs.texcoord);
+	Game.water.draw$LM44$LM44$LWebGLTexture$NN(Game.projMat, Game.viewMat, Game.renderTex.texture$(), Game.canvas.offsetWidth, Game.canvas.offsetHeight);
+	Kingyo$drawAboveWater$LM44$LM44$(Game.projMat, Game.viewMat);
+	if (! Poi$down$LPoi$(Game.poi)) {
+		Poi$draw$LPoi$LM44$LM44$(Game.poi, Game.projMat, Game.viewMat);
+	}
+	Util$checkGLError$();
+};
+
+var Game$render$ = Game.render$;
 
 /**
  * class js extends Object

@@ -83,12 +83,6 @@ class Game {
 			gl.bindBuffer(gl.ARRAY_BUFFER, Game.bltVTBuf);
 			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0,0, 1,0, 1,1, 0,1]), gl.STATIC_DRAW);
 
-		var playSound = function(url:string) : void {
-			var s = dom.window.document.createElement('audio') as HTMLAudioElement;
-			s.src = url;
-			s.play();
-		};
-
 		var getPoint = function(e:Event) : number[] {
 			var px = 0;
 			var py = 0;
@@ -142,7 +136,7 @@ class Game {
 				var hit = Kingyo.hit(pos[0], pos[1]);
 				if (hit.length > 0) {
 					Game.poi.tear(true);
-					playSound('tear.mp3');
+					Game.playSound('tear.mp3');
 					Game.startTime = 0;
 				}
 
@@ -166,7 +160,7 @@ class Game {
 				if (!Game.poi.tearing()) {
 					var hit = Kingyo.hit(pos[0], pos[1]);
 					Kingyo.fish(hit);
-					if (hit.length > 0) playSound('fish.mp3');
+					if (hit.length > 0) Game.playSound('fish.mp3');
 					if (Kingyo.numRests() == 0) Game.startTime = 0;
 				}
 
@@ -211,87 +205,9 @@ class Game {
 
 		Game.renderTex = new RenderTexture(canvas.width, canvas.height);
 
-
-		function update() : void {
-			var t = Date.now() / 1000;
-
-			Kingyo.update(t);
-
-			Game.water.step(t);
-
-			if (Game.poi.down()) {
-				Game.life -= (t - Game.poi_down_time) * Game.damage_per_second;
-				Game.poi_down_time = t;
-				if (Game.life < 0 && !Game.poi.tearing()) {
-					Game.life = 0;
-					Game.poi.tear(true);
-					playSound('tear.mp3');
-					Game.startTime = 0;
-				}
-				Game.life_bar.style.width = (Game.life*Game.life_bar_width).toString()+"px";
-			}
-
-			if (Game.startTime > 0) {
-				Game.status_text.innerHTML = (((Date.now() - Game.startTime)|0)/1000).toString() + '[s]';
-			}
-		};
-
-		function render() : void {
-			update();
-
-			var gl = Game.gl;
-
-			Game.renderTex.begin();
-
-			gl.clearColor(0.2, 0.6, 0.8, 1);
-			gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-			gl.enable(gl.DEPTH_TEST);
-			gl.enable(gl.BLEND);
-			gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE);
-
-			Kingyo.drawUnderWater(Game.projMat, Game.viewMat);
-			if (Game.poi.down()) Game.poi.draw(Game.projMat, Game.viewMat);
-			//Game.water.debugDraw();
-
-			Game.renderTex.end();
-
-			gl.clear(gl.DEPTH_BUFFER_BIT);
-
-			gl.useProgram(Game.bltProg);
-
-			gl.bindTexture(gl.TEXTURE_2D, Game.renderTex.texture());
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-			gl.uniform1i(Game.bltULocs['texture'], 0);
-
-			gl.uniformMatrix4fv(Game.bltULocs['projectionMatrix'], false, new M44().setOrtho(0,1,0,1,-1,0).array());
-			gl.uniformMatrix4fv(Game.bltULocs['modelviewMatrix'], false, new M44().setIdentity().array());
-
-			gl.bindBuffer(gl.ARRAY_BUFFER, Game.bltVTBuf);
-			gl.vertexAttribPointer(Game.bltALocs['vertex'], 2, gl.FLOAT, false, 0, 0);
-			gl.vertexAttribPointer(Game.bltALocs['texcoord'], 2, gl.FLOAT, false, 0, 0);
-			gl.enableVertexAttribArray(Game.bltALocs['vertex']);
-			gl.enableVertexAttribArray(Game.bltALocs['texcoord']);
-
-			gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
-
-			gl.disableVertexAttribArray(Game.bltALocs['vertex']);
-			gl.disableVertexAttribArray(Game.bltALocs['texcoord']);
-
-			Game.water.draw(Game.projMat, Game.viewMat, Game.renderTex.texture(), Game.canvas.offsetWidth, Game.canvas.offsetHeight);
-
-			Kingyo.drawAboveWater(Game.projMat, Game.viewMat);
-			if (!Game.poi.down()) Game.poi.draw(Game.projMat, Game.viewMat);
-
-			Util.checkGLError();
-		};
-
 		function update_render(time:number) : void {
-			update();
-			render();
+			Game.update();
+			Game.render();
 
 			Timer.requestAnimationFrame(update_render);
 		}
@@ -301,6 +217,88 @@ class Game {
 		log 'game start!';
 	}
 
+	static function playSound(url:string) : void {
+		var s = dom.document.createElement('audio') as HTMLAudioElement;
+		s.src = url;
+		s.play();
+	}
+
+	static function update() : void {
+		var t = Date.now() / 1000;
+
+		Kingyo.update(t);
+
+		Game.water.step(t);
+
+		if (Game.poi.down()) {
+			Game.life -= (t - Game.poi_down_time) * Game.damage_per_second;
+			Game.poi_down_time = t;
+			if (Game.life < 0 && !Game.poi.tearing()) {
+				Game.life = 0;
+				Game.poi.tear(true);
+				Game.playSound('tear.mp3');
+				Game.startTime = 0;
+			}
+			Game.life_bar.style.width = (Game.life*Game.life_bar_width).toString()+"px";
+		}
+
+		if (Game.startTime > 0) {
+			Game.status_text.innerHTML = (((Date.now() - Game.startTime)|0)/1000).toString() + '[s]';
+		}
+	}
+
+	static function render() : void {
+		Game.update();
+
+		var gl = Game.gl;
+
+		Game.renderTex.begin();
+
+		gl.clearColor(0.2, 0.6, 0.8, 1);
+		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+		gl.enable(gl.DEPTH_TEST);
+		gl.enable(gl.BLEND);
+		gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE);
+
+		Kingyo.drawUnderWater(Game.projMat, Game.viewMat);
+		if (Game.poi.down()) Game.poi.draw(Game.projMat, Game.viewMat);
+		//Game.water.debugDraw();
+
+		Game.renderTex.end();
+
+		gl.clear(gl.DEPTH_BUFFER_BIT);
+
+		gl.useProgram(Game.bltProg);
+
+		gl.bindTexture(gl.TEXTURE_2D, Game.renderTex.texture());
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+		gl.uniform1i(Game.bltULocs['texture'], 0);
+
+		gl.uniformMatrix4fv(Game.bltULocs['projectionMatrix'], false, new M44().setOrtho(0,1,0,1,-1,0).array());
+		gl.uniformMatrix4fv(Game.bltULocs['modelviewMatrix'], false, new M44().setIdentity().array());
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, Game.bltVTBuf);
+		gl.vertexAttribPointer(Game.bltALocs['vertex'], 2, gl.FLOAT, false, 0, 0);
+		gl.vertexAttribPointer(Game.bltALocs['texcoord'], 2, gl.FLOAT, false, 0, 0);
+		gl.enableVertexAttribArray(Game.bltALocs['vertex']);
+		gl.enableVertexAttribArray(Game.bltALocs['texcoord']);
+
+		gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+
+		gl.disableVertexAttribArray(Game.bltALocs['vertex']);
+		gl.disableVertexAttribArray(Game.bltALocs['texcoord']);
+
+		Game.water.draw(Game.projMat, Game.viewMat, Game.renderTex.texture(), Game.canvas.offsetWidth, Game.canvas.offsetHeight);
+
+		Kingyo.drawAboveWater(Game.projMat, Game.viewMat);
+		if (!Game.poi.down()) Game.poi.draw(Game.projMat, Game.viewMat);
+
+		Util.checkGLError();
+	}
 
 
 }
