@@ -4087,6 +4087,34 @@ M22.prototype.setIdentity$ = function () {
 };
 
 /**
+ * @return {M22}
+ */
+M22.zero$ = function () {
+	/** @type {M22} */
+	var this$0;
+	this$0 = new M22$();
+	this$0.m11 = this$0.m22 = 0;
+	this$0.m21 = this$0.m12 = 0;
+	return this$0;
+};
+
+var M22$zero$ = M22.zero$;
+
+/**
+ * @return {M22}
+ */
+M22.identity$ = function () {
+	/** @type {M22} */
+	var this$0;
+	this$0 = new M22$();
+	this$0.m11 = this$0.m22 = 1;
+	this$0.m21 = this$0.m12 = 0;
+	return this$0;
+};
+
+var M22$identity$ = M22.identity$;
+
+/**
  * @param {!number} m11
  * @param {!number} m12
  * @param {!number} m21
@@ -4380,7 +4408,7 @@ M22.prototype.setScale$LFloat32Array$ = function (v) {
  * @param {!number} rad
  * @return {M22}
  */
-M22.prototype.setRotate$N = function (rad) {
+M22.prototype.setRotation$N = function (rad) {
 	/** @type {!number} */
 	var c;
 	/** @type {!number} */
@@ -4663,6 +4691,30 @@ M33.prototype.setZero$ = function () {
 M33.prototype.setIdentity$ = function () {
 	return this.set$N(1);
 };
+
+/**
+ * @return {M33}
+ */
+M33.zero$ = function () {
+	/** @type {M33} */
+	var this$0;
+	this$0 = new M33$();
+	return this$0.set$N(0);
+};
+
+var M33$zero$ = M33.zero$;
+
+/**
+ * @return {M33}
+ */
+M33.identity$ = function () {
+	/** @type {M33} */
+	var this$0;
+	this$0 = new M33$();
+	return this$0.set$N(1);
+};
+
+var M33$identity$ = M33.identity$;
 
 /**
  * @param {!number} m11
@@ -5047,7 +5099,7 @@ M33.prototype.setScale$LFloat32Array$ = function (v) {
  * @param {!number} z
  * @return {M33}
  */
-M33.prototype.setRotate$NNNN = function (rad, x, y, z) {
+M33.prototype.setRotation$NNNN = function (rad, x, y, z) {
 	/** @type {!number} */
 	var l;
 	/** @type {!number} */
@@ -5085,8 +5137,8 @@ M33.prototype.setRotate$NNNN = function (rad, x, y, z) {
  * @param {V3} a
  * @return {M33}
  */
-M33.prototype.setRotate$NLV3$ = function (rad, a) {
-	return this.setRotate$NNNN(rad, a.x, a.y, a.z);
+M33.prototype.setRotation$NLV3$ = function (rad, a) {
+	return this.setRotation$NNNN(rad, a.x, a.y, a.z);
 };
 
 /**
@@ -5094,8 +5146,8 @@ M33.prototype.setRotate$NLV3$ = function (rad, a) {
  * @param {Array.<undefined|!number>} a
  * @return {M33}
  */
-M33.prototype.setRotate$NAN = function (rad, a) {
-	return this.setRotate$NNNN(rad, this.m11, this.m21, this.m31);
+M33.prototype.setRotation$NAN = function (rad, a) {
+	return this.setRotation$NNNN(rad, this.m11, this.m21, this.m31);
 };
 
 /**
@@ -5103,8 +5155,8 @@ M33.prototype.setRotate$NAN = function (rad, a) {
  * @param {Float32Array} a
  * @return {M33}
  */
-M33.prototype.setRotate$NLFloat32Array$ = function (rad, a) {
-	return this.setRotate$NNNN(rad, this.m11, this.m21, this.m31);
+M33.prototype.setRotation$NLFloat32Array$ = function (rad, a) {
+	return this.setRotation$NNNN(rad, this.m11, this.m21, this.m31);
 };
 
 /**
@@ -5112,7 +5164,7 @@ M33.prototype.setRotate$NLFloat32Array$ = function (rad, a) {
  * @return {M33}
  */
 M33.prototype.setRotateX$N = function (rad) {
-	return this.setRotate$NNNN(rad, 1, 0, 0);
+	return this.setRotation$NNNN(rad, 1, 0, 0);
 };
 
 /**
@@ -5120,7 +5172,7 @@ M33.prototype.setRotateX$N = function (rad) {
  * @return {M33}
  */
 M33.prototype.setRotateY$N = function (rad) {
-	return this.setRotate$NNNN(rad, 0, 1, 0);
+	return this.setRotation$NNNN(rad, 0, 1, 0);
 };
 
 /**
@@ -5128,7 +5180,7 @@ M33.prototype.setRotateY$N = function (rad) {
  * @return {M33}
  */
 M33.prototype.setRotateZ$N = function (rad) {
-	return this.setRotate$NNNN(rad, 0, 0, 1);
+	return this.setRotation$NNNN(rad, 0, 0, 1);
 };
 
 /**
@@ -5492,6 +5544,30 @@ M44.prototype.setIdentity$ = function () {
 };
 
 /**
+ * @return {M44}
+ */
+M44.zero$ = function () {
+	/** @type {M44} */
+	var this$0;
+	this$0 = new M44$();
+	return this$0.set$N(0);
+};
+
+var M44$zero$ = M44.zero$;
+
+/**
+ * @return {M44}
+ */
+M44.identity$ = function () {
+	/** @type {M44} */
+	var this$0;
+	this$0 = new M44$();
+	return this$0.set$N(1);
+};
+
+var M44$identity$ = M44.identity$;
+
+/**
  * @param {!number} m11
  * @param {!number} m12
  * @param {!number} m13
@@ -5635,7 +5711,7 @@ M44.prototype.set$LFloat32Array$ = function (m) {
  */
 M44.prototype.set$N = function (s) {
 	this.m11 = this.m22 = this.m33 = this.m44 = s;
-	this.m21 = this.m31 = this.m41 = this.m12 = this.m32 = this.m42 = this.m13 = this.m23 = this.m24 = this.m14 = this.m24 = this.m34 = 0;
+	this.m21 = this.m31 = this.m41 = this.m12 = this.m32 = this.m42 = this.m13 = this.m23 = this.m43 = this.m14 = this.m24 = this.m34 = 0;
 	return this;
 };
 
@@ -5997,7 +6073,7 @@ M44.prototype.inverse$ = function () {
  * @param {!number} z
  * @return {M44}
  */
-M44.prototype.setTranslate$NNN = function (x, y, z) {
+M44.prototype.setTranslation$NNN = function (x, y, z) {
 	this.set$N(1);
 	this.m14 = x;
 	this.m24 = y;
@@ -6009,7 +6085,7 @@ M44.prototype.setTranslate$NNN = function (x, y, z) {
  * @param {V3} v
  * @return {M44}
  */
-M44.prototype.setTranslate$LV3$ = function (v) {
+M44.prototype.setTranslation$LV3$ = function (v) {
 	/** @type {!number} */
 	var x$0;
 	/** @type {!number} */
@@ -6030,7 +6106,7 @@ M44.prototype.setTranslate$LV3$ = function (v) {
  * @param {Array.<undefined|!number>} v
  * @return {M44}
  */
-M44.prototype.setTranslate$AN = function (v) {
+M44.prototype.setTranslation$AN = function (v) {
 	/** @type {!number} */
 	var x$0;
 	/** @type {!number} */
@@ -6051,7 +6127,7 @@ M44.prototype.setTranslate$AN = function (v) {
  * @param {Float32Array} v
  * @return {M44}
  */
-M44.prototype.setTranslate$LFloat32Array$ = function (v) {
+M44.prototype.setTranslation$LFloat32Array$ = function (v) {
 	/** @type {!number} */
 	var x$0;
 	/** @type {!number} */
@@ -6067,6 +6143,71 @@ M44.prototype.setTranslate$LFloat32Array$ = function (v) {
 	this.m34 = z$0;
 	return this;
 };
+
+/**
+ * @param {!number} x
+ * @param {!number} y
+ * @param {!number} z
+ * @return {M44}
+ */
+M44.translation$NNN = function (x, y, z) {
+	/** @type {M44} */
+	var this$0;
+	this$0 = new M44$();
+	this$0.set$N(1);
+	this$0.m14 = x;
+	this$0.m24 = y;
+	this$0.m34 = z;
+	return this$0;
+};
+
+var M44$translation$NNN = M44.translation$NNN;
+
+/**
+ * @param {V3} v
+ * @return {M44}
+ */
+M44.translation$LV3$ = function (v) {
+	/** @type {M44} */
+	var this$0;
+	/** @type {!number} */
+	var x$0$0;
+	/** @type {!number} */
+	var y$0$0;
+	/** @type {!number} */
+	var z$0$0;
+	this$0 = new M44$();
+	x$0$0 = v.x;
+	y$0$0 = v.y;
+	z$0$0 = v.z;
+	this$0.set$N(1);
+	this$0.m14 = x$0$0;
+	this$0.m24 = y$0$0;
+	this$0.m34 = z$0$0;
+	return this$0;
+};
+
+var M44$translation$LV3$ = M44.translation$LV3$;
+
+/**
+ * @param {Array.<undefined|!number>} v
+ * @return {M44}
+ */
+M44.translation$AN = function (v) {
+	return new M44$().setTranslation$AN(v);
+};
+
+var M44$translation$AN = M44.translation$AN;
+
+/**
+ * @param {Float32Array} v
+ * @return {M44}
+ */
+M44.translation$LFloat32Array$ = function (v) {
+	return new M44$().setTranslation$LFloat32Array$(v);
+};
+
+var M44$translation$LFloat32Array$ = M44.translation$LFloat32Array$;
 
 /**
  * @param {!number} s
@@ -6163,13 +6304,63 @@ M44.prototype.setScale$LFloat32Array$ = function (v) {
 };
 
 /**
+ * @param {!number} x
+ * @param {!number} y
+ * @param {!number} z
+ * @return {M44}
+ */
+M44.scale$NNN = function (x, y, z) {
+	/** @type {M44} */
+	var this$0;
+	this$0 = new M44$();
+	this$0.set$N(0);
+	this$0.m11 = x;
+	this$0.m22 = y;
+	this$0.m33 = z;
+	this$0.m44 = 1;
+	return this$0;
+};
+
+var M44$scale$NNN = M44.scale$NNN;
+
+/**
+ * @param {V3} v
+ * @return {M44}
+ */
+M44.scale$LV3$ = function (v) {
+	return new M44$().setScale$LV3$(v);
+};
+
+var M44$scale$LV3$ = M44.scale$LV3$;
+
+/**
+ * @param {Array.<undefined|!number>} v
+ * @return {M44}
+ */
+M44.scale$AN = function (v) {
+	return new M44$().setScale$AN(v);
+};
+
+var M44$scale$AN = M44.scale$AN;
+
+/**
+ * @param {Float32Array} v
+ * @return {M44}
+ */
+M44.scale$LFloat32Array$ = function (v) {
+	return new M44$().setScale$LFloat32Array$(v);
+};
+
+var M44$scale$LFloat32Array$ = M44.scale$LFloat32Array$;
+
+/**
  * @param {!number} rad
  * @param {!number} x
  * @param {!number} y
  * @param {!number} z
  * @return {M44}
  */
-M44.prototype.setRotate$NNNN = function (rad, x, y, z) {
+M44.prototype.setRotation$NNNN = function (rad, x, y, z) {
 	/** @type {!number} */
 	var l;
 	/** @type {!number} */
@@ -6210,8 +6401,8 @@ M44.prototype.setRotate$NNNN = function (rad, x, y, z) {
  * @param {V3} a
  * @return {M44}
  */
-M44.prototype.setRotate$NLV3$ = function (rad, a) {
-	return this.setRotate$NNNN(rad, a.x, a.y, a.z);
+M44.prototype.setRotation$NLV3$ = function (rad, a) {
+	return this.setRotation$NNNN(rad, a.x, a.y, a.z);
 };
 
 /**
@@ -6219,8 +6410,8 @@ M44.prototype.setRotate$NLV3$ = function (rad, a) {
  * @param {Array.<undefined|!number>} a
  * @return {M44}
  */
-M44.prototype.setRotate$NAN = function (rad, a) {
-	return this.setRotate$NNNN(rad, this.m11, this.m21, this.m31);
+M44.prototype.setRotation$NAN = function (rad, a) {
+	return this.setRotation$NNNN(rad, this.m11, this.m21, this.m31);
 };
 
 /**
@@ -6228,33 +6419,127 @@ M44.prototype.setRotate$NAN = function (rad, a) {
  * @param {Float32Array} a
  * @return {M44}
  */
-M44.prototype.setRotate$NLFloat32Array$ = function (rad, a) {
-	return this.setRotate$NNNN(rad, this.m11, this.m21, this.m31);
+M44.prototype.setRotation$NLFloat32Array$ = function (rad, a) {
+	return this.setRotation$NNNN(rad, this.m11, this.m21, this.m31);
+};
+
+/**
+ * @param {!number} rad
+ * @param {!number} ax
+ * @param {!number} ay
+ * @param {!number} az
+ * @return {M44}
+ */
+M44.rotation$NNNN = function (rad, ax, ay, az) {
+	return new M44$().setRotation$NNNN(rad, ax, ay, az);
+};
+
+var M44$rotation$NNNN = M44.rotation$NNNN;
+
+/**
+ * @param {!number} rad
+ * @param {V3} axis
+ * @return {M44}
+ */
+M44.rotation$NLV3$ = function (rad, axis) {
+	/** @type {M44} */
+	var this$0;
+	this$0 = new M44$();
+	return this$0.setRotation$NNNN(rad, axis.x, axis.y, axis.z);
+};
+
+var M44$rotation$NLV3$ = M44.rotation$NLV3$;
+
+/**
+ * @param {!number} rad
+ * @param {Array.<undefined|!number>} axis
+ * @return {M44}
+ */
+M44.rotation$NAN = function (rad, axis) {
+	/** @type {M44} */
+	var this$0;
+	this$0 = new M44$();
+	return this$0.setRotation$NNNN(rad, this$0.m11, this$0.m21, this$0.m31);
+};
+
+var M44$rotation$NAN = M44.rotation$NAN;
+
+/**
+ * @param {!number} rad
+ * @param {Float32Array} axis
+ * @return {M44}
+ */
+M44.rotation$NLFloat32Array$ = function (rad, axis) {
+	/** @type {M44} */
+	var this$0;
+	this$0 = new M44$();
+	return this$0.setRotation$NNNN(rad, this$0.m11, this$0.m21, this$0.m31);
+};
+
+var M44$rotation$NLFloat32Array$ = M44.rotation$NLFloat32Array$;
+
+/**
+ * @param {!number} rad
+ * @return {M44}
+ */
+M44.prototype.setRotationX$N = function (rad) {
+	return this.setRotation$NNNN(rad, 1, 0, 0);
 };
 
 /**
  * @param {!number} rad
  * @return {M44}
  */
-M44.prototype.setRotateX$N = function (rad) {
-	return this.setRotate$NNNN(rad, 1, 0, 0);
+M44.prototype.setRotationY$N = function (rad) {
+	return this.setRotation$NNNN(rad, 0, 1, 0);
 };
 
 /**
  * @param {!number} rad
  * @return {M44}
  */
-M44.prototype.setRotateY$N = function (rad) {
-	return this.setRotate$NNNN(rad, 0, 1, 0);
+M44.prototype.setRotationZ$N = function (rad) {
+	return this.setRotation$NNNN(rad, 0, 0, 1);
 };
 
 /**
  * @param {!number} rad
  * @return {M44}
  */
-M44.prototype.setRotateZ$N = function (rad) {
-	return this.setRotate$NNNN(rad, 0, 0, 1);
+M44.rotationX$N = function (rad) {
+	/** @type {M44} */
+	var this$0;
+	this$0 = new M44$();
+	return this$0.setRotation$NNNN(rad, 1, 0, 0);
 };
+
+var M44$rotationX$N = M44.rotationX$N;
+
+/**
+ * @param {!number} rad
+ * @return {M44}
+ */
+M44.rotationY$N = function (rad) {
+	/** @type {M44} */
+	var this$0;
+	this$0 = new M44$();
+	return this$0.setRotation$NNNN(rad, 0, 1, 0);
+};
+
+var M44$rotationY$N = M44.rotationY$N;
+
+/**
+ * @param {!number} rad
+ * @return {M44}
+ */
+M44.rotationZ$N = function (rad) {
+	/** @type {M44} */
+	var this$0;
+	this$0 = new M44$();
+	return this$0.setRotation$NNNN(rad, 0, 0, 1);
+};
+
+var M44$rotationZ$N = M44.rotationZ$N;
 
 /**
  * @param {!number} l
@@ -6294,6 +6579,21 @@ M44.prototype.setFrustum$NNNNNN = function (l, r, b, t, n, f) {
  * @param {!number} f
  * @return {M44}
  */
+M44.frustum$NNNNNN = function (l, r, b, t, n, f) {
+	return new M44$().setFrustum$NNNNNN(l, r, b, t, n, f);
+};
+
+var M44$frustum$NNNNNN = M44.frustum$NNNNNN;
+
+/**
+ * @param {!number} l
+ * @param {!number} r
+ * @param {!number} b
+ * @param {!number} t
+ * @param {!number} n
+ * @param {!number} f
+ * @return {M44}
+ */
 M44.prototype.setOrtho$NNNNNN = function (l, r, b, t, n, f) {
 	/** @type {!number} */
 	var rl;
@@ -6313,6 +6613,21 @@ M44.prototype.setOrtho$NNNNNN = function (l, r, b, t, n, f) {
 	this.m44 = 1;
 	return this;
 };
+
+/**
+ * @param {!number} l
+ * @param {!number} r
+ * @param {!number} b
+ * @param {!number} t
+ * @param {!number} n
+ * @param {!number} f
+ * @return {M44}
+ */
+M44.ortho$NNNNNN = function (l, r, b, t, n, f) {
+	return new M44$().setOrtho$NNNNNN(l, r, b, t, n, f);
+};
+
+var M44$ortho$NNNNNN = M44.ortho$NNNNNN;
 
 /**
  * @return {!string}
@@ -6434,6 +6749,38 @@ Quat.prototype.setIdentity$ = function () {
 	this.z = 0;
 	return this;
 };
+
+/**
+ * @return {Quat}
+ */
+Quat.zero$ = function () {
+	/** @type {Quat} */
+	var this$0;
+	this$0 = new Quat$();
+	this$0.w = 0;
+	this$0.x = 0;
+	this$0.y = 0;
+	this$0.z = 0;
+	return this$0;
+};
+
+var Quat$zero$ = Quat.zero$;
+
+/**
+ * @return {Quat}
+ */
+Quat.identity$ = function () {
+	/** @type {Quat} */
+	var this$0;
+	this$0 = new Quat$();
+	this$0.w = 1;
+	this$0.x = 0;
+	this$0.y = 0;
+	this$0.z = 0;
+	return this$0;
+};
+
+var Quat$identity$ = Quat.identity$;
 
 /**
  * @param {!number} w
@@ -7301,7 +7648,7 @@ Kingyo.prototype._update$N = function (dt) {
 		this$3 = new M44$();
 		rad$0 = dt * this._spinSpeed;
 		a$0 = this._spinAxis;
-		m$0 = this$3.setRotate$NNNN(rad$0, a$0.x, a$0.y, a$0.z);
+		m$0 = this$3.setRotation$NNNN(rad$0, a$0.x, a$0.y, a$0.z);
 		this$0.mul$LM44$LM44$(new M44$LM44$(this$0), m$0);
 		if (this._pos.z >= 2) {
 			break;
@@ -7438,13 +7785,13 @@ Kingyo.prototype._draw$ = function () {
 	this$11 = this$19.mul$LM44$LM44$(new M44$LM44$(this$19), m$11);
 	this$18 = new M44$();
 	rad$0 = this._vangle - s / 10;
-	m$10 = this$18.setRotate$NNNN(rad$0, 0, 0, 1);
+	m$10 = this$18.setRotation$NNNN(rad$0, 0, 0, 1);
 	this$5 = this$11.mul$LM44$LM44$(new M44$LM44$(this$11), m$10);
 	this$12 = new M44$();
-	m$5 = this$12.setRotate$NNNN(1.5707963267948966, 1, 0, 0);
+	m$5 = this$12.setRotation$NNNN(1.5707963267948966, 1, 0, 0);
 	this$0 = this$5.mul$LM44$LM44$(new M44$LM44$(this$5), m$5);
 	this$6 = new M44$();
-	m$0 = this$6.setRotate$NNNN(1.5707963267948966, 0, 1, 0);
+	m$0 = this$6.setRotation$NNNN(1.5707963267948966, 0, 1, 0);
 	bodyMat = this$0.mul$LM44$LM44$(new M44$LM44$(this$0), m$0);
 	gl.uniformMatrix4fv(modelMatLoc, false, bodyMat.array$());
 	this._drawPart$L_Part$(Kingyo.body);
@@ -7456,7 +7803,7 @@ Kingyo.prototype._draw$ = function () {
 	this$13.m34 = 0;
 	m$6 = this$13;
 	this$1 = this$7.mul$LM44$LM44$(new M44$LM44$(this$7), m$6);
-	m$1 = new M44$().setRotate$NNNN(1 + s / 2, 0.2, 1, -0.5);
+	m$1 = new M44$().setRotation$NNNN(1 + s / 2, 0.2, 1, -0.5);
 	lfinMat = this$1.mul$LM44$LM44$(new M44$LM44$(this$1), m$1);
 	gl.uniformMatrix4fv(modelMatLoc, false, lfinMat.array$());
 	this._drawPart$L_Part$(Kingyo.lfin);
@@ -7468,7 +7815,7 @@ Kingyo.prototype._draw$ = function () {
 	this$14.m34 = 0;
 	m$7 = this$14;
 	this$2 = this$8.mul$LM44$LM44$(new M44$LM44$(this$8), m$7);
-	m$2 = new M44$().setRotate$NNNN(-1 - s / 2, -0.2, 1, -0.5);
+	m$2 = new M44$().setRotation$NNNN(-1 - s / 2, -0.2, 1, -0.5);
 	rfinMat = this$2.mul$LM44$LM44$(new M44$LM44$(this$2), m$2);
 	gl.uniformMatrix4fv(modelMatLoc, false, rfinMat.array$());
 	this._drawPart$L_Part$(Kingyo.rfin);
@@ -7480,7 +7827,7 @@ Kingyo.prototype._draw$ = function () {
 	this$15.m34 = 0;
 	m$8 = this$15;
 	this$3 = this$9.mul$LM44$LM44$(new M44$LM44$(this$9), m$8);
-	m$3 = new M44$().setRotate$NNNN(s / 2, 0, 1, 1);
+	m$3 = new M44$().setRotation$NNNN(s / 2, 0, 1, 1);
 	bfinMat = this$3.mul$LM44$LM44$(new M44$LM44$(this$3), m$3);
 	gl.uniformMatrix4fv(modelMatLoc, false, bfinMat.array$());
 	this._drawPart$L_Part$(Kingyo.bfin);
@@ -7492,7 +7839,7 @@ Kingyo.prototype._draw$ = function () {
 	this$16.m34 = -0.7;
 	m$9 = this$16;
 	this$4 = this$10.mul$LM44$LM44$(new M44$LM44$(this$10), m$9);
-	m$4 = new M44$().setRotate$NNNN(s / 2, 0, 1, 0);
+	m$4 = new M44$().setRotation$NNNN(s / 2, 0, 1, 0);
 	tfinMat = this$4.mul$LM44$LM44$(new M44$LM44$(this$4), m$4);
 	gl.uniformMatrix4fv(modelMatLoc, false, tfinMat.array$());
 	this._drawPart$L_Part$(Kingyo.tfin);
@@ -7573,13 +7920,13 @@ Kingyo.prototype._drawEyes$ = function () {
 	this$3 = this$7.mul$LM44$LM44$(new M44$LM44$(this$7), m$3);
 	this$6 = new M44$();
 	rad$0 = this._vangle - s / 10;
-	m$2 = this$6.setRotate$NNNN(rad$0, 0, 0, 1);
+	m$2 = this$6.setRotation$NNNN(rad$0, 0, 0, 1);
 	this$1 = this$3.mul$LM44$LM44$(new M44$LM44$(this$3), m$2);
 	this$4 = new M44$();
-	m$1 = this$4.setRotate$NNNN(1.5707963267948966, 1, 0, 0);
+	m$1 = this$4.setRotation$NNNN(1.5707963267948966, 1, 0, 0);
 	this$0 = this$1.mul$LM44$LM44$(new M44$LM44$(this$1), m$1);
 	this$2 = new M44$();
-	m$0 = this$2.setRotate$NNNN(1.5707963267948966, 0, 1, 0);
+	m$0 = this$2.setRotation$NNNN(1.5707963267948966, 0, 1, 0);
 	bodyMat = this$0.mul$LM44$LM44$(new M44$LM44$(this$0), m$0);
 	gl.uniformMatrix4fv(ulocs.modelMatrix, false, bodyMat.array$());
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, Kingyo.eyes.ibuf);
@@ -7771,7 +8118,7 @@ Poi.draw$LPoi$LM44$LM44$ = function ($this, projMat, viewMat) {
 		m$2 = this$4;
 		this$1 = mvMat.mul$LM44$LM44$(new M44$LM44$(mvMat), m$2);
 		this$3 = new M44$();
-		m$1 = this$3.setRotate$NNNN(-0.1, 1, 0, 0);
+		m$1 = this$3.setRotation$NNNN(-0.1, 1, 0, 0);
 		this$1.mul$LM44$LM44$(new M44$LM44$(this$1), m$1);
 	}
 	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'modelviewMatrix'), false, mvMat.array$());
@@ -8184,7 +8531,7 @@ $__jsx_lazy_init(Game, "projMat", function () {
 	return new M44$().setFrustum$NNNNNN(- Game.near * Game.fovh, Game.near * Game.fovh, - Game.near * Game.fovv, Game.near * Game.fovv, Game.near, Game.far);
 });
 $__jsx_lazy_init(Game, "viewMat", function () {
-	return new M44$().setTranslate$NNN(0, 0, - Game.viewDistance).mul$LM44$(new M44$().setRotateX$N(- Game.viewLean));
+	return new M44$().setTranslation$NNN(0, 0, - Game.viewDistance).mul$LM44$(new M44$().setRotationX$N(- Game.viewLean));
 });
 Game.poi = null;
 Game.water = null;

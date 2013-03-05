@@ -32,8 +32,8 @@ class Game {
 			Game.far
 		);
 	static var viewMat =
-		new M44().setTranslate(0, 0, -Game.viewDistance)
-		.mul(new M44().setRotateX(-Game.viewLean));
+		new M44().setTranslation(0, 0, -Game.viewDistance)
+		.mul(new M44().setRotationX(-Game.viewLean));
 	static var poi = null:Poi;
 	static var water = null:Water;
 	static var canvas = null:HTMLCanvasElement;

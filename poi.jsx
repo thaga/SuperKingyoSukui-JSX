@@ -75,8 +75,8 @@ class Poi {
 		gl.useProgram(prog);
 
 		gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, projMat.array());
-		var mvMat = new M44(viewMat).mul(new M44().setTranslate(this._x, this._y, this._z));
-		if (this._down) mvMat.mul(new M44().setTranslate(0,0,-7)).mul(new M44().setRotateX(-0.1));
+		var mvMat = new M44(viewMat).mul(new M44().setTranslation(this._x, this._y, this._z));
+		if (this._down) mvMat.mul(new M44().setTranslation(0,0,-7)).mul(new M44().setRotationX(-0.1));
 		gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'modelviewMatrix'), false, mvMat.array());
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, Poi.vtbuf);
