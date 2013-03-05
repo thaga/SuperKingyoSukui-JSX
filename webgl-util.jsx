@@ -1,3 +1,4 @@
+import 'console.jsx';
 import 'js/web.jsx';
 
 class Util {
@@ -36,7 +37,7 @@ class Util {
 		var gl = Util.gl;
 		var err = gl.getError();
 		if (err) {
-			log 'GL ERROR! :' + err.toString();
+			console.error('GL ERROR! :' + err.toString());
 		}
 	}
 
@@ -48,7 +49,7 @@ class Util {
 		gl.shaderSource(shader, src);
 		gl.compileShader(shader);
 		if (!(gl.getShaderParameter(shader, gl.COMPILE_STATUS) as boolean)) {
-			log gl.getShaderInfoLog(shader);
+			console.warn(gl.getShaderInfoLog(shader));
 			return null;
 		}
 		return shader;
@@ -65,7 +66,7 @@ class Util {
 		gl.attachShader(program, fs);
 		gl.linkProgram(program);
 		if (!(gl.getProgramParameter(program, gl.LINK_STATUS) as boolean)) {
-			log gl.getProgramInfoLog(program);
+			console.warn(gl.getProgramInfoLog(program));
 			return null;
 		}
 		return program;

@@ -1,4 +1,4 @@
-// generatedy by JSX compiler 0.9.10 (2013-03-05 00:49:13 +0900; 6543e3100a83b006ac4a4199f01549c54394020c)
+// generatedy by JSX compiler 0.9.10 (2013-03-05 16:52:06 +0900; e0ecaa9bc064169a325d7702da6e98aab1e9181f)
 var JSX = {};
 (function (JSX) {
 /**
@@ -1705,6 +1705,7 @@ Util.checkGLError$ = function () {
 	gl = Util.gl;
 	err = gl.getError();
 	if (err) {
+		console.error('GL ERROR! :' + err.toString());
 	}
 };
 
@@ -1732,7 +1733,11 @@ Util.getShader$SI = function (url, type) {
 	shader = gl.createShader(type);
 	gl.shaderSource(shader, src);
 	gl.compileShader(shader);
-	return (! (!! gl.getShaderParameter(shader, gl.COMPILE_STATUS)) ? null : shader);
+	if (! (!! gl.getShaderParameter(shader, gl.COMPILE_STATUS))) {
+		console.warn(gl.getShaderInfoLog(shader));
+		return null;
+	}
+	return shader;
 };
 
 var Util$getShader$SI = Util.getShader$SI;
@@ -1761,7 +1766,11 @@ Util.getProgram$SS = function (vs_url, fs_url) {
 	gl.attachShader(program, vs);
 	gl.attachShader(program, fs);
 	gl.linkProgram(program);
-	return (! (!! gl.getProgramParameter(program, gl.LINK_STATUS)) ? null : program);
+	if (! (!! gl.getProgramParameter(program, gl.LINK_STATUS))) {
+		console.warn(gl.getProgramInfoLog(program));
+		return null;
+	}
+	return program;
 };
 
 var Util$getProgram$SS = Util.getProgram$SS;
