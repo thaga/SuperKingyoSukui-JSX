@@ -482,8 +482,6 @@ Game.main$SS = function (canvas_id, life_id) {
 	function render() {
 		/** @type {WebGLRenderingContext} */
 		var gl;
-		/** @type {!number} */
-		var err;
 		/** @type {Poi} */
 		var this$0;
 		/** @type {RenderTexture} */
@@ -533,9 +531,7 @@ Game.main$SS = function (canvas_id, life_id) {
 		if (! Poi$down$LPoi$(Game.poi)) {
 			Poi$draw$LPoi$LM44$LM44$(Game.poi, Game.projMat, Game.viewMat);
 		}
-		err = gl.getError();
-		if (err !== 0) {
-		}
+		Util$checkGLError$();
 	};
 	function update_render(time) {
 		update();

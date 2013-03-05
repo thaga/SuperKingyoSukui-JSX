@@ -286,8 +286,7 @@ class Game {
 			Kingyo.drawAboveWater(Game.projMat, Game.viewMat);
 			if (!Game.poi.down()) Game.poi.draw(Game.projMat, Game.viewMat);
 
-			var err = gl.getError();
-			if (err != 0) log 'GL_ERROR: ' + err.toString();
+			Util.checkGLError();
 		};
 
 		function update_render(time:number) : void {
