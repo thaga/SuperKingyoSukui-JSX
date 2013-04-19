@@ -1,4 +1,4 @@
-// generatedy by JSX compiler 0.9.10 (2013-03-05 16:52:06 +0900; e0ecaa9bc064169a325d7702da6e98aab1e9181f)
+// generatedy by JSX compiler 0.9.26 (2013-04-19 10:46:44 +0900; 29fff0d44ffc20b11d5e6ebebf4239a5c30b097d)
 var JSX = {};
 (function (JSX) {
 /**
@@ -77,10 +77,10 @@ JSX.getProfileResults = function () {
 	return ($__jsx_profiler.getResults || function () { return {}; })();
 };
 
-JSX.postProfileResults = function (url) {
+JSX.postProfileResults = function (url, cb) {
 	if ($__jsx_profiler.postResults == null)
 		throw new Error("profiler has not been turned on");
-	return $__jsx_profiler.postResults(url);
+	return $__jsx_profiler.postResults(url, cb);
 };
 
 JSX.resetProfileResults = function () {
@@ -456,7 +456,7 @@ Game.main$SS = function (canvas_id, life_id) {
 		Game$update$();
 		Game$render$();
 		Timer._requestAnimationFrame(update_render);
-	};
+	}
 	update_render(0);
 };
 
