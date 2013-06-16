@@ -1,4 +1,4 @@
-// generatedy by JSX compiler 0.9.29 (2013-05-14 20:29:58 +0900; c996586e9477f58ae8609900761e1fdaddfe6463)
+// generatedy by JSX compiler 0.9.41 (2013-06-16 14:50:03 -0700; a5ab434ac809f5edb097de0a7fc95cd088fb95f2)
 var JSX = {};
 (function (JSX) {
 /**
@@ -239,7 +239,7 @@ function Game$main$SS(canvas_id, life_id) {
 			Game.life = 1;
 			Game.life_bar.style.width = Game.life_bar_width.toString() + "px";
 			$this$1 = Game.poi;
-			$this$1._live = ! false;
+			$this$1._live = true;
 			Kingyo$reset$();
 			Game.status_text.innerHTML = 'click to start';
 		} else {
@@ -254,7 +254,7 @@ function Game$main$SS(canvas_id, life_id) {
 			hit = Kingyo$hit$NN(pos[0], pos[1]);
 			if (hit.length > 0) {
 				$this$3 = Game.poi;
-				$this$3._live = ! true;
+				$this$3._live = false;
 				s$0 = dom.document.createElement('audio');
 				s$0.src = 'tear.mp3';
 				s$0.play();
@@ -370,7 +370,7 @@ function Game$main$SS(canvas_id, life_id) {
 	});
 	canvas.style.cursor = 'none';
 	Game.canvas = canvas;
-	Game.renderTex = new RenderTexture(canvas.width, canvas.height);
+	Game.renderTex = new RenderTexture((canvas.width | 0), (canvas.height | 0));
 	raf = dom.window.location.hash === "#raf";
 	Timer._requestAnimationFrame = Timer$_getRequestAnimationFrameImpl$B(raf);
 	Timer._cancelAnimationFrame = Timer$_getCancelAnimationFrameImpl$B(raf);
@@ -408,7 +408,7 @@ function Game$update$() {
 		if (Game.life < 0 && ! Poi$tearing_0$LPoi$(Game.poi)) {
 			Game.life = 0;
 			$this$1 = Game.poi;
-			$this$1._live = ! true;
+			$this$1._live = false;
 			s$0 = dom.document.createElement('audio');
 			s$0.src = 'tear.mp3';
 			s$0.play();
@@ -1081,8 +1081,8 @@ function Util$getProgram$SS(vs_url, fs_url) {
 	var fs;
 	var program;
 	gl = Util.gl;
-	vs = Util$getShader$SI(vs_url, gl.VERTEX_SHADER);
-	fs = Util$getShader$SI(fs_url, gl.FRAGMENT_SHADER);
+	vs = Util$getShader$SI(vs_url, (gl.VERTEX_SHADER | 0));
+	fs = Util$getShader$SI(fs_url, (gl.FRAGMENT_SHADER | 0));
 	if (! vs || ! fs) {
 		return null;
 	}
@@ -9409,7 +9409,7 @@ JSX.runTests = function (sourceFile, tests) {
 	if(tests.length === 0) {
 		var p = testClass.prototype;
 		for (var m in p) {
-			if (p[m] instanceof Function && m.match(/^test\w+$/)) {
+			if (p[m] instanceof Function && m.match(/^test\w*$/)) {
 				tests.push(m);
 			}
 		}
