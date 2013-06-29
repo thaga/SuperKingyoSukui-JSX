@@ -1,7 +1,6 @@
 import 'js/web.jsx';
 import 'webgl-util.jsx';
 import 'mvq.jsx';
-import 'game.jsx';
 
 class Poi {
 	static var gl:WebGLRenderingContext;

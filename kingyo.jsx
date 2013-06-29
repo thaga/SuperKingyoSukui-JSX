@@ -1,7 +1,6 @@
 import 'js/web.jsx';
 import 'mvq.jsx';
 import 'webgl-util.jsx';
-import 'game.jsx';
 
 class _Part {
 	static function createArrayBuffer(a:number[]) : WebGLBuffer {

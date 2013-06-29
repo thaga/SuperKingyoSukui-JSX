@@ -1,4 +1,4 @@
-// generatedy by JSX compiler 0.9.47 (2013-06-26 23:58:26 -0700; 360ae340611be3e4d4c8cd373ff131f04501aabc)
+// generatedy by JSX compiler 0.9.48 (2013-06-29 14:28:24 -0700; 694977540e8d28a6c304a6fa2130bc10a4225469)
 var JSX = {};
 (function (JSX) {
 /**
@@ -9242,7 +9242,7 @@ var $__jsx_classMap = {
 		g_StopIteration: g_StopIteration,
 		g_StopIteration$: g_StopIteration
 	},
-	"game.jsx": {
+	"./game.jsx": {
 		_Main: _Main,
 		_Main$: _Main,
 		Game: Game,
@@ -9491,7 +9491,7 @@ JSX.runTests = function (sourceFile, tests) {
 function $__jsx_onload (event) {
 	window.removeEventListener("load", $__jsx_onload);
 	document.removeEventListener("DOMContentLoaded", $__jsx_onload);
-	JSX.runMain("game.jsx", [])
+	JSX.runMain("./game.jsx", [])
 }
 
 window.addEventListener("load", $__jsx_onload);

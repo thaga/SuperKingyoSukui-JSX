@@ -1,14 +1,14 @@
 
-#OPTIMIZE=--optimize lto,no-assert,no-log,fold-const,return-if,inline,unbox,fold-const,lcse,fold-const,array-length,unclassify
+JSX:=jsx
 
 all:
-	jsx --release --executable web --output game.jsx.js game.jsx
+	$(JSX) --release --executable web --output game.jsx.js game.jsx
 
 debug:
-	jsx --executable web --output game.jsx.js game.jsx
+	$(JSX) --executable web --output game.jsx.js game.jsx
 
 debug-with-source-map:
-	jsx --enable-source-map --executable web --output game.jsx.js game.jsx
+	$(JSX) --enable-source-map --executable web --output game.jsx.js game.jsx
 
 update-mvq:
 	curl -LO https://raw.github.com/thaga/mvq.jsx/master/lib/mvq.jsx

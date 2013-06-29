@@ -3,3 +3,4 @@
 
 *.mapping
 *.mapping.d/
+node_modules/
