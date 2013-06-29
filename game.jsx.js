@@ -1,4 +1,4 @@
-// generatedy by JSX compiler 0.9.41 (2013-06-16 14:50:03 -0700; a5ab434ac809f5edb097de0a7fc95cd088fb95f2)
+// generatedy by JSX compiler 0.9.47 (2013-06-26 23:58:26 -0700; 360ae340611be3e4d4c8cd373ff131f04501aabc)
 var JSX = {};
 (function (JSX) {
 /**
@@ -135,7 +135,9 @@ function Game$main$SS(canvas_id, life_id) {
 	var touchEnd;
 	var touchMove;
 	var raf;
-	var update_render;
+	var frame;
+	var prev;
+	var fps;
 	canvas = dom.document.getElementById(canvas_id);
 	ww = dom.window.innerWidth;
 	wh = dom.window.innerHeight;
@@ -374,12 +376,22 @@ function Game$main$SS(canvas_id, life_id) {
 	raf = dom.window.location.hash === "#raf";
 	Timer._requestAnimationFrame = Timer$_getRequestAnimationFrameImpl$B(raf);
 	Timer._cancelAnimationFrame = Timer$_getCancelAnimationFrameImpl$B(raf);
-	function update_render(time) {
-		Game$update$();
+	frame = 0;
+	prev = Date.now();
+	fps = dom.document.getElementById("fps");
+	(function update_render(time) {
+		var now;
+		frame++;
+		now = Date.now();
+		if (now - prev >= 1000) {
+			fps.firstChild.nodeValue = NumberUtil$format$NI(frame * 1000 / (now - prev), 1) + " fps";
+			frame = 0;
+			prev = now;
+		}
+		Game$update$N(now);
 		Game$render$();
 		Timer._requestAnimationFrame(update_render);
-	}
-	update_render(0);
+	})(0);
 };
 
 Game.main$SS = Game$main$SS;
@@ -393,12 +405,13 @@ function Game$playSound$S(url) {
 
 Game.playSound$S = Game$playSound$S;
 
-function Game$update$() {
+function Game$update$N(now) {
 	var t;
+	var newStatus;
 	var $this$0;
 	var $this$1;
 	var s$0;
-	t = Date.now() / 1000;
+	t = now / 1000;
 	Kingyo$update$N(t);
 	Water$step_0$LWater$N(Game.water, t);
 	$this$0 = Game.poi;
@@ -417,11 +430,12 @@ function Game$update$() {
 		Game.life_bar.style.width = (Game.life * Game.life_bar_width).toString() + "px";
 	}
 	if (Game.startTime > 0) {
-		Game.status_text.innerHTML = ((Date.now() - Game.startTime | 0) / 1000).toString() + '[s]';
+		newStatus = NumberUtil$format$NI((now - Game.startTime) / 1000, 3) + '[s]';
+		Game.status_text.firstChild.nodeValue = newStatus;
 	}
 };
 
-Game.update$ = Game$update$;
+Game.update$N = Game$update$N;
 
 function Game$render$() {
 	var gl;
@@ -429,7 +443,6 @@ function Game$render$() {
 	var $this$1;
 	var gl$0;
 	var vp$0;
-	Game$update$();
 	gl = Game.gl;
 	RenderTexture$begin_0$LRenderTexture$(Game.renderTex);
 	gl.clearColor(0.2, 0.6, 0.8, 1);
@@ -474,6 +487,42 @@ function Game$render$() {
 };
 
 Game.render$ = Game$render$;
+
+function NumberUtil() {
+};
+
+$__jsx_extend([NumberUtil], Object);
+function NumberUtil$format$NII(n, precision, width) {
+	var i;
+	var s;
+	var repeat;
+	var f;
+	i = n | 0;
+	s = i + "";
+	function repeat(str, count) {
+		var s;
+		var i;
+		s = "";
+		for (i = 0; i < count; ++ i) {
+			s += str;
+		}
+		return s;
+	}
+	if (precision > 0) {
+		f = (n - i + "").slice(2, 2 + precision);
+		f += repeat("0", precision - f.length);
+		s += "." + f;
+	}
+	return repeat(" ", width - s.length) + s;
+};
+
+NumberUtil.format$NII = NumberUtil$format$NII;
+
+function NumberUtil$format$NI(n, precision) {
+	return NumberUtil$format$NII(n, precision, 0);
+};
+
+NumberUtil.format$NI = NumberUtil$format$NI;
 
 function dom() {
 };
@@ -9197,7 +9246,9 @@ var $__jsx_classMap = {
 		_Main: _Main,
 		_Main$: _Main,
 		Game: Game,
-		Game$: Game
+		Game$: Game,
+		NumberUtil: NumberUtil,
+		NumberUtil$: NumberUtil
 	},
 	"system:lib/js/js/web.jsx": {
 		dom: dom,
