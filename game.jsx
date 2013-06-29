@@ -209,14 +209,24 @@ class Game {
 		log "use native RAF: " + raf as string;
 		Timer.useNativeRAF(raf);
 
-		function update_render(time:number) : void {
-			Game.update();
+		var frame = 0;
+		var prev  = Date.now();
+		var fps = dom.id("fps");
+
+		(function update_render(time:number) : void {
+			frame++;
+			var now = Date.now();
+			if ( (now - prev) >= 1000 ) {
+				fps.firstChild.nodeValue = NumberUtil.format((frame * 1000) / (now - prev), 1) as string + " fps";
+				frame = 0;
+				prev = now;
+			}
+
+			Game.update(now);
 			Game.render();
 
 			Timer.requestAnimationFrame(update_render);
-		}
-
-		update_render(0);
+		})(0);
 
 		log 'game start!';
 	}
@@ -227,8 +237,8 @@ class Game {
 		s.play();
 	}
 
-	static function update() : void {
-		var t = Date.now() / 1000;
+	static function update(now : number) : void {
+		var t = now / 1000;
 
 		Kingyo.update(t);
 
@@ -247,13 +257,13 @@ class Game {
 		}
 
 		if (Game.startTime > 0) {
-			Game.status_text.innerHTML = (((Date.now() - Game.startTime)|0)/1000).toString() + '[s]';
+			var newStatus = NumberUtil.format((now - Game.startTime)/1000, 3) as string + '[s]';
+
+			Game.status_text.firstChild.nodeValue = newStatus;
 		}
 	}
 
 	static function render() : void {
-		Game.update();
-
 		var gl = Game.gl;
 
 		Game.renderTex.begin();
@@ -303,6 +313,30 @@ class Game {
 
 		Util.checkGLError();
 	}
-
-
 }
+
+final class NumberUtil {
+	static function format(n : number, precision : int, width : int = 0) : string {
+		var i = n as int;
+
+		var s = i as string;
+
+		function repeat(str : string, count : int) : string {
+			var s = "";
+			for (var i = 0; i < count; ++i) {
+				s += str;
+			}
+			return s;
+		}
+
+		if (precision > 0) {
+			var prefixLength = 2; /* "0.".length */
+			var f = ((n - i) as string).slice(prefixLength, prefixLength+precision);
+			f += repeat("0", precision - f.length);
+			s += "." + f;
+		}
+
+		return repeat(" ", width - s.length) + s;
+	}
+}
+
