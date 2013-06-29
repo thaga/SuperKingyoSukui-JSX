@@ -9,22 +9,23 @@ module.exports = function(grunt) {
     watch: {
       jsx: {
         files: ['<%= srcDir %>/*.jsx'],
-        tasks: ['jsx:build']
+        tasks: ['jsx:release']
       },
     },
+
     jsx: {
-      dev: {
-        src: '<%= srcDir %>/game.jsx',
-        dest: '<%= srcDir %>/game.jsx.js',
-        "add-search-path": [],
-        executable: "web",
-      },
       release: {
         src: '<%= srcDir %>/game.jsx',
         dest: '<%= srcDir %>/game.jsx.js',
         "add-search-path": [],
         executable: "web",
         release: true,
+      },
+      dev: {
+        src: '<%= srcDir %>/game.jsx',
+        dest: '<%= srcDir %>/game.jsx.js',
+        "add-search-path": [],
+        executable: "web",
       },
     },
   });
@@ -34,5 +35,7 @@ module.exports = function(grunt) {
       grunt.loadNpmTasks(key);
     }
   }
+
+  grunt.registerTask('default', ['jsx:release']);
 };
 // vim: set expandtab tabstop=2 shiftwidth=2:
