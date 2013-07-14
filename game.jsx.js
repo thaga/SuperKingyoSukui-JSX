@@ -1,4 +1,4 @@
-// generatedy by JSX compiler 0.9.48 (2013-06-29 14:28:24 -0700; 694977540e8d28a6c304a6fa2130bc10a4225469)
+// generatedy by JSX compiler 0.9.54 (2013-07-13 21:10:23 -0700; 42dc3cc8412f763fec8f0f0db03084a2a6927f49)
 var JSX = {};
 (function (JSX) {
 /**
@@ -56,7 +56,7 @@ function $__jsx_div_assign(obj, prop, divisor) {
  */
 var $__jsx_parseInt = parseInt;
 var $__jsx_parseFloat = parseFloat;
-var $__jsx_isNaN = isNaN;
+function $__jsx_isNaN(n) { return n !== n; }
 var $__jsx_isFinite = isFinite;
 
 var $__jsx_encodeURIComponent = encodeURIComponent;
@@ -189,65 +189,65 @@ function Game$main$SS(canvas_id, life_id) {
 		var wy;
 		var epos;
 		var pdir;
-		var $this$0;
+		var this$0;
 		var l$0;
 		var x$0$0;
 		var y$0$0;
-		var $this$2;
+		var this$2;
 		var s$0;
 		var z$0;
 		var x$0;
 		var y$0;
 		wx = p[0] / canvas.width * 2 - 1;
 		wy = - p[1] / canvas.height * 2 + 1;
-		epos = V3$transformBy_0$LV3$LM33$(new V3$3(0, 0, 80), M33$setRotateX_0$LM33$N(new M33(), 0.2));
-		$this$0 = V3$transformBy_0$LV3$LM33$(new V3$3(0.2 * wx, 0.2 * wy, -1), M33$setRotateX_0$LM33$N(new M33(), 0.2));
-		l$0 = Math.sqrt(V3$len2_0$LV3$($this$0));
-		pdir = (l$0 > 0 ? V3$mul_0$LV3$N($this$0, 1 / l$0) : $this$0);
-		$this$2 = new V3$0(pdir);
+		epos = V3$transformBy_0$LV3$LM33$(new V3$3(0, 0, 80), M33$setRotation_0$LM33$NNNN(new M33(), 0.2, 1, 0, 0));
+		this$0 = V3$transformBy_0$LV3$LM33$(new V3$3(0.2 * wx, 0.2 * wy, -1), M33$setRotation_0$LM33$NNNN(new M33(), 0.2, 1, 0, 0));
+		l$0 = Math.sqrt(V3$len2_0$LV3$(this$0));
+		pdir = (l$0 > 0 ? V3$mul_0$LV3$N(this$0, 1 / l$0) : this$0);
+		this$2 = new V3$0(pdir);
 		s$0 = (z$0 = epos.z) / - pdir.z;
-		$this$2.x *= s$0;
-		$this$2.y *= s$0;
-		$this$2.z *= s$0;
+		this$2.x *= s$0;
+		this$2.y *= s$0;
+		this$2.z *= s$0;
 		x$0$0 = epos.x;
 		y$0$0 = epos.y;
-		x$0 = $this$2.x += x$0$0;
-		y$0 = $this$2.y += y$0$0;
-		$this$2.z += z$0;
+		x$0 = this$2.x += x$0$0;
+		y$0 = this$2.y += y$0$0;
+		this$2.z += z$0;
 		return [ x$0, y$0 ];
 	});
 	touchStart = (function (e) {
 		var pos;
 		var hit;
-		var $this$0;
+		var this$0;
 		var x$0;
 		var y$0;
-		var $this$1;
-		var $this$2;
-		var $this$3;
+		var this$1;
+		var this$2;
+		var this$3;
 		var s$0;
-		var $this$4;
+		var this$4;
 		var x$1;
 		var y$1;
 		e.preventDefault();
 		lastTouchPos = getPoint(e);
 		pos = calcMousePosOnXYPlane(lastTouchPos);
-		$this$0 = Game.poi;
+		this$0 = Game.poi;
 		x$0 = pos[0];
 		y$0 = pos[1];
-		$this$0._x = x$0;
-		$this$0._y = y$0;
-		if (Poi$tearing_0$LPoi$(Game.poi) || Kingyo$numRests$() === 0) {
+		this$0._x = x$0;
+		this$0._y = y$0;
+		if (! Game.poi._live || Kingyo$numRests$() === 0) {
 			Game.life = 1;
 			Game.life_bar.style.width = Game.life_bar_width.toString() + "px";
-			$this$1 = Game.poi;
-			$this$1._live = true;
+			this$1 = Game.poi;
+			this$1._live = true;
 			Kingyo$reset$();
 			Game.status_text.innerHTML = 'click to start';
 		} else {
-			if (! Poi$tearing_0$LPoi$(Game.poi)) {
-				$this$2 = Game.poi;
-				$this$2._down = true;
+			if (! ! Game.poi._live) {
+				this$2 = Game.poi;
+				this$2._down = true;
 				Game.poi_down_time = Date.now() / 1000;
 				if (Game.startTime === 0) {
 					Game.startTime = Date.now();
@@ -255,20 +255,20 @@ function Game$main$SS(canvas_id, life_id) {
 			}
 			hit = Kingyo$hit$NN(pos[0], pos[1]);
 			if (hit.length > 0) {
-				$this$3 = Game.poi;
-				$this$3._live = false;
+				this$3 = Game.poi;
+				this$3._live = false;
 				s$0 = dom.document.createElement('audio');
 				s$0.src = 'tear.mp3';
 				s$0.play();
 				Game.startTime = 0;
 			}
-			$this$4 = Game.water;
+			this$4 = Game.water;
 			x$1 = pos[0] / 40 + 0.5;
 			y$1 = pos[1] / 40 + 0.5;
-			$this$4._ix = x$1;
-			$this$4._iy = y$1;
-			$this$4._ir = 0.03;
-			$this$4._iz = 0;
+			this$4._ix = x$1;
+			this$4._iy = y$1;
+			this$4._ir = 0.03;
+			this$4._iz = 0;
 		}
 	});
 	canvas.addEventListener("mousedown", touchStart);
@@ -276,28 +276,26 @@ function Game$main$SS(canvas_id, life_id) {
 	touchEnd = (function (e) {
 		var pos;
 		var hit;
-		var $this$0;
+		var this$0;
 		var x$0;
 		var y$0;
-		var $this$1;
 		var s$0;
-		var $this$2;
+		var this$1;
 		var x$1;
 		var y$1;
-		var $this$3;
+		var this$2;
 		e.preventDefault();
 		if (e instanceof MouseEvent) {
 			lastTouchPos = getPoint(e);
 		}
 		pos = calcMousePosOnXYPlane(lastTouchPos);
-		$this$0 = Game.poi;
+		this$0 = Game.poi;
 		x$0 = pos[0];
 		y$0 = pos[1];
-		$this$0._x = x$0;
-		$this$0._y = y$0;
-		$this$1 = Game.poi;
-		if ($this$1._down) {
-			if (! Poi$tearing_0$LPoi$(Game.poi)) {
+		this$0._x = x$0;
+		this$0._y = y$0;
+		if (Game.poi._down) {
+			if (! ! Game.poi._live) {
 				hit = Kingyo$hit$NN(pos[0], pos[1]);
 				Kingyo$fish$ALKingyo$(hit);
 				if (hit.length > 0) {
@@ -309,63 +307,61 @@ function Game$main$SS(canvas_id, life_id) {
 					Game.startTime = 0;
 				}
 			}
-			$this$2 = Game.water;
+			this$1 = Game.water;
 			x$1 = pos[0] / 40 + 0.5;
 			y$1 = pos[1] / 40 + 0.5;
-			$this$2._ix = x$1;
-			$this$2._iy = y$1;
-			$this$2._ir = 0.03;
-			$this$2._iz = 1;
+			this$1._ix = x$1;
+			this$1._iy = y$1;
+			this$1._ir = 0.03;
+			this$1._iz = 1;
 		}
-		$this$3 = Game.poi;
-		$this$3._down = false;
+		this$2 = Game.poi;
+		this$2._down = false;
 	});
 	canvas.addEventListener("mouseup", touchEnd);
 	canvas.addEventListener("touchend", touchEnd);
 	touchMove = (function (e) {
 		var pos;
-		var $this$0;
+		var this$0;
 		var x$0;
 		var y$0;
-		var $this$1;
-		var $this$2;
+		var this$1;
 		var x$1;
 		var y$1;
 		e.preventDefault();
 		lastTouchPos = getPoint(e);
 		pos = calcMousePosOnXYPlane(lastTouchPos);
-		$this$0 = Game.poi;
+		this$0 = Game.poi;
 		x$0 = pos[0];
 		y$0 = pos[1];
-		$this$0._x = x$0;
-		$this$0._y = y$0;
-		$this$1 = Game.poi;
-		if ($this$1._down) {
-			$this$2 = Game.water;
+		this$0._x = x$0;
+		this$0._y = y$0;
+		if (Game.poi._down) {
+			this$1 = Game.water;
 			x$1 = pos[0] / 40 + 0.5;
 			y$1 = pos[1] / 40 + 0.5;
-			$this$2._ix = x$1;
-			$this$2._iy = y$1;
-			$this$2._ir = 0.02;
-			$this$2._iz = 0.2;
+			this$1._ix = x$1;
+			this$1._iy = y$1;
+			this$1._ir = 0.02;
+			this$1._iz = 0.2;
 		}
 	});
 	canvas.addEventListener("mousemove", touchMove);
 	canvas.addEventListener("touchmove", touchMove);
 	canvas.onmouseout = (function (e) {
 		var pos;
-		var $this$0;
+		var this$0;
 		var x$0;
 		var y$0;
-		var $this$1;
+		var this$1;
 		pos = calcMousePosOnXYPlane(getPoint(e));
-		$this$0 = Game.poi;
+		this$0 = Game.poi;
 		x$0 = pos[0];
 		y$0 = pos[1];
-		$this$0._x = x$0;
-		$this$0._y = y$0;
-		$this$1 = Game.poi;
-		$this$1._down = false;
+		this$0._x = x$0;
+		this$0._y = y$0;
+		this$1 = Game.poi;
+		this$1._down = false;
 	});
 	canvas.oncontextmenu = (function (e) {
 		e.preventDefault();
@@ -408,20 +404,18 @@ Game.playSound$S = Game$playSound$S;
 function Game$update$N(now) {
 	var t;
 	var newStatus;
-	var $this$0;
-	var $this$1;
+	var this$0;
 	var s$0;
 	t = now / 1000;
 	Kingyo$update$N(t);
 	Water$step_0$LWater$N(Game.water, t);
-	$this$0 = Game.poi;
-	if ($this$0._down) {
+	if (Game.poi._down) {
 		Game.life -= (t - Game.poi_down_time) * 0.5;
 		Game.poi_down_time = t;
-		if (Game.life < 0 && ! Poi$tearing_0$LPoi$(Game.poi)) {
+		if (Game.life < 0 && ! ! Game.poi._live) {
 			Game.life = 0;
-			$this$1 = Game.poi;
-			$this$1._live = false;
+			this$0 = Game.poi;
+			this$0._live = false;
 			s$0 = dom.document.createElement('audio');
 			s$0.src = 'tear.mp3';
 			s$0.play();
@@ -439,8 +433,7 @@ Game.update$N = Game$update$N;
 
 function Game$render$() {
 	var gl;
-	var $this$0;
-	var $this$1;
+	var this$0;
 	var gl$0;
 	var vp$0;
 	gl = Game.gl;
@@ -451,25 +444,24 @@ function Game$render$() {
 	gl.enable(gl.BLEND);
 	gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE);
 	Kingyo$drawUnderWater$LM44$LM44$(Game.projMat, Game.viewMat);
-	$this$0 = Game.poi;
-	if ($this$0._down) {
-		Poi$draw_0$LPoi$LM44$LM44$(Game.poi, Game.projMat, Game.viewMat);
+	if (Game.poi._down) {
+		Poi$draw$LPoi$LM44$LM44$(Game.poi, Game.projMat, Game.viewMat);
 	}
-	$this$1 = Game.renderTex;
+	this$0 = Game.renderTex;
 	gl$0 = RenderTexture.gl;
 	gl$0.bindFramebuffer(gl$0.FRAMEBUFFER, null);
-	vp$0 = $this$1._viewport;
+	vp$0 = this$0._viewport;
 	gl$0.viewport(vp$0[0], vp$0[1], vp$0[2], vp$0[3]);
 	gl.clear(gl.DEPTH_BUFFER_BIT);
 	gl.useProgram(Game.bltProg);
-	gl.bindTexture(gl.TEXTURE_2D, RenderTexture$texture_0$LRenderTexture$(Game.renderTex));
+	gl.bindTexture(gl.TEXTURE_2D, Game.renderTex.texturebuffer);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 	gl.uniform1i(Game.bltULocs.texture, 0);
 	gl.uniformMatrix4fv(Game.bltULocs.projectionMatrix, false, M44$array_0$LM44$(M44$setOrtho_0$LM44$NNNNNN(new M44(), 0, 1, 0, 1, -1, 0)));
-	gl.uniformMatrix4fv(Game.bltULocs.modelviewMatrix, false, M44$array_0$LM44$(M44$setIdentity_0$LM44$(new M44())));
+	gl.uniformMatrix4fv(Game.bltULocs.modelviewMatrix, false, M44$array_0$LM44$(M44$set_0$LM44$N(new M44(), 1)));
 	gl.bindBuffer(gl.ARRAY_BUFFER, Game.bltVTBuf);
 	gl.vertexAttribPointer(Game.bltALocs.vertex, 2, gl.FLOAT, false, 0, 0);
 	gl.vertexAttribPointer(Game.bltALocs.texcoord, 2, gl.FLOAT, false, 0, 0);
@@ -478,10 +470,10 @@ function Game$render$() {
 	gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
 	gl.disableVertexAttribArray(Game.bltALocs.vertex);
 	gl.disableVertexAttribArray(Game.bltALocs.texcoord);
-	Water$draw_0$LWater$LM44$LM44$LWebGLTexture$NN(Game.water, Game.projMat, Game.viewMat, RenderTexture$texture_0$LRenderTexture$(Game.renderTex), Game.canvas.offsetWidth, Game.canvas.offsetHeight);
+	Water$draw_0$LWater$LM44$LM44$LWebGLTexture$NN(Game.water, Game.projMat, Game.viewMat, Game.renderTex.texturebuffer, Game.canvas.offsetWidth, Game.canvas.offsetHeight);
 	Kingyo$drawAboveWater$LM44$LM44$(Game.projMat, Game.viewMat);
-	if (! Poi$down_0$LPoi$(Game.poi)) {
-		Poi$draw_0$LPoi$LM44$LM44$(Game.poi, Game.projMat, Game.viewMat);
+	if (! Game.poi._down) {
+		Poi$draw$LPoi$LM44$LM44$(Game.poi, Game.projMat, Game.viewMat);
 	}
 	Util$checkGLError$();
 };
@@ -991,10 +983,9 @@ function Timer$_getRequestAnimationFrameImpl$B(useNativeImpl) {
 	return (function (callback) {
 		var now;
 		var timeToCall;
-		var value2$0;
+		var max$value2$0;
 		now = Date.now();
-		value2$0 = 16 - (now - lastTime);
-		timeToCall = (0 >= value2$0 ? 0 : value2$0);
+		timeToCall = (max$value2$0 = 16 - (now - lastTime), 0 >= max$value2$0 ? 0 : max$value2$0);
 		lastTime = now + timeToCall;
 		return js.global.setTimeout((function () {
 			callback(now + timeToCall);
@@ -1438,27 +1429,27 @@ function V2$set_0$LV2$LFloat32Array$($this, v) {
 V2.set_0$LV2$LFloat32Array$ = V2$set_0$LV2$LFloat32Array$;
 
 V2.prototype.equals$LV2$ = function (v) {
-	var $math_abs_t;
-	return (($math_abs_t = v.x - this.x) >= 0 ? $math_abs_t : -$math_abs_t) < 0.000001 && (($math_abs_t = v.y - this.y) >= 0 ? $math_abs_t : -$math_abs_t) < 0.000001;
+	return V2$equals_0$LV2$LV2$N(this, v, 0.000001);
 };
 
 
 function V2$equals_0$LV2$LV2$($this, v) {
-	var $math_abs_t;
-	return (($math_abs_t = v.x - $this.x) >= 0 ? $math_abs_t : -$math_abs_t) < 0.000001 && (($math_abs_t = v.y - $this.y) >= 0 ? $math_abs_t : -$math_abs_t) < 0.000001;
+	return V2$equals_0$LV2$LV2$N($this, v, 0.000001);
 };
 
 V2.equals_0$LV2$LV2$ = V2$equals_0$LV2$LV2$;
 
 V2.prototype.equals$LV2$N = function (v, eps) {
-	var $math_abs_t;
-	return (($math_abs_t = v.x - this.x) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = v.y - this.y) >= 0 ? $math_abs_t : -$math_abs_t) < eps;
+	var abs$x$0;
+	var abs$x$1;
+	return (abs$x$0 = v.x - this.x, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) < eps && (abs$x$1 = v.y - this.y, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) < eps;
 };
 
 
 function V2$equals_0$LV2$LV2$N($this, v, eps) {
-	var $math_abs_t;
-	return (($math_abs_t = v.x - $this.x) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = v.y - $this.y) >= 0 ? $math_abs_t : -$math_abs_t) < eps;
+	var abs$x$0;
+	var abs$x$1;
+	return (abs$x$0 = v.x - $this.x, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) < eps && (abs$x$1 = v.y - $this.y, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) < eps;
 };
 
 V2.equals_0$LV2$LV2$N = V2$equals_0$LV2$LV2$N;
@@ -1902,7 +1893,7 @@ function V2$transformBy_0$LV2$LM33$($this, m) {
 V2.transformBy_0$LV2$LM33$ = V2$transformBy_0$LV2$LM33$;
 
 V2.prototype.toString = function () {
-	return "V2" + JSON.stringify(V2$array_0$LV2$(this));
+	return "V2" + JSON.stringify([ this.x, this.y ]);
 };
 
 
@@ -2216,14 +2207,18 @@ function V3$equals_0$LV3$LV3$($this, v) {
 V3.equals_0$LV3$LV3$ = V3$equals_0$LV3$LV3$;
 
 V3.prototype.equals$LV3$N = function (v, eps) {
-	var $math_abs_t;
-	return (($math_abs_t = v.x - this.x) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = v.y - this.y) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = v.z - this.z) >= 0 ? $math_abs_t : -$math_abs_t) < eps;
+	var abs$x$0;
+	var abs$x$1;
+	var abs$x$2;
+	return (abs$x$0 = v.x - this.x, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) < eps && (abs$x$1 = v.y - this.y, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) < eps && (abs$x$2 = v.z - this.z, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) < eps;
 };
 
 
 function V3$equals_0$LV3$LV3$N($this, v, eps) {
-	var $math_abs_t;
-	return (($math_abs_t = v.x - $this.x) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = v.y - $this.y) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = v.z - $this.z) >= 0 ? $math_abs_t : -$math_abs_t) < eps;
+	var abs$x$0;
+	var abs$x$1;
+	var abs$x$2;
+	return (abs$x$0 = v.x - $this.x, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) < eps && (abs$x$1 = v.y - $this.y, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) < eps && (abs$x$2 = v.z - $this.z, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) < eps;
 };
 
 V3.equals_0$LV3$LV3$N = V3$equals_0$LV3$LV3$N;
@@ -2771,7 +2766,7 @@ function V3$transformBy_0$LV3$LM44$($this, m) {
 V3.transformBy_0$LV3$LM44$ = V3$transformBy_0$LV3$LM44$;
 
 V3.prototype.toString = function () {
-	return "V3" + JSON.stringify(V3$array_0$LV3$(this));
+	return "V3" + JSON.stringify([ this.x, this.y, this.z ]);
 };
 
 
@@ -3100,14 +3095,20 @@ function V4$equals_0$LV4$LV4$($this, v) {
 V4.equals_0$LV4$LV4$ = V4$equals_0$LV4$LV4$;
 
 V4.prototype.equals$LV4$N = function (v, eps) {
-	var $math_abs_t;
-	return (($math_abs_t = v.x - this.x) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = v.y - this.y) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = v.z - this.z) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = v.w - this.w) >= 0 ? $math_abs_t : -$math_abs_t) < eps;
+	var abs$x$0;
+	var abs$x$1;
+	var abs$x$2;
+	var abs$x$3;
+	return (abs$x$0 = v.x - this.x, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) < eps && (abs$x$1 = v.y - this.y, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) < eps && (abs$x$2 = v.z - this.z, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) < eps && (abs$x$3 = v.w - this.w, abs$x$3 >= 0 ? abs$x$3 : - abs$x$3) < eps;
 };
 
 
 function V4$equals_0$LV4$LV4$N($this, v, eps) {
-	var $math_abs_t;
-	return (($math_abs_t = v.x - $this.x) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = v.y - $this.y) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = v.z - $this.z) >= 0 ? $math_abs_t : -$math_abs_t) < eps && (($math_abs_t = v.w - $this.w) >= 0 ? $math_abs_t : -$math_abs_t) < eps;
+	var abs$x$0;
+	var abs$x$1;
+	var abs$x$2;
+	var abs$x$3;
+	return (abs$x$0 = v.x - $this.x, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) < eps && (abs$x$1 = v.y - $this.y, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) < eps && (abs$x$2 = v.z - $this.z, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) < eps && (abs$x$3 = v.w - $this.w, abs$x$3 >= 0 ? abs$x$3 : - abs$x$3) < eps;
 };
 
 V4.equals_0$LV4$LV4$N = V4$equals_0$LV4$LV4$N;
@@ -3675,7 +3676,7 @@ function V4$transformBy_0$LV4$LM44$($this, m) {
 V4.transformBy_0$LV4$LM44$ = V4$transformBy_0$LV4$LM44$;
 
 V4.prototype.toString = function () {
-	return "V4" + JSON.stringify(V4$array_0$LV4$(this));
+	return "V4" + JSON.stringify([ this.x, this.y, this.z, this.w ]);
 };
 
 
@@ -3877,21 +3878,21 @@ function M22$setIdentity_0$LM22$($this) {
 M22.setIdentity_0$LM22$ = M22$setIdentity_0$LM22$;
 
 function M22$zero$() {
-	var $this$0;
-	$this$0 = new M22();
-	$this$0.m11 = $this$0.m22 = 0;
-	$this$0.m21 = $this$0.m12 = 0;
-	return $this$0;
+	var this$0;
+	this$0 = new M22();
+	this$0.m11 = this$0.m22 = 0;
+	this$0.m21 = this$0.m12 = 0;
+	return this$0;
 };
 
 M22.zero$ = M22$zero$;
 
 function M22$identity$() {
-	var $this$0;
-	$this$0 = new M22();
-	$this$0.m11 = $this$0.m22 = 1;
-	$this$0.m21 = $this$0.m12 = 0;
-	return $this$0;
+	var this$0;
+	this$0 = new M22();
+	this$0.m11 = this$0.m22 = 1;
+	this$0.m21 = this$0.m12 = 0;
+	return this$0;
 };
 
 M22.identity$ = M22$identity$;
@@ -4018,14 +4019,20 @@ function M22$equals_0$LM22$LM22$($this, m) {
 M22.equals_0$LM22$LM22$ = M22$equals_0$LM22$LM22$;
 
 M22.prototype.equals$LM22$N = function (m, eps) {
-	var $math_abs_t;
-	return ((($math_abs_t = this.m11 - m.m11) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m21 - m.m21) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m12 - m.m12) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m22 - m.m22) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : true);
+	var abs$x$0;
+	var abs$x$1;
+	var abs$x$2;
+	var abs$x$3;
+	return ((abs$x$0 = this.m11 - m.m11, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) >= eps ? false : (abs$x$1 = this.m21 - m.m21, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) >= eps ? false : (abs$x$2 = this.m12 - m.m12, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) >= eps ? false : (abs$x$3 = this.m22 - m.m22, abs$x$3 >= 0 ? abs$x$3 : - abs$x$3) >= eps ? false : true);
 };
 
 
 function M22$equals_0$LM22$LM22$N($this, m, eps) {
-	var $math_abs_t;
-	return ((($math_abs_t = $this.m11 - m.m11) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m21 - m.m21) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m12 - m.m12) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m22 - m.m22) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : true);
+	var abs$x$0;
+	var abs$x$1;
+	var abs$x$2;
+	var abs$x$3;
+	return ((abs$x$0 = $this.m11 - m.m11, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) >= eps ? false : (abs$x$1 = $this.m21 - m.m21, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) >= eps ? false : (abs$x$2 = $this.m12 - m.m12, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) >= eps ? false : (abs$x$3 = $this.m22 - m.m22, abs$x$3 >= 0 ? abs$x$3 : - abs$x$3) >= eps ? false : true);
 };
 
 M22.equals_0$LM22$LM22$N = M22$equals_0$LM22$LM22$N;
@@ -4069,7 +4076,7 @@ function M22$sub_0$LM22$LM22$($this, m) {
 M22.sub_0$LM22$LM22$ = M22$sub_0$LM22$LM22$;
 
 M22.prototype.mul$LM22$ = function (m) {
-	return M22$mul_0$LM22$LM22$LM22$(this, M22$clone_0$LM22$(this), m);
+	return M22$mul_0$LM22$LM22$LM22$(this, new M22$0(this), m);
 };
 
 
@@ -4347,7 +4354,7 @@ function M22$setRotation_0$LM22$N($this, rad) {
 M22.setRotation_0$LM22$N = M22$setRotation_0$LM22$N;
 
 M22.prototype.toString = function () {
-	return "M22" + JSON.stringify(M22$array_0$LM22$(this));
+	return "M22" + JSON.stringify([ this.m11, this.m21, this.m12, this.m22 ]);
 };
 
 
@@ -4592,17 +4599,13 @@ function M33$setIdentity_0$LM33$($this) {
 M33.setIdentity_0$LM33$ = M33$setIdentity_0$LM33$;
 
 function M33$zero$() {
-	var $this$0;
-	$this$0 = new M33();
-	return M33$set_0$LM33$N($this$0, 0);
+	return M33$set_0$LM33$N(new M33(), 0);
 };
 
 M33.zero$ = M33$zero$;
 
 function M33$identity$() {
-	var $this$0;
-	$this$0 = new M33();
-	return M33$set_0$LM33$N($this$0, 1);
+	return M33$set_0$LM33$N(new M33(), 1);
 };
 
 M33.identity$ = M33$identity$;
@@ -4779,14 +4782,30 @@ function M33$equals_0$LM33$LM33$($this, m) {
 M33.equals_0$LM33$LM33$ = M33$equals_0$LM33$LM33$;
 
 M33.prototype.equals$LM33$N = function (m, eps) {
-	var $math_abs_t;
-	return ((($math_abs_t = this.m11 - m.m11) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m21 - m.m21) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m31 - m.m31) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m12 - m.m12) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m22 - m.m22) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m32 - m.m32) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m13 - m.m13) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m23 - m.m23) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m33 - m.m33) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : true);
+	var abs$x$0;
+	var abs$x$1;
+	var abs$x$2;
+	var abs$x$3;
+	var abs$x$4;
+	var abs$x$5;
+	var abs$x$6;
+	var abs$x$7;
+	var abs$x$8;
+	return ((abs$x$0 = this.m11 - m.m11, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) >= eps ? false : (abs$x$1 = this.m21 - m.m21, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) >= eps ? false : (abs$x$2 = this.m31 - m.m31, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) >= eps ? false : (abs$x$3 = this.m12 - m.m12, abs$x$3 >= 0 ? abs$x$3 : - abs$x$3) >= eps ? false : (abs$x$4 = this.m22 - m.m22, abs$x$4 >= 0 ? abs$x$4 : - abs$x$4) >= eps ? false : (abs$x$5 = this.m32 - m.m32, abs$x$5 >= 0 ? abs$x$5 : - abs$x$5) >= eps ? false : (abs$x$6 = this.m13 - m.m13, abs$x$6 >= 0 ? abs$x$6 : - abs$x$6) >= eps ? false : (abs$x$7 = this.m23 - m.m23, abs$x$7 >= 0 ? abs$x$7 : - abs$x$7) >= eps ? false : (abs$x$8 = this.m33 - m.m33, abs$x$8 >= 0 ? abs$x$8 : - abs$x$8) >= eps ? false : true);
 };
 
 
 function M33$equals_0$LM33$LM33$N($this, m, eps) {
-	var $math_abs_t;
-	return ((($math_abs_t = $this.m11 - m.m11) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m21 - m.m21) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m31 - m.m31) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m12 - m.m12) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m22 - m.m22) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m32 - m.m32) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m13 - m.m13) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m23 - m.m23) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m33 - m.m33) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : true);
+	var abs$x$0;
+	var abs$x$1;
+	var abs$x$2;
+	var abs$x$3;
+	var abs$x$4;
+	var abs$x$5;
+	var abs$x$6;
+	var abs$x$7;
+	var abs$x$8;
+	return ((abs$x$0 = $this.m11 - m.m11, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) >= eps ? false : (abs$x$1 = $this.m21 - m.m21, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) >= eps ? false : (abs$x$2 = $this.m31 - m.m31, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) >= eps ? false : (abs$x$3 = $this.m12 - m.m12, abs$x$3 >= 0 ? abs$x$3 : - abs$x$3) >= eps ? false : (abs$x$4 = $this.m22 - m.m22, abs$x$4 >= 0 ? abs$x$4 : - abs$x$4) >= eps ? false : (abs$x$5 = $this.m32 - m.m32, abs$x$5 >= 0 ? abs$x$5 : - abs$x$5) >= eps ? false : (abs$x$6 = $this.m13 - m.m13, abs$x$6 >= 0 ? abs$x$6 : - abs$x$6) >= eps ? false : (abs$x$7 = $this.m23 - m.m23, abs$x$7 >= 0 ? abs$x$7 : - abs$x$7) >= eps ? false : (abs$x$8 = $this.m33 - m.m33, abs$x$8 >= 0 ? abs$x$8 : - abs$x$8) >= eps ? false : true);
 };
 
 M33.equals_0$LM33$LM33$N = M33$equals_0$LM33$LM33$N;
@@ -4850,7 +4869,7 @@ function M33$sub_0$LM33$LM33$($this, m) {
 M33.sub_0$LM33$LM33$ = M33$sub_0$LM33$LM33$;
 
 M33.prototype.mul$LM33$ = function (m) {
-	return M33$mul_0$LM33$LM33$LM33$(this, M33$clone_0$LM33$(this), m);
+	return M33$mul_0$LM33$LM33$LM33$(this, new M33$0(this), m);
 };
 
 
@@ -5276,7 +5295,7 @@ function M33$setRotateZ_0$LM33$N($this, rad) {
 M33.setRotateZ_0$LM33$N = M33$setRotateZ_0$LM33$N;
 
 M33.prototype.toString = function () {
-	return "M33" + JSON.stringify(M33$array_0$LM33$(this));
+	return "M33" + JSON.stringify([ this.m11, this.m21, this.m31, this.m12, this.m22, this.m32, this.m13, this.m23, this.m33 ]);
 };
 
 
@@ -5612,17 +5631,13 @@ function M44$setIdentity_0$LM44$($this) {
 M44.setIdentity_0$LM44$ = M44$setIdentity_0$LM44$;
 
 function M44$zero$() {
-	var $this$0;
-	$this$0 = new M44();
-	return M44$set_0$LM44$N($this$0, 0);
+	return M44$set_0$LM44$N(new M44(), 0);
 };
 
 M44.zero$ = M44$zero$;
 
 function M44$identity$() {
-	var $this$0;
-	$this$0 = new M44();
-	return M44$set_0$LM44$N($this$0, 1);
+	return M44$set_0$LM44$N(new M44(), 1);
 };
 
 M44.identity$ = M44$identity$;
@@ -5869,14 +5884,44 @@ function M44$equals_0$LM44$LM44$($this, m) {
 M44.equals_0$LM44$LM44$ = M44$equals_0$LM44$LM44$;
 
 M44.prototype.equals$LM44$N = function (m, eps) {
-	var $math_abs_t;
-	return ((($math_abs_t = this.m11 - m.m11) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m21 - m.m21) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m31 - m.m31) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m41 - m.m41) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m12 - m.m12) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m22 - m.m22) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m32 - m.m32) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m42 - m.m42) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m13 - m.m13) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m23 - m.m23) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m33 - m.m33) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m43 - m.m43) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m14 - m.m14) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m24 - m.m24) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m34 - m.m34) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.m44 - m.m44) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : true);
+	var abs$x$0;
+	var abs$x$1;
+	var abs$x$2;
+	var abs$x$3;
+	var abs$x$4;
+	var abs$x$5;
+	var abs$x$6;
+	var abs$x$7;
+	var abs$x$8;
+	var abs$x$9;
+	var abs$x$10;
+	var abs$x$11;
+	var abs$x$12;
+	var abs$x$13;
+	var abs$x$14;
+	var abs$x$15;
+	return ((abs$x$0 = this.m11 - m.m11, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) >= eps ? false : (abs$x$1 = this.m21 - m.m21, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) >= eps ? false : (abs$x$2 = this.m31 - m.m31, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) >= eps ? false : (abs$x$3 = this.m41 - m.m41, abs$x$3 >= 0 ? abs$x$3 : - abs$x$3) >= eps ? false : (abs$x$4 = this.m12 - m.m12, abs$x$4 >= 0 ? abs$x$4 : - abs$x$4) >= eps ? false : (abs$x$5 = this.m22 - m.m22, abs$x$5 >= 0 ? abs$x$5 : - abs$x$5) >= eps ? false : (abs$x$6 = this.m32 - m.m32, abs$x$6 >= 0 ? abs$x$6 : - abs$x$6) >= eps ? false : (abs$x$7 = this.m42 - m.m42, abs$x$7 >= 0 ? abs$x$7 : - abs$x$7) >= eps ? false : (abs$x$8 = this.m13 - m.m13, abs$x$8 >= 0 ? abs$x$8 : - abs$x$8) >= eps ? false : (abs$x$9 = this.m23 - m.m23, abs$x$9 >= 0 ? abs$x$9 : - abs$x$9) >= eps ? false : (abs$x$10 = this.m33 - m.m33, abs$x$10 >= 0 ? abs$x$10 : - abs$x$10) >= eps ? false : (abs$x$11 = this.m43 - m.m43, abs$x$11 >= 0 ? abs$x$11 : - abs$x$11) >= eps ? false : (abs$x$12 = this.m14 - m.m14, abs$x$12 >= 0 ? abs$x$12 : - abs$x$12) >= eps ? false : (abs$x$13 = this.m24 - m.m24, abs$x$13 >= 0 ? abs$x$13 : - abs$x$13) >= eps ? false : (abs$x$14 = this.m34 - m.m34, abs$x$14 >= 0 ? abs$x$14 : - abs$x$14) >= eps ? false : (abs$x$15 = this.m44 - m.m44, abs$x$15 >= 0 ? abs$x$15 : - abs$x$15) >= eps ? false : true);
 };
 
 
 function M44$equals_0$LM44$LM44$N($this, m, eps) {
-	var $math_abs_t;
-	return ((($math_abs_t = $this.m11 - m.m11) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m21 - m.m21) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m31 - m.m31) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m41 - m.m41) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m12 - m.m12) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m22 - m.m22) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m32 - m.m32) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m42 - m.m42) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m13 - m.m13) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m23 - m.m23) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m33 - m.m33) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m43 - m.m43) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m14 - m.m14) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m24 - m.m24) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m34 - m.m34) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.m44 - m.m44) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : true);
+	var abs$x$0;
+	var abs$x$1;
+	var abs$x$2;
+	var abs$x$3;
+	var abs$x$4;
+	var abs$x$5;
+	var abs$x$6;
+	var abs$x$7;
+	var abs$x$8;
+	var abs$x$9;
+	var abs$x$10;
+	var abs$x$11;
+	var abs$x$12;
+	var abs$x$13;
+	var abs$x$14;
+	var abs$x$15;
+	return ((abs$x$0 = $this.m11 - m.m11, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) >= eps ? false : (abs$x$1 = $this.m21 - m.m21, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) >= eps ? false : (abs$x$2 = $this.m31 - m.m31, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) >= eps ? false : (abs$x$3 = $this.m41 - m.m41, abs$x$3 >= 0 ? abs$x$3 : - abs$x$3) >= eps ? false : (abs$x$4 = $this.m12 - m.m12, abs$x$4 >= 0 ? abs$x$4 : - abs$x$4) >= eps ? false : (abs$x$5 = $this.m22 - m.m22, abs$x$5 >= 0 ? abs$x$5 : - abs$x$5) >= eps ? false : (abs$x$6 = $this.m32 - m.m32, abs$x$6 >= 0 ? abs$x$6 : - abs$x$6) >= eps ? false : (abs$x$7 = $this.m42 - m.m42, abs$x$7 >= 0 ? abs$x$7 : - abs$x$7) >= eps ? false : (abs$x$8 = $this.m13 - m.m13, abs$x$8 >= 0 ? abs$x$8 : - abs$x$8) >= eps ? false : (abs$x$9 = $this.m23 - m.m23, abs$x$9 >= 0 ? abs$x$9 : - abs$x$9) >= eps ? false : (abs$x$10 = $this.m33 - m.m33, abs$x$10 >= 0 ? abs$x$10 : - abs$x$10) >= eps ? false : (abs$x$11 = $this.m43 - m.m43, abs$x$11 >= 0 ? abs$x$11 : - abs$x$11) >= eps ? false : (abs$x$12 = $this.m14 - m.m14, abs$x$12 >= 0 ? abs$x$12 : - abs$x$12) >= eps ? false : (abs$x$13 = $this.m24 - m.m24, abs$x$13 >= 0 ? abs$x$13 : - abs$x$13) >= eps ? false : (abs$x$14 = $this.m34 - m.m34, abs$x$14 >= 0 ? abs$x$14 : - abs$x$14) >= eps ? false : (abs$x$15 = $this.m44 - m.m44, abs$x$15 >= 0 ? abs$x$15 : - abs$x$15) >= eps ? false : true);
 };
 
 M44.equals_0$LM44$LM44$N = M44$equals_0$LM44$LM44$N;
@@ -5968,7 +6013,7 @@ function M44$sub_0$LM44$LM44$($this, m) {
 M44.sub_0$LM44$LM44$ = M44$sub_0$LM44$LM44$;
 
 M44.prototype.mul$LM44$ = function (m) {
-	return M44$mul_0$LM44$LM44$LM44$(this, M44$clone_0$LM44$(this), m);
+	return M44$mul_0$LM44$LM44$LM44$(this, new M44$0(this), m);
 };
 
 
@@ -6458,19 +6503,31 @@ function M44$setTranslation_0$LM44$LFloat32Array$($this, v) {
 M44.setTranslation_0$LM44$LFloat32Array$ = M44$setTranslation_0$LM44$LFloat32Array$;
 
 function M44$translation$NNN(x, y, z) {
-	var $this$0;
-	$this$0 = new M44();
-	M44$set_0$LM44$N($this$0, 1);
-	$this$0.m14 = x;
-	$this$0.m24 = y;
-	$this$0.m34 = z;
-	return $this$0;
+	var this$0;
+	this$0 = new M44();
+	M44$set_0$LM44$N(this$0, 1);
+	this$0.m14 = x;
+	this$0.m24 = y;
+	this$0.m34 = z;
+	return this$0;
 };
 
 M44.translation$NNN = M44$translation$NNN;
 
 function M44$translation$LV3$(v) {
-	return M44$setTranslation_0$LM44$LV3$(new M44(), v);
+	var this$0;
+	var x$0$0;
+	var y$0$0;
+	var z$0$0;
+	this$0 = new M44();
+	x$0$0 = v.x;
+	y$0$0 = v.y;
+	z$0$0 = v.z;
+	M44$set_0$LM44$N(this$0, 1);
+	this$0.m14 = x$0$0;
+	this$0.m24 = y$0$0;
+	this$0.m34 = z$0$0;
+	return this$0;
 };
 
 M44.translation$LV3$ = M44$translation$LV3$;
@@ -6629,14 +6686,14 @@ function M44$setScale_0$LM44$LFloat32Array$($this, v) {
 M44.setScale_0$LM44$LFloat32Array$ = M44$setScale_0$LM44$LFloat32Array$;
 
 function M44$scale$NNN(x, y, z) {
-	var $this$0;
-	$this$0 = new M44();
-	M44$set_0$LM44$N($this$0, 0);
-	$this$0.m11 = x;
-	$this$0.m22 = y;
-	$this$0.m33 = z;
-	$this$0.m44 = 1;
-	return $this$0;
+	var this$0;
+	this$0 = new M44();
+	M44$set_0$LM44$N(this$0, 0);
+	this$0.m11 = x;
+	this$0.m22 = y;
+	this$0.m33 = z;
+	this$0.m44 = 1;
+	return this$0;
 };
 
 M44.scale$NNN = M44$scale$NNN;
@@ -6764,25 +6821,21 @@ function M44$rotation$NNNN(rad, ax, ay, az) {
 M44.rotation$NNNN = M44$rotation$NNNN;
 
 function M44$rotation$NLV3$(rad, axis) {
-	var $this$0;
-	$this$0 = new M44();
-	return M44$setRotation_0$LM44$NNNN($this$0, rad, axis.x, axis.y, axis.z);
+	return M44$setRotation_0$LM44$NNNN(new M44(), rad, axis.x, axis.y, axis.z);
 };
 
 M44.rotation$NLV3$ = M44$rotation$NLV3$;
 
 function M44$rotation$NAN(rad, axis) {
-	var $this$0;
-	$this$0 = new M44();
-	return M44$setRotation_0$LM44$NNNN($this$0, rad, $this$0.m11, $this$0.m21, $this$0.m31);
+	var setRotation$this$0;
+	return (setRotation$this$0 = new M44(), M44$setRotation_0$LM44$NNNN(setRotation$this$0, rad, setRotation$this$0.m11, setRotation$this$0.m21, setRotation$this$0.m31));
 };
 
 M44.rotation$NAN = M44$rotation$NAN;
 
 function M44$rotation$NLFloat32Array$(rad, axis) {
-	var $this$0;
-	$this$0 = new M44();
-	return M44$setRotation_0$LM44$NNNN($this$0, rad, $this$0.m11, $this$0.m21, $this$0.m31);
+	var setRotation$this$0;
+	return (setRotation$this$0 = new M44(), M44$setRotation_0$LM44$NNNN(setRotation$this$0, rad, setRotation$this$0.m11, setRotation$this$0.m21, setRotation$this$0.m31));
 };
 
 M44.rotation$NLFloat32Array$ = M44$rotation$NLFloat32Array$;
@@ -6821,25 +6874,19 @@ function M44$setRotationZ_0$LM44$N($this, rad) {
 M44.setRotationZ_0$LM44$N = M44$setRotationZ_0$LM44$N;
 
 function M44$rotationX$N(rad) {
-	var $this$0;
-	$this$0 = new M44();
-	return M44$setRotation_0$LM44$NNNN($this$0, rad, 1, 0, 0);
+	return M44$setRotation_0$LM44$NNNN(new M44(), rad, 1, 0, 0);
 };
 
 M44.rotationX$N = M44$rotationX$N;
 
 function M44$rotationY$N(rad) {
-	var $this$0;
-	$this$0 = new M44();
-	return M44$setRotation_0$LM44$NNNN($this$0, rad, 0, 1, 0);
+	return M44$setRotation_0$LM44$NNNN(new M44(), rad, 0, 1, 0);
 };
 
 M44.rotationY$N = M44$rotationY$N;
 
 function M44$rotationZ$N(rad) {
-	var $this$0;
-	$this$0 = new M44();
-	return M44$setRotation_0$LM44$NNNN($this$0, rad, 0, 0, 1);
+	return M44$setRotation_0$LM44$NNNN(new M44(), rad, 0, 0, 1);
 };
 
 M44.rotationZ$N = M44$rotationZ$N;
@@ -7036,25 +7083,25 @@ function Quat$setIdentity_0$LQuat$($this) {
 Quat.setIdentity_0$LQuat$ = Quat$setIdentity_0$LQuat$;
 
 function Quat$zero$() {
-	var $this$0;
-	$this$0 = new Quat();
-	$this$0.w = 0;
-	$this$0.x = 0;
-	$this$0.y = 0;
-	$this$0.z = 0;
-	return $this$0;
+	var this$0;
+	this$0 = new Quat();
+	this$0.w = 0;
+	this$0.x = 0;
+	this$0.y = 0;
+	this$0.z = 0;
+	return this$0;
 };
 
 Quat.zero$ = Quat$zero$;
 
 function Quat$identity$() {
-	var $this$0;
-	$this$0 = new Quat();
-	$this$0.w = 1;
-	$this$0.x = 0;
-	$this$0.y = 0;
-	$this$0.z = 0;
-	return $this$0;
+	var this$0;
+	this$0 = new Quat();
+	this$0.w = 1;
+	this$0.x = 0;
+	this$0.y = 0;
+	this$0.z = 0;
+	return this$0;
 };
 
 Quat.identity$ = Quat$identity$;
@@ -7166,14 +7213,20 @@ function Quat$equals_0$LQuat$LQuat$($this, q) {
 Quat.equals_0$LQuat$LQuat$ = Quat$equals_0$LQuat$LQuat$;
 
 Quat.prototype.equals$LQuat$N = function (q, eps) {
-	var $math_abs_t;
-	return ((($math_abs_t = this.w - q.w) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.x - q.x) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.y - q.y) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = this.z - q.z) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : true);
+	var abs$x$0;
+	var abs$x$1;
+	var abs$x$2;
+	var abs$x$3;
+	return ((abs$x$0 = this.w - q.w, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) >= eps ? false : (abs$x$1 = this.x - q.x, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) >= eps ? false : (abs$x$2 = this.y - q.y, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) >= eps ? false : (abs$x$3 = this.z - q.z, abs$x$3 >= 0 ? abs$x$3 : - abs$x$3) >= eps ? false : true);
 };
 
 
 function Quat$equals_0$LQuat$LQuat$N($this, q, eps) {
-	var $math_abs_t;
-	return ((($math_abs_t = $this.w - q.w) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.x - q.x) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.y - q.y) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : (($math_abs_t = $this.z - q.z) >= 0 ? $math_abs_t : -$math_abs_t) >= eps ? false : true);
+	var abs$x$0;
+	var abs$x$1;
+	var abs$x$2;
+	var abs$x$3;
+	return ((abs$x$0 = $this.w - q.w, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) >= eps ? false : (abs$x$1 = $this.x - q.x, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) >= eps ? false : (abs$x$2 = $this.y - q.y, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) >= eps ? false : (abs$x$3 = $this.z - q.z, abs$x$3 >= 0 ? abs$x$3 : - abs$x$3) >= eps ? false : true);
 };
 
 Quat.equals_0$LQuat$LQuat$N = Quat$equals_0$LQuat$LQuat$N;
@@ -7500,7 +7553,7 @@ function Quat$slerp_0$LQuat$LQuat$LQuat$N($this, q0, q1, slerp) {
 Quat.slerp_0$LQuat$LQuat$LQuat$N = Quat$slerp_0$LQuat$LQuat$LQuat$N;
 
 Quat.prototype.toString = function () {
-	return "Quat" + JSON.stringify(Quat$array_0$LQuat$(this));
+	return "Quat" + JSON.stringify([ this.w, this.x, this.y, this.z ]);
 };
 
 
@@ -7561,20 +7614,6 @@ function _Part$setVertex$L_Part$AN($this, v) {
 
 _Part.setVertex$L_Part$AN = _Part$setVertex$L_Part$AN;
 
-function _Part$setVertex_0$L_Part$AN($this, v) {
-	var gl$0;
-	var buf$0;
-	gl$0 = Kingyo.gl;
-	buf$0 = gl$0.createBuffer();
-	gl$0.bindBuffer(gl$0.ARRAY_BUFFER, buf$0);
-	gl$0.bufferData(gl$0.ARRAY_BUFFER, new Float32Array(v), gl$0.STATIC_DRAW);
-	$this.vbuf = buf$0;
-	$this.numv = (v.length / 3 | 0);
-	return $this;
-};
-
-_Part.setVertex_0$L_Part$AN = _Part$setVertex_0$L_Part$AN;
-
 function _Part$setNormal$L_Part$AN($this, n) {
 	var gl$0;
 	var buf$0;
@@ -7587,19 +7626,6 @@ function _Part$setNormal$L_Part$AN($this, n) {
 };
 
 _Part.setNormal$L_Part$AN = _Part$setNormal$L_Part$AN;
-
-function _Part$setNormal_0$L_Part$AN($this, n) {
-	var gl$0;
-	var buf$0;
-	gl$0 = Kingyo.gl;
-	buf$0 = gl$0.createBuffer();
-	gl$0.bindBuffer(gl$0.ARRAY_BUFFER, buf$0);
-	gl$0.bufferData(gl$0.ARRAY_BUFFER, new Float32Array(n), gl$0.STATIC_DRAW);
-	$this.nbuf = buf$0;
-	return $this;
-};
-
-_Part.setNormal_0$L_Part$AN = _Part$setNormal_0$L_Part$AN;
 
 function _Part$setIndex$L_Part$AI($this, i) {
 	var gl$0;
@@ -7614,20 +7640,6 @@ function _Part$setIndex$L_Part$AI($this, i) {
 };
 
 _Part.setIndex$L_Part$AI = _Part$setIndex$L_Part$AI;
-
-function _Part$setIndex_0$L_Part$AI($this, i) {
-	var gl$0;
-	var buf$0;
-	gl$0 = Kingyo.gl;
-	buf$0 = gl$0.createBuffer();
-	gl$0.bindBuffer(gl$0.ELEMENT_ARRAY_BUFFER, buf$0);
-	gl$0.bufferData(gl$0.ELEMENT_ARRAY_BUFFER, new Uint16Array(i), gl$0.STATIC_DRAW);
-	$this.ibuf = buf$0;
-	$this.numi = (i.length | 0);
-	return $this;
-};
-
-_Part.setIndex_0$L_Part$AI = _Part$setIndex_0$L_Part$AI;
 
 function Kingyo() {
 	this._pos = new V3();
@@ -7662,18 +7674,18 @@ function Kingyo$initWithGL$LWebGLRenderingContext$(gl) {
 	var ez;
 	Kingyo.gl = gl;
 	Kingyo.prog = Util$getProgram$SS('kbody.vs', 'kbody.fs');
-	Kingyo.body = _Part$setIndex_0$L_Part$AI(_Part$setNormal_0$L_Part$AN(_Part$setVertex_0$L_Part$AN(({vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0}), [ 0, 0, 1, 0.7, 0, 0, 0, 1, 0, -0.7, 0, 0, 0, -1, 0, 0, 0, -1 ]), [ 0, 0, 1, 1, 0, 0, 0, 1, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1 ]), [ 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 1, 5, 2, 1, 5, 3, 2, 5, 4, 3, 5, 1, 4 ]);
-	Kingyo.lfin = _Part$setIndex_0$L_Part$AI(_Part$setNormal_0$L_Part$AN(_Part$setVertex_0$L_Part$AN(({vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0}), [ 0, 0, 0, 0.5, -0.25, 0, 0.8, 0.25, 0 ]), [ 0, 0, 1, 0, 0, 1, 0, 0, 1 ]), [ 0, 1, 2 ]);
-	Kingyo.rfin = _Part$setIndex_0$L_Part$AI(_Part$setNormal_0$L_Part$AN(_Part$setVertex_0$L_Part$AN(({vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0}), [ 0, 0, 0, -0.8, 0.25, 0, -0.5, -0.25, 0 ]), [ 0, 0, 1, 0, 0, 1, 0, 0, 1 ]), [ 0, 1, 2 ]);
-	Kingyo.bfin = _Part$setIndex_0$L_Part$AI(_Part$setNormal_0$L_Part$AN(_Part$setVertex_0$L_Part$AN(({vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0}), [ 0, 0, 0, 0, -0.5, -1, 0, 0.5, -0.8 ]), [ 1, 0, 0, 1, 0, 0, 1, 0, 0 ]), [ 0, 1, 2 ]);
-	Kingyo.tfin = _Part$setIndex_0$L_Part$AI(_Part$setNormal_0$L_Part$AN(_Part$setVertex_0$L_Part$AN(({vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0}), [ 0, 0, 0, 0.8, -0.5, -1, 0, 0.4, -0.8, -0.8, -0.5, -1 ]), [ 0, 1, 1, 1, 1, 1, 0, 1, 0, -1, 1, 1 ]), [ 0, 1, 2, 0, 2, 3 ]);
+	Kingyo.body = _Part$setIndex$L_Part$AI(_Part$setNormal$L_Part$AN(_Part$setVertex$L_Part$AN(({vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0}), [ 0, 0, 1, 0.7, 0, 0, 0, 1, 0, -0.7, 0, 0, 0, -1, 0, 0, 0, -1 ]), [ 0, 0, 1, 1, 0, 0, 0, 1, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1 ]), [ 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 1, 5, 2, 1, 5, 3, 2, 5, 4, 3, 5, 1, 4 ]);
+	Kingyo.lfin = _Part$setIndex$L_Part$AI(_Part$setNormal$L_Part$AN(_Part$setVertex$L_Part$AN(({vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0}), [ 0, 0, 0, 0.5, -0.25, 0, 0.8, 0.25, 0 ]), [ 0, 0, 1, 0, 0, 1, 0, 0, 1 ]), [ 0, 1, 2 ]);
+	Kingyo.rfin = _Part$setIndex$L_Part$AI(_Part$setNormal$L_Part$AN(_Part$setVertex$L_Part$AN(({vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0}), [ 0, 0, 0, -0.8, 0.25, 0, -0.5, -0.25, 0 ]), [ 0, 0, 1, 0, 0, 1, 0, 0, 1 ]), [ 0, 1, 2 ]);
+	Kingyo.bfin = _Part$setIndex$L_Part$AI(_Part$setNormal$L_Part$AN(_Part$setVertex$L_Part$AN(({vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0}), [ 0, 0, 0, 0, -0.5, -1, 0, 0.5, -0.8 ]), [ 1, 0, 0, 1, 0, 0, 1, 0, 0 ]), [ 0, 1, 2 ]);
+	Kingyo.tfin = _Part$setIndex$L_Part$AI(_Part$setNormal$L_Part$AN(_Part$setVertex$L_Part$AN(({vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0}), [ 0, 0, 0, 0.8, -0.5, -1, 0, 0.4, -0.8, -0.8, -0.5, -1 ]), [ 0, 1, 1, 1, 1, 1, 0, 1, 0, -1, 1, 1 ]), [ 0, 1, 2, 0, 2, 3 ]);
 	Kingyo.ulocs = Util$getUniformLocations$LWebGLProgram$(Kingyo.prog);
 	Kingyo.alocs = Util$getAttribLocations$LWebGLProgram$(Kingyo.prog);
 	Kingyo.eyeProg = Util$getProgram$SS('keye.vs', 'keye.fs');
 	Kingyo.eyeULocs = Util$getUniformLocations$LWebGLProgram$(Kingyo.eyeProg);
 	Kingyo.eyeALocs = Util$getAttribLocations$LWebGLProgram$(Kingyo.eyeProg);
 	(ex = 0.3, ey = 0.15, ez = 0.5);
-	Kingyo.eyes = _Part$setIndex_0$L_Part$AI(_Part$setVertex_0$L_Part$AN(({vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0}), [ - ex, ey, ez, 0, - ex, ey, ez, 1, - ex, ey, ez, 2, - ex, ey, ez, 3, ex, ey, ez, 4, ex, ey, ez, 5, ex, ey, ez, 6, ex, ey, ez, 7 ]), [ 0, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7 ]);
+	Kingyo.eyes = _Part$setIndex$L_Part$AI(_Part$setVertex$L_Part$AN(({vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0}), [ - ex, ey, ez, 0, - ex, ey, ez, 1, - ex, ey, ez, 2, - ex, ey, ez, 3, ex, ey, ez, 4, ex, ey, ez, 5, ex, ey, ez, 6, ex, ey, ez, 7 ]), [ 0, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7 ]);
 };
 
 Kingyo.initWithGL$LWebGLRenderingContext$ = Kingyo$initWithGL$LWebGLRenderingContext$;
@@ -7826,28 +7838,26 @@ Kingyo.prototype.init$ = function () {
 	var r;
 	var x;
 	var y;
-	var $this$0;
+	var this$0;
 	var z$0;
-	var $this$1;
-	var $this$2;
+	var this$1;
 	this._vangle = Math.random() * 2 * 3.141592653589793;
 	this._velo = Math.random() * 15 + 1;
 	r = 8 * Math.random();
 	x = r * Math.cos(this._vangle);
 	y = r * Math.sin(this._vangle);
-	$this$0 = this._pos;
+	this$0 = this._pos;
 	z$0 = -2 - Math.random() * 3;
-	$this$0.x = x;
-	$this$0.y = y;
-	$this$0.z = z$0;
+	this$0.x = x;
+	this$0.y = y;
+	this$0.z = z$0;
 	this._anim = 0;
 	this._state = 'swimming';
-	$this$1 = this._spinMat;
-	M44$set_0$LM44$N($this$1, 1);
-	$this$2 = this._spinAxis;
-	$this$2.x = 0;
-	$this$2.y = 0;
-	$this$2.z = 0;
+	M44$set_0$LM44$N(this._spinMat, 1);
+	this$1 = this._spinAxis;
+	this$1.x = 0;
+	this$1.y = 0;
+	this$1.z = 0;
 	this._spinSpeed = 0;
 	this._vz = 0;
 };
@@ -7857,28 +7867,26 @@ function Kingyo$init_0$LKingyo$($this) {
 	var r;
 	var x;
 	var y;
-	var $this$0;
+	var this$0;
 	var z$0;
-	var $this$1;
-	var $this$2;
+	var this$1;
 	$this._vangle = Math.random() * 2 * 3.141592653589793;
 	$this._velo = Math.random() * 15 + 1;
 	r = 8 * Math.random();
 	x = r * Math.cos($this._vangle);
 	y = r * Math.sin($this._vangle);
-	$this$0 = $this._pos;
+	this$0 = $this._pos;
 	z$0 = -2 - Math.random() * 3;
-	$this$0.x = x;
-	$this$0.y = y;
-	$this$0.z = z$0;
+	this$0.x = x;
+	this$0.y = y;
+	this$0.z = z$0;
 	$this._anim = 0;
 	$this._state = 'swimming';
-	$this$1 = $this._spinMat;
-	M44$set_0$LM44$N($this$1, 1);
-	$this$2 = $this._spinAxis;
-	$this$2.x = 0;
-	$this$2.y = 0;
-	$this$2.z = 0;
+	M44$set_0$LM44$N($this._spinMat, 1);
+	this$1 = $this._spinAxis;
+	this$1.x = 0;
+	this$1.y = 0;
+	this$1.z = 0;
 	$this._spinSpeed = 0;
 	$this._vz = 0;
 };
@@ -7900,8 +7908,7 @@ Kingyo._setRandom_0$LKingyo$ = Kingyo$_setRandom_0$LKingyo$;
 
 Kingyo.prototype._fished$ = function () {
 	var a;
-	var $this$0;
-	var $this$1;
+	var this$0;
 	var x$0;
 	var y$0;
 	var z$0;
@@ -7909,24 +7916,22 @@ Kingyo.prototype._fished$ = function () {
 	this._pos.z = 2;
 	this._vz = 150 + Math.random() * 50;
 	this._velo = 12;
-	$this$0 = this._spinMat;
-	M44$set_0$LM44$N($this$0, 1);
+	M44$set_0$LM44$N(this._spinMat, 1);
 	a = 6.283185307179586 * Math.random();
-	$this$1 = this._spinAxis;
+	this$0 = this._spinAxis;
 	x$0 = Math.cos(a);
 	y$0 = Math.sin(a);
 	z$0 = Math.random() - 0.5;
-	$this$1.x = x$0;
-	$this$1.y = y$0;
-	$this$1.z = z$0;
+	this$0.x = x$0;
+	this$0.y = y$0;
+	this$0.z = z$0;
 	this._spinSpeed = 10 * Math.random() + 2;
 };
 
 
 function Kingyo$_fished_0$LKingyo$($this) {
 	var a;
-	var $this$0;
-	var $this$1;
+	var this$0;
 	var x$0;
 	var y$0;
 	var z$0;
@@ -7934,16 +7939,15 @@ function Kingyo$_fished_0$LKingyo$($this) {
 	$this._pos.z = 2;
 	$this._vz = 150 + Math.random() * 50;
 	$this._velo = 12;
-	$this$0 = $this._spinMat;
-	M44$set_0$LM44$N($this$0, 1);
+	M44$set_0$LM44$N($this._spinMat, 1);
 	a = 6.283185307179586 * Math.random();
-	$this$1 = $this._spinAxis;
+	this$0 = $this._spinAxis;
 	x$0 = Math.cos(a);
 	y$0 = Math.sin(a);
 	z$0 = Math.random() - 0.5;
-	$this$1.x = x$0;
-	$this$1.y = y$0;
-	$this$1.z = z$0;
+	this$0.x = x$0;
+	this$0.y = y$0;
+	this$0.z = z$0;
 	$this._spinSpeed = 10 * Math.random() + 2;
 };
 
@@ -7955,14 +7959,10 @@ Kingyo.prototype._update$N = function (dt) {
 	var b;
 	var num_listed;
 	var i;
-	var $this$0;
-	var m$0;
-	var $this$1;
+	var setRotation$a$0;
+	var mul$this$0;
+	var this$0;
 	var x$0;
-	var $this$2;
-	var $this$3;
-	var rad$0;
-	var a$0;
 	var _pos$0;
 	var _pos$1;
 	var _vz$0;
@@ -7999,12 +7999,7 @@ Kingyo.prototype._update$N = function (dt) {
 	case 'flying':
 		_vz$0 = this._vz -= 300 * dt;
 		(_pos$1 = this._pos).z = _pos$1.z + _vz$0 * dt;
-		$this$0 = this._spinMat;
-		$this$3 = new M44();
-		rad$0 = dt * this._spinSpeed;
-		a$0 = this._spinAxis;
-		m$0 = M44$setRotation_0$LM44$NNNN($this$3, rad$0, a$0.x, a$0.y, a$0.z);
-		M44$mul_0$LM44$LM44$LM44$($this$0, new M44$0($this$0), m$0);
+		(mul$this$0 = this._spinMat, M44$mul_0$LM44$LM44$LM44$(mul$this$0, new M44$0(mul$this$0), (setRotation$a$0 = this._spinAxis, M44$setRotation_0$LM44$NNNN(new M44(), dt * this._spinSpeed, setRotation$a$0.x, setRotation$a$0.y, setRotation$a$0.z))));
 		if (this._pos.z >= 2) {
 			break;
 		}
@@ -8014,14 +8009,13 @@ Kingyo.prototype._update$N = function (dt) {
 				++ num_listed;
 			}
 		}
-		$this$1 = this._pos;
+		this$0 = this._pos;
 		x$0 = num_listed * 1.5 - 10 - 4.25;
-		$this$1.x = x$0;
-		$this$1.y = 13;
-		$this$1.z = 2;
+		this$0.x = x$0;
+		this$0.y = 13;
+		this$0.z = 2;
 		this._vangle = 1.5707963267948966;
-		$this$2 = this._spinMat;
-		M44$set_0$LM44$N($this$2, 1);
+		M44$set_0$LM44$N(this._spinMat, 1);
 		this._velo = 2;
 		this._state = 'listed';
 	case 'listed':
@@ -8037,14 +8031,10 @@ function Kingyo$_update_0$LKingyo$N($this, dt) {
 	var b;
 	var num_listed;
 	var i;
-	var $this$0;
-	var m$0;
-	var $this$1;
+	var setRotation$a$0;
+	var mul$this$0;
+	var this$0;
 	var x$0;
-	var $this$2;
-	var $this$3;
-	var rad$0;
-	var a$0;
 	var _pos$0;
 	var _pos$1;
 	var _vz$0;
@@ -8081,12 +8071,7 @@ function Kingyo$_update_0$LKingyo$N($this, dt) {
 	case 'flying':
 		_vz$0 = $this._vz -= 300 * dt;
 		(_pos$1 = $this._pos).z = _pos$1.z + _vz$0 * dt;
-		$this$0 = $this._spinMat;
-		$this$3 = new M44();
-		rad$0 = dt * $this._spinSpeed;
-		a$0 = $this._spinAxis;
-		m$0 = M44$setRotation_0$LM44$NNNN($this$3, rad$0, a$0.x, a$0.y, a$0.z);
-		M44$mul_0$LM44$LM44$LM44$($this$0, new M44$0($this$0), m$0);
+		(mul$this$0 = $this._spinMat, M44$mul_0$LM44$LM44$LM44$(mul$this$0, new M44$0(mul$this$0), (setRotation$a$0 = $this._spinAxis, M44$setRotation_0$LM44$NNNN(new M44(), dt * $this._spinSpeed, setRotation$a$0.x, setRotation$a$0.y, setRotation$a$0.z))));
 		if ($this._pos.z >= 2) {
 			break;
 		}
@@ -8096,14 +8081,13 @@ function Kingyo$_update_0$LKingyo$N($this, dt) {
 				++ num_listed;
 			}
 		}
-		$this$1 = $this._pos;
+		this$0 = $this._pos;
 		x$0 = num_listed * 1.5 - 10 - 4.25;
-		$this$1.x = x$0;
-		$this$1.y = 13;
-		$this$1.z = 2;
+		this$0.x = x$0;
+		this$0.y = 13;
+		this$0.z = 2;
 		$this._vangle = 1.5707963267948966;
-		$this$2 = $this._spinMat;
-		M44$set_0$LM44$N($this$2, 1);
+		M44$set_0$LM44$N($this._spinMat, 1);
 		$this._velo = 2;
 		$this._state = 'listed';
 	case 'listed':
@@ -8123,105 +8107,37 @@ Kingyo.prototype._draw$ = function () {
 	var rfinMat;
 	var bfinMat;
 	var tfinMat;
-	var $this$0;
-	var m$0;
-	var $this$1;
-	var m$1;
-	var $this$2;
-	var m$2;
-	var $this$3;
-	var m$3;
-	var $this$4;
-	var m$4;
-	var $this$5;
-	var m$5;
-	var $this$6;
-	var $this$7;
-	var m$6;
-	var $this$8;
-	var m$7;
-	var $this$9;
-	var m$8;
-	var $this$10;
-	var m$9;
-	var $this$11;
-	var m$10;
-	var $this$12;
-	var $this$13;
-	var $this$14;
-	var $this$15;
-	var $this$16;
-	var $this$17;
-	var m$11;
-	var $this$18;
-	var rad$0;
+	var mul$this$0;
+	var mul$this$1;
+	var mul$this$2;
+	var mul$this$3;
+	var mul$this$4;
+	var mul$this$5;
+	var mul$this$6;
+	var mul$this$7;
+	var mul$this$8;
+	var mul$this$9;
+	var mul$this$10;
+	var mul$this$11;
 	gl = Kingyo.gl;
 	gl.uniform3fv(Kingyo.ulocs.color, this._color);
 	gl.uniform3fv(Kingyo.ulocs.color2, this._color2);
 	gl.uniform4fv(Kingyo.ulocs.color2pos, this._color2pos);
 	modelMatLoc = Kingyo.ulocs.modelMatrix;
 	s = Math.sin(this._anim * 5);
-	$this$17 = M44$setTranslation_0$LM44$LV3$(new M44(), this._pos);
-	m$11 = this._spinMat;
-	$this$11 = M44$mul_0$LM44$LM44$LM44$($this$17, new M44$0($this$17), m$11);
-	$this$18 = new M44();
-	rad$0 = this._vangle - s / 10;
-	m$10 = M44$setRotation_0$LM44$NNNN($this$18, rad$0, 0, 0, 1);
-	$this$5 = M44$mul_0$LM44$LM44$LM44$($this$11, new M44$0($this$11), m$10);
-	$this$12 = new M44();
-	m$5 = M44$setRotation_0$LM44$NNNN($this$12, 1.5707963267948966, 1, 0, 0);
-	$this$0 = M44$mul_0$LM44$LM44$LM44$($this$5, new M44$0($this$5), m$5);
-	$this$6 = new M44();
-	m$0 = M44$setRotation_0$LM44$NNNN($this$6, 1.5707963267948966, 0, 1, 0);
-	bodyMat = M44$mul_0$LM44$LM44$LM44$($this$0, new M44$0($this$0), m$0);
+	bodyMat = (mul$this$3 = (mul$this$2 = (mul$this$1 = (mul$this$0 = M44$setTranslation_0$LM44$LV3$(new M44(), this._pos), M44$mul_0$LM44$LM44$LM44$(mul$this$0, new M44$0(mul$this$0), this._spinMat)), M44$mul_0$LM44$LM44$LM44$(mul$this$1, new M44$0(mul$this$1), M44$setRotation_0$LM44$NNNN(new M44(), this._vangle - s / 10, 0, 0, 1))), M44$mul_0$LM44$LM44$LM44$(mul$this$2, new M44$0(mul$this$2), M44$setRotation_0$LM44$NNNN(new M44(), 1.5707963267948966, 1, 0, 0))), M44$mul_0$LM44$LM44$LM44$(mul$this$3, new M44$0(mul$this$3), M44$setRotation_0$LM44$NNNN(new M44(), 1.5707963267948966, 0, 1, 0)));
 	gl.uniformMatrix4fv(modelMatLoc, false, M44$array_0$LM44$(bodyMat));
 	Kingyo$_drawPart_0$LKingyo$L_Part$(this, Kingyo.body);
-	$this$7 = new M44$0(bodyMat);
-	$this$13 = new M44();
-	M44$set_0$LM44$N($this$13, 1);
-	$this$13.m14 = 0.5;
-	$this$13.m24 = -0.3;
-	$this$13.m34 = 0;
-	m$6 = $this$13;
-	$this$1 = M44$mul_0$LM44$LM44$LM44$($this$7, new M44$0($this$7), m$6);
-	m$1 = M44$setRotation_0$LM44$NNNN(new M44(), 1 + s / 2, 0.2, 1, -0.5);
-	lfinMat = M44$mul_0$LM44$LM44$LM44$($this$1, new M44$0($this$1), m$1);
+	lfinMat = (mul$this$5 = (mul$this$4 = new M44$0(bodyMat), M44$mul_0$LM44$LM44$LM44$(mul$this$4, new M44$0(mul$this$4), M44$setTranslation_0$LM44$NNN(new M44(), 0.5, -0.3, 0))), M44$mul_0$LM44$LM44$LM44$(mul$this$5, new M44$0(mul$this$5), M44$setRotation_0$LM44$NNNN(new M44(), 1 + s / 2, 0.2, 1, -0.5)));
 	gl.uniformMatrix4fv(modelMatLoc, false, M44$array_0$LM44$(lfinMat));
 	Kingyo$_drawPart_0$LKingyo$L_Part$(this, Kingyo.lfin);
-	$this$8 = new M44$0(bodyMat);
-	$this$14 = new M44();
-	M44$set_0$LM44$N($this$14, 1);
-	$this$14.m14 = -0.5;
-	$this$14.m24 = -0.3;
-	$this$14.m34 = 0;
-	m$7 = $this$14;
-	$this$2 = M44$mul_0$LM44$LM44$LM44$($this$8, new M44$0($this$8), m$7);
-	m$2 = M44$setRotation_0$LM44$NNNN(new M44(), -1 - s / 2, -0.2, 1, -0.5);
-	rfinMat = M44$mul_0$LM44$LM44$LM44$($this$2, new M44$0($this$2), m$2);
+	rfinMat = (mul$this$7 = (mul$this$6 = new M44$0(bodyMat), M44$mul_0$LM44$LM44$LM44$(mul$this$6, new M44$0(mul$this$6), M44$setTranslation_0$LM44$NNN(new M44(), -0.5, -0.3, 0))), M44$mul_0$LM44$LM44$LM44$(mul$this$7, new M44$0(mul$this$7), M44$setRotation_0$LM44$NNNN(new M44(), -1 - s / 2, -0.2, 1, -0.5)));
 	gl.uniformMatrix4fv(modelMatLoc, false, M44$array_0$LM44$(rfinMat));
 	Kingyo$_drawPart_0$LKingyo$L_Part$(this, Kingyo.rfin);
-	$this$9 = new M44$0(bodyMat);
-	$this$15 = new M44();
-	M44$set_0$LM44$N($this$15, 1);
-	$this$15.m14 = 0;
-	$this$15.m24 = 0.7;
-	$this$15.m34 = 0;
-	m$8 = $this$15;
-	$this$3 = M44$mul_0$LM44$LM44$LM44$($this$9, new M44$0($this$9), m$8);
-	m$3 = M44$setRotation_0$LM44$NNNN(new M44(), s / 2, 0, 1, 1);
-	bfinMat = M44$mul_0$LM44$LM44$LM44$($this$3, new M44$0($this$3), m$3);
+	bfinMat = (mul$this$9 = (mul$this$8 = new M44$0(bodyMat), M44$mul_0$LM44$LM44$LM44$(mul$this$8, new M44$0(mul$this$8), M44$setTranslation_0$LM44$NNN(new M44(), 0, 0.7, 0))), M44$mul_0$LM44$LM44$LM44$(mul$this$9, new M44$0(mul$this$9), M44$setRotation_0$LM44$NNNN(new M44(), s / 2, 0, 1, 1)));
 	gl.uniformMatrix4fv(modelMatLoc, false, M44$array_0$LM44$(bfinMat));
 	Kingyo$_drawPart_0$LKingyo$L_Part$(this, Kingyo.bfin);
-	$this$10 = new M44$0(bodyMat);
-	$this$16 = new M44();
-	M44$set_0$LM44$N($this$16, 1);
-	$this$16.m14 = 0;
-	$this$16.m24 = 0;
-	$this$16.m34 = -0.7;
-	m$9 = $this$16;
-	$this$4 = M44$mul_0$LM44$LM44$LM44$($this$10, new M44$0($this$10), m$9);
-	m$4 = M44$setRotation_0$LM44$NNNN(new M44(), s / 2, 0, 1, 0);
-	tfinMat = M44$mul_0$LM44$LM44$LM44$($this$4, new M44$0($this$4), m$4);
+	tfinMat = (mul$this$11 = (mul$this$10 = new M44$0(bodyMat), M44$mul_0$LM44$LM44$LM44$(mul$this$10, new M44$0(mul$this$10), M44$setTranslation_0$LM44$NNN(new M44(), 0, 0, -0.7))), M44$mul_0$LM44$LM44$LM44$(mul$this$11, new M44$0(mul$this$11), M44$setRotation_0$LM44$NNNN(new M44(), s / 2, 0, 1, 0)));
 	gl.uniformMatrix4fv(modelMatLoc, false, M44$array_0$LM44$(tfinMat));
 	Kingyo$_drawPart_0$LKingyo$L_Part$(this, Kingyo.tfin);
 };
@@ -8236,105 +8152,37 @@ function Kingyo$_draw_0$LKingyo$($this) {
 	var rfinMat;
 	var bfinMat;
 	var tfinMat;
-	var $this$0;
-	var m$0;
-	var $this$1;
-	var m$1;
-	var $this$2;
-	var m$2;
-	var $this$3;
-	var m$3;
-	var $this$4;
-	var m$4;
-	var $this$5;
-	var m$5;
-	var $this$6;
-	var $this$7;
-	var m$6;
-	var $this$8;
-	var m$7;
-	var $this$9;
-	var m$8;
-	var $this$10;
-	var m$9;
-	var $this$11;
-	var m$10;
-	var $this$12;
-	var $this$13;
-	var $this$14;
-	var $this$15;
-	var $this$16;
-	var $this$17;
-	var m$11;
-	var $this$18;
-	var rad$0;
+	var mul$this$0;
+	var mul$this$1;
+	var mul$this$2;
+	var mul$this$3;
+	var mul$this$4;
+	var mul$this$5;
+	var mul$this$6;
+	var mul$this$7;
+	var mul$this$8;
+	var mul$this$9;
+	var mul$this$10;
+	var mul$this$11;
 	gl = Kingyo.gl;
 	gl.uniform3fv(Kingyo.ulocs.color, $this._color);
 	gl.uniform3fv(Kingyo.ulocs.color2, $this._color2);
 	gl.uniform4fv(Kingyo.ulocs.color2pos, $this._color2pos);
 	modelMatLoc = Kingyo.ulocs.modelMatrix;
 	s = Math.sin($this._anim * 5);
-	$this$17 = M44$setTranslation_0$LM44$LV3$(new M44(), $this._pos);
-	m$11 = $this._spinMat;
-	$this$11 = M44$mul_0$LM44$LM44$LM44$($this$17, new M44$0($this$17), m$11);
-	$this$18 = new M44();
-	rad$0 = $this._vangle - s / 10;
-	m$10 = M44$setRotation_0$LM44$NNNN($this$18, rad$0, 0, 0, 1);
-	$this$5 = M44$mul_0$LM44$LM44$LM44$($this$11, new M44$0($this$11), m$10);
-	$this$12 = new M44();
-	m$5 = M44$setRotation_0$LM44$NNNN($this$12, 1.5707963267948966, 1, 0, 0);
-	$this$0 = M44$mul_0$LM44$LM44$LM44$($this$5, new M44$0($this$5), m$5);
-	$this$6 = new M44();
-	m$0 = M44$setRotation_0$LM44$NNNN($this$6, 1.5707963267948966, 0, 1, 0);
-	bodyMat = M44$mul_0$LM44$LM44$LM44$($this$0, new M44$0($this$0), m$0);
+	bodyMat = (mul$this$3 = (mul$this$2 = (mul$this$1 = (mul$this$0 = M44$setTranslation_0$LM44$LV3$(new M44(), $this._pos), M44$mul_0$LM44$LM44$LM44$(mul$this$0, new M44$0(mul$this$0), $this._spinMat)), M44$mul_0$LM44$LM44$LM44$(mul$this$1, new M44$0(mul$this$1), M44$setRotation_0$LM44$NNNN(new M44(), $this._vangle - s / 10, 0, 0, 1))), M44$mul_0$LM44$LM44$LM44$(mul$this$2, new M44$0(mul$this$2), M44$setRotation_0$LM44$NNNN(new M44(), 1.5707963267948966, 1, 0, 0))), M44$mul_0$LM44$LM44$LM44$(mul$this$3, new M44$0(mul$this$3), M44$setRotation_0$LM44$NNNN(new M44(), 1.5707963267948966, 0, 1, 0)));
 	gl.uniformMatrix4fv(modelMatLoc, false, M44$array_0$LM44$(bodyMat));
 	Kingyo$_drawPart_0$LKingyo$L_Part$($this, Kingyo.body);
-	$this$7 = new M44$0(bodyMat);
-	$this$13 = new M44();
-	M44$set_0$LM44$N($this$13, 1);
-	$this$13.m14 = 0.5;
-	$this$13.m24 = -0.3;
-	$this$13.m34 = 0;
-	m$6 = $this$13;
-	$this$1 = M44$mul_0$LM44$LM44$LM44$($this$7, new M44$0($this$7), m$6);
-	m$1 = M44$setRotation_0$LM44$NNNN(new M44(), 1 + s / 2, 0.2, 1, -0.5);
-	lfinMat = M44$mul_0$LM44$LM44$LM44$($this$1, new M44$0($this$1), m$1);
+	lfinMat = (mul$this$5 = (mul$this$4 = new M44$0(bodyMat), M44$mul_0$LM44$LM44$LM44$(mul$this$4, new M44$0(mul$this$4), M44$setTranslation_0$LM44$NNN(new M44(), 0.5, -0.3, 0))), M44$mul_0$LM44$LM44$LM44$(mul$this$5, new M44$0(mul$this$5), M44$setRotation_0$LM44$NNNN(new M44(), 1 + s / 2, 0.2, 1, -0.5)));
 	gl.uniformMatrix4fv(modelMatLoc, false, M44$array_0$LM44$(lfinMat));
 	Kingyo$_drawPart_0$LKingyo$L_Part$($this, Kingyo.lfin);
-	$this$8 = new M44$0(bodyMat);
-	$this$14 = new M44();
-	M44$set_0$LM44$N($this$14, 1);
-	$this$14.m14 = -0.5;
-	$this$14.m24 = -0.3;
-	$this$14.m34 = 0;
-	m$7 = $this$14;
-	$this$2 = M44$mul_0$LM44$LM44$LM44$($this$8, new M44$0($this$8), m$7);
-	m$2 = M44$setRotation_0$LM44$NNNN(new M44(), -1 - s / 2, -0.2, 1, -0.5);
-	rfinMat = M44$mul_0$LM44$LM44$LM44$($this$2, new M44$0($this$2), m$2);
+	rfinMat = (mul$this$7 = (mul$this$6 = new M44$0(bodyMat), M44$mul_0$LM44$LM44$LM44$(mul$this$6, new M44$0(mul$this$6), M44$setTranslation_0$LM44$NNN(new M44(), -0.5, -0.3, 0))), M44$mul_0$LM44$LM44$LM44$(mul$this$7, new M44$0(mul$this$7), M44$setRotation_0$LM44$NNNN(new M44(), -1 - s / 2, -0.2, 1, -0.5)));
 	gl.uniformMatrix4fv(modelMatLoc, false, M44$array_0$LM44$(rfinMat));
 	Kingyo$_drawPart_0$LKingyo$L_Part$($this, Kingyo.rfin);
-	$this$9 = new M44$0(bodyMat);
-	$this$15 = new M44();
-	M44$set_0$LM44$N($this$15, 1);
-	$this$15.m14 = 0;
-	$this$15.m24 = 0.7;
-	$this$15.m34 = 0;
-	m$8 = $this$15;
-	$this$3 = M44$mul_0$LM44$LM44$LM44$($this$9, new M44$0($this$9), m$8);
-	m$3 = M44$setRotation_0$LM44$NNNN(new M44(), s / 2, 0, 1, 1);
-	bfinMat = M44$mul_0$LM44$LM44$LM44$($this$3, new M44$0($this$3), m$3);
+	bfinMat = (mul$this$9 = (mul$this$8 = new M44$0(bodyMat), M44$mul_0$LM44$LM44$LM44$(mul$this$8, new M44$0(mul$this$8), M44$setTranslation_0$LM44$NNN(new M44(), 0, 0.7, 0))), M44$mul_0$LM44$LM44$LM44$(mul$this$9, new M44$0(mul$this$9), M44$setRotation_0$LM44$NNNN(new M44(), s / 2, 0, 1, 1)));
 	gl.uniformMatrix4fv(modelMatLoc, false, M44$array_0$LM44$(bfinMat));
 	Kingyo$_drawPart_0$LKingyo$L_Part$($this, Kingyo.bfin);
-	$this$10 = new M44$0(bodyMat);
-	$this$16 = new M44();
-	M44$set_0$LM44$N($this$16, 1);
-	$this$16.m14 = 0;
-	$this$16.m24 = 0;
-	$this$16.m34 = -0.7;
-	m$9 = $this$16;
-	$this$4 = M44$mul_0$LM44$LM44$LM44$($this$10, new M44$0($this$10), m$9);
-	m$4 = M44$setRotation_0$LM44$NNNN(new M44(), s / 2, 0, 1, 0);
-	tfinMat = M44$mul_0$LM44$LM44$LM44$($this$4, new M44$0($this$4), m$4);
+	tfinMat = (mul$this$11 = (mul$this$10 = new M44$0(bodyMat), M44$mul_0$LM44$LM44$LM44$(mul$this$10, new M44$0(mul$this$10), M44$setTranslation_0$LM44$NNN(new M44(), 0, 0, -0.7))), M44$mul_0$LM44$LM44$LM44$(mul$this$11, new M44$0(mul$this$11), M44$setRotation_0$LM44$NNNN(new M44(), s / 2, 0, 1, 0)));
 	gl.uniformMatrix4fv(modelMatLoc, false, M44$array_0$LM44$(tfinMat));
 	Kingyo$_drawPart_0$LKingyo$L_Part$($this, Kingyo.tfin);
 };
@@ -8371,35 +8219,15 @@ Kingyo.prototype._drawEyes$ = function () {
 	var ulocs;
 	var s;
 	var bodyMat;
-	var $this$0;
-	var m$0;
-	var $this$1;
-	var m$1;
-	var $this$2;
-	var $this$3;
-	var m$2;
-	var $this$4;
-	var $this$5;
-	var m$3;
-	var $this$6;
-	var rad$0;
+	var mul$this$0;
+	var mul$this$1;
+	var mul$this$2;
+	var mul$this$3;
 	gl = Kingyo.gl;
 	ulocs = Kingyo.eyeULocs;
 	gl.uniform3fv(ulocs.color, this._color);
 	s = Math.sin(this._anim * 5);
-	$this$5 = M44$setTranslation_0$LM44$LV3$(new M44(), this._pos);
-	m$3 = this._spinMat;
-	$this$3 = M44$mul_0$LM44$LM44$LM44$($this$5, new M44$0($this$5), m$3);
-	$this$6 = new M44();
-	rad$0 = this._vangle - s / 10;
-	m$2 = M44$setRotation_0$LM44$NNNN($this$6, rad$0, 0, 0, 1);
-	$this$1 = M44$mul_0$LM44$LM44$LM44$($this$3, new M44$0($this$3), m$2);
-	$this$4 = new M44();
-	m$1 = M44$setRotation_0$LM44$NNNN($this$4, 1.5707963267948966, 1, 0, 0);
-	$this$0 = M44$mul_0$LM44$LM44$LM44$($this$1, new M44$0($this$1), m$1);
-	$this$2 = new M44();
-	m$0 = M44$setRotation_0$LM44$NNNN($this$2, 1.5707963267948966, 0, 1, 0);
-	bodyMat = M44$mul_0$LM44$LM44$LM44$($this$0, new M44$0($this$0), m$0);
+	bodyMat = (mul$this$3 = (mul$this$2 = (mul$this$1 = (mul$this$0 = M44$setTranslation_0$LM44$LV3$(new M44(), this._pos), M44$mul_0$LM44$LM44$LM44$(mul$this$0, new M44$0(mul$this$0), this._spinMat)), M44$mul_0$LM44$LM44$LM44$(mul$this$1, new M44$0(mul$this$1), M44$setRotation_0$LM44$NNNN(new M44(), this._vangle - s / 10, 0, 0, 1))), M44$mul_0$LM44$LM44$LM44$(mul$this$2, new M44$0(mul$this$2), M44$setRotation_0$LM44$NNNN(new M44(), 1.5707963267948966, 1, 0, 0))), M44$mul_0$LM44$LM44$LM44$(mul$this$3, new M44$0(mul$this$3), M44$setRotation_0$LM44$NNNN(new M44(), 1.5707963267948966, 0, 1, 0)));
 	gl.uniformMatrix4fv(ulocs.modelMatrix, false, M44$array_0$LM44$(bodyMat));
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, Kingyo.eyes.ibuf);
 	gl.drawElements(gl.TRIANGLES, 12, gl.UNSIGNED_SHORT, 0);
@@ -8411,35 +8239,15 @@ function Kingyo$_drawEyes_0$LKingyo$($this) {
 	var ulocs;
 	var s;
 	var bodyMat;
-	var $this$0;
-	var m$0;
-	var $this$1;
-	var m$1;
-	var $this$2;
-	var $this$3;
-	var m$2;
-	var $this$4;
-	var $this$5;
-	var m$3;
-	var $this$6;
-	var rad$0;
+	var mul$this$0;
+	var mul$this$1;
+	var mul$this$2;
+	var mul$this$3;
 	gl = Kingyo.gl;
 	ulocs = Kingyo.eyeULocs;
 	gl.uniform3fv(ulocs.color, $this._color);
 	s = Math.sin($this._anim * 5);
-	$this$5 = M44$setTranslation_0$LM44$LV3$(new M44(), $this._pos);
-	m$3 = $this._spinMat;
-	$this$3 = M44$mul_0$LM44$LM44$LM44$($this$5, new M44$0($this$5), m$3);
-	$this$6 = new M44();
-	rad$0 = $this._vangle - s / 10;
-	m$2 = M44$setRotation_0$LM44$NNNN($this$6, rad$0, 0, 0, 1);
-	$this$1 = M44$mul_0$LM44$LM44$LM44$($this$3, new M44$0($this$3), m$2);
-	$this$4 = new M44();
-	m$1 = M44$setRotation_0$LM44$NNNN($this$4, 1.5707963267948966, 1, 0, 0);
-	$this$0 = M44$mul_0$LM44$LM44$LM44$($this$1, new M44$0($this$1), m$1);
-	$this$2 = new M44();
-	m$0 = M44$setRotation_0$LM44$NNNN($this$2, 1.5707963267948966, 0, 1, 0);
-	bodyMat = M44$mul_0$LM44$LM44$LM44$($this$0, new M44$0($this$0), m$0);
+	bodyMat = (mul$this$3 = (mul$this$2 = (mul$this$1 = (mul$this$0 = M44$setTranslation_0$LM44$LV3$(new M44(), $this._pos), M44$mul_0$LM44$LM44$LM44$(mul$this$0, new M44$0(mul$this$0), $this._spinMat)), M44$mul_0$LM44$LM44$LM44$(mul$this$1, new M44$0(mul$this$1), M44$setRotation_0$LM44$NNNN(new M44(), $this._vangle - s / 10, 0, 0, 1))), M44$mul_0$LM44$LM44$LM44$(mul$this$2, new M44$0(mul$this$2), M44$setRotation_0$LM44$NNNN(new M44(), 1.5707963267948966, 1, 0, 0))), M44$mul_0$LM44$LM44$LM44$(mul$this$3, new M44$0(mul$this$3), M44$setRotation_0$LM44$NNNN(new M44(), 1.5707963267948966, 0, 1, 0)));
 	gl.uniformMatrix4fv(ulocs.modelMatrix, false, M44$array_0$LM44$(bodyMat));
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, Kingyo.eyes.ibuf);
 	gl.drawElements(gl.TRIANGLES, 12, gl.UNSIGNED_SHORT, 0);
@@ -8499,14 +8307,6 @@ function Poi$setPosition$LPoi$NN($this, x, y) {
 
 Poi.setPosition$LPoi$NN = Poi$setPosition$LPoi$NN;
 
-function Poi$setPosition_0$LPoi$NN($this, x, y) {
-	$this._x = x;
-	$this._y = y;
-	return $this;
-};
-
-Poi.setPosition_0$LPoi$NN = Poi$setPosition_0$LPoi$NN;
-
 function Poi$down$LPoi$B($this, d) {
 	$this._down = d;
 	return $this;
@@ -8514,24 +8314,11 @@ function Poi$down$LPoi$B($this, d) {
 
 Poi.down$LPoi$B = Poi$down$LPoi$B;
 
-function Poi$down_0$LPoi$B($this, d) {
-	$this._down = d;
-	return $this;
-};
-
-Poi.down_0$LPoi$B = Poi$down_0$LPoi$B;
-
 function Poi$down$LPoi$($this) {
 	return $this._down;
 };
 
 Poi.down$LPoi$ = Poi$down$LPoi$;
-
-function Poi$down_0$LPoi$($this) {
-	return $this._down;
-};
-
-Poi.down_0$LPoi$ = Poi$down_0$LPoi$;
 
 function Poi$tear$LPoi$B($this, t) {
 	$this._live = ! t;
@@ -8540,24 +8327,11 @@ function Poi$tear$LPoi$B($this, t) {
 
 Poi.tear$LPoi$B = Poi$tear$LPoi$B;
 
-function Poi$tear_0$LPoi$B($this, t) {
-	$this._live = ! t;
-	return $this;
-};
-
-Poi.tear_0$LPoi$B = Poi$tear_0$LPoi$B;
-
 function Poi$tearing$LPoi$($this) {
 	return ! $this._live;
 };
 
 Poi.tearing$LPoi$ = Poi$tearing$LPoi$;
-
-function Poi$tearing_0$LPoi$($this) {
-	return ! $this._live;
-};
-
-Poi.tearing_0$LPoi$ = Poi$tearing_0$LPoi$;
 
 function Poi$draw$LPoi$LM44$LM44$($this, projMat, viewMat) {
 	var gl;
@@ -8565,43 +8339,15 @@ function Poi$draw$LPoi$LM44$LM44$($this, projMat, viewMat) {
 	var mvMat;
 	var vloc;
 	var tloc;
-	var $this$0;
-	var m$0;
-	var $this$1;
-	var m$1;
-	var $this$2;
-	var x$0;
-	var y$0;
-	var z$0;
-	var m$2;
-	var $this$3;
-	var $this$4;
+	var mul$this$0;
+	var mul$this$1;
 	gl = Poi.gl;
 	prog = Poi.prog;
 	gl.useProgram(prog);
 	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, M44$array_0$LM44$(projMat));
-	$this$0 = new M44$0(viewMat);
-	$this$2 = new M44();
-	x$0 = $this._x;
-	y$0 = $this._y;
-	z$0 = $this._z;
-	M44$set_0$LM44$N($this$2, 1);
-	$this$2.m14 = x$0;
-	$this$2.m24 = y$0;
-	$this$2.m34 = z$0;
-	m$0 = $this$2;
-	mvMat = M44$mul_0$LM44$LM44$LM44$($this$0, new M44$0($this$0), m$0);
+	mvMat = (mul$this$0 = new M44$0(viewMat), M44$mul_0$LM44$LM44$LM44$(mul$this$0, new M44$0(mul$this$0), M44$setTranslation_0$LM44$NNN(new M44(), $this._x, $this._y, $this._z)));
 	if ($this._down) {
-		$this$4 = new M44();
-		M44$set_0$LM44$N($this$4, 1);
-		$this$4.m14 = 0;
-		$this$4.m24 = 0;
-		$this$4.m34 = -7;
-		m$2 = $this$4;
-		$this$1 = M44$mul_0$LM44$LM44$LM44$(mvMat, new M44$0(mvMat), m$2);
-		$this$3 = new M44();
-		m$1 = M44$setRotation_0$LM44$NNNN($this$3, -0.1, 1, 0, 0);
-		M44$mul_0$LM44$LM44$LM44$($this$1, new M44$0($this$1), m$1);
+		(mul$this$1 = M44$mul_0$LM44$LM44$LM44$(mvMat, new M44$0(mvMat), M44$setTranslation_0$LM44$NNN(new M44(), 0, 0, -7)), M44$mul_0$LM44$LM44$LM44$(mul$this$1, new M44$0(mul$this$1), M44$setRotation_0$LM44$NNNN(new M44(), -0.1, 1, 0, 0)));
 	}
 	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'modelviewMatrix'), false, M44$array_0$LM44$(mvMat));
 	gl.bindBuffer(gl.ARRAY_BUFFER, Poi.vtbuf);
@@ -8618,66 +8364,6 @@ function Poi$draw$LPoi$LM44$LM44$($this, projMat, viewMat) {
 };
 
 Poi.draw$LPoi$LM44$LM44$ = Poi$draw$LPoi$LM44$LM44$;
-
-function Poi$draw_0$LPoi$LM44$LM44$($this, projMat, viewMat) {
-	var gl;
-	var prog;
-	var mvMat;
-	var vloc;
-	var tloc;
-	var $this$0;
-	var m$0;
-	var $this$1;
-	var m$1;
-	var $this$2;
-	var x$0;
-	var y$0;
-	var z$0;
-	var m$2;
-	var $this$3;
-	var $this$4;
-	gl = Poi.gl;
-	prog = Poi.prog;
-	gl.useProgram(prog);
-	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, M44$array_0$LM44$(projMat));
-	$this$0 = new M44$0(viewMat);
-	$this$2 = new M44();
-	x$0 = $this._x;
-	y$0 = $this._y;
-	z$0 = $this._z;
-	M44$set_0$LM44$N($this$2, 1);
-	$this$2.m14 = x$0;
-	$this$2.m24 = y$0;
-	$this$2.m34 = z$0;
-	m$0 = $this$2;
-	mvMat = M44$mul_0$LM44$LM44$LM44$($this$0, new M44$0($this$0), m$0);
-	if ($this._down) {
-		$this$4 = new M44();
-		M44$set_0$LM44$N($this$4, 1);
-		$this$4.m14 = 0;
-		$this$4.m24 = 0;
-		$this$4.m34 = -7;
-		m$2 = $this$4;
-		$this$1 = M44$mul_0$LM44$LM44$LM44$(mvMat, new M44$0(mvMat), m$2);
-		$this$3 = new M44();
-		m$1 = M44$setRotation_0$LM44$NNNN($this$3, -0.1, 1, 0, 0);
-		M44$mul_0$LM44$LM44$LM44$($this$1, new M44$0($this$1), m$1);
-	}
-	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'modelviewMatrix'), false, M44$array_0$LM44$(mvMat));
-	gl.bindBuffer(gl.ARRAY_BUFFER, Poi.vtbuf);
-	vloc = gl.getAttribLocation(prog, 'vertex');
-	tloc = gl.getAttribLocation(prog, 'texcoord');
-	gl.vertexAttribPointer(vloc, 2, gl.FLOAT, false, 0, 0);
-	gl.vertexAttribPointer(tloc, 2, gl.FLOAT, false, 0, 32);
-	gl.enableVertexAttribArray(vloc);
-	gl.enableVertexAttribArray(tloc);
-	gl.bindTexture(gl.TEXTURE_2D, $this._live ? Poi.tex : Poi.texx);
-	gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
-	gl.disableVertexAttribArray(vloc);
-	gl.disableVertexAttribArray(tloc);
-};
-
-Poi.draw_0$LPoi$LM44$LM44$ = Poi$draw_0$LPoi$LM44$LM44$;
 
 function Water() {
 	var gl;
@@ -9453,6 +9139,8 @@ JSX.runMain = function (sourceFile, args) {
  */
 JSX.runTests = function (sourceFile, tests) {
 	var module = JSX.require(sourceFile);
+	if (! module) return;
+
 	var testClass = module._Test;
 
 	if (!testClass) return; // skip if there's no test class
@@ -9491,7 +9179,7 @@ JSX.runTests = function (sourceFile, tests) {
 function $__jsx_onload (event) {
 	window.removeEventListener("load", $__jsx_onload);
 	document.removeEventListener("DOMContentLoaded", $__jsx_onload);
-	JSX.runMain("./game.jsx", [])
+	JSX.runMain("./game.jsx", []);
 }
 
 window.addEventListener("load", $__jsx_onload);
