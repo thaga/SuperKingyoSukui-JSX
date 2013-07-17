@@ -1,4 +1,4 @@
-// generatedy by JSX compiler 0.9.54 (2013-07-13 21:10:23 -0700; 42dc3cc8412f763fec8f0f0db03084a2a6927f49)
+// generatedy by JSX compiler 0.9.57 (2013-07-25 12:58:38 -0700; 60ffff2f25991e8eb3a32fc16969bc8914039102)
 var JSX = {};
 (function (JSX) {
 /**
@@ -101,11 +101,11 @@ JSX.resetProfileResults = function () {
 	return $__jsx_profiler.resetResults();
 };
 JSX.DEBUG = false;
-function g_StopIteration() {
+function StopIteration() {
 	Error.call(this);
 };
 
-$__jsx_extend([g_StopIteration], Error);
+$__jsx_extend([StopIteration], Error);
 function _Main() {
 };
 
@@ -190,30 +190,28 @@ function Game$main$SS(canvas_id, life_id) {
 		var epos;
 		var pdir;
 		var this$0;
-		var l$0;
+		var this$1;
 		var x$0$0;
 		var y$0$0;
-		var this$2;
-		var s$0;
+		var this$5;
+		var s$1;
 		var z$0;
 		var x$0;
 		var y$0;
 		wx = p[0] / canvas.width * 2 - 1;
 		wy = - p[1] / canvas.height * 2 + 1;
-		epos = V3$transformBy_0$LV3$LM33$(new V3$3(0, 0, 80), M33$setRotation_0$LM33$NNNN(new M33(), 0.2, 1, 0, 0));
-		this$0 = V3$transformBy_0$LV3$LM33$(new V3$3(0.2 * wx, 0.2 * wy, -1), M33$setRotation_0$LM33$NNNN(new M33(), 0.2, 1, 0, 0));
-		l$0 = Math.sqrt(V3$len2_0$LV3$(this$0));
-		pdir = (l$0 > 0 ? V3$mul_0$LV3$N(this$0, 1 / l$0) : this$0);
-		this$2 = new V3$0(pdir);
-		s$0 = (z$0 = epos.z) / - pdir.z;
-		this$2.x *= s$0;
-		this$2.y *= s$0;
-		this$2.z *= s$0;
+		epos = V3$transformBy$LV3$LM33$(new V3$3(0, 0, 80), (this$0 = new M33(), M33$setRotation$LM33$NNNN(this$0, 0.2, 1, 0, 0)));
+		pdir = V3$normalize$LV3$(V3$transformBy$LV3$LM33$(new V3$3(0.2 * wx, 0.2 * wy, -1), (this$1 = new M33(), M33$setRotation$LM33$NNNN(this$1, 0.2, 1, 0, 0))));
+		this$5 = new V3$0(pdir);
+		s$1 = (z$0 = epos.z) / - pdir.z;
+		this$5.x *= s$1;
+		this$5.y *= s$1;
+		this$5.z *= s$1;
 		x$0$0 = epos.x;
 		y$0$0 = epos.y;
-		x$0 = this$2.x += x$0$0;
-		y$0 = this$2.y += y$0$0;
-		this$2.z += z$0;
+		x$0 = this$5.x += x$0$0;
+		y$0 = this$5.y += y$0$0;
+		this$5.z += z$0;
 		return [ x$0, y$0 ];
 	});
 	touchStart = (function (e) {
@@ -222,13 +220,16 @@ function Game$main$SS(canvas_id, life_id) {
 		var this$0;
 		var x$0;
 		var y$0;
-		var this$1;
 		var this$2;
-		var this$3;
-		var s$0;
+		var i$0;
 		var this$4;
-		var x$1;
-		var y$1;
+		var this$6;
+		var this$7;
+		var s$0;
+		var this$9;
+		var x$2;
+		var y$2;
+		var this$11;
 		e.preventDefault();
 		lastTouchPos = getPoint(e);
 		pos = calcMousePosOnXYPlane(lastTouchPos);
@@ -237,17 +238,19 @@ function Game$main$SS(canvas_id, life_id) {
 		y$0 = pos[1];
 		this$0._x = x$0;
 		this$0._y = y$0;
-		if (! Game.poi._live || Kingyo$numRests$() === 0) {
+		if ((this$11 = Game.poi, ! this$11._live) || Kingyo$numRests$() === 0) {
 			Game.life = 1;
 			Game.life_bar.style.width = Game.life_bar_width.toString() + "px";
-			this$1 = Game.poi;
-			this$1._live = true;
-			Kingyo$reset$();
+			this$2 = Game.poi;
+			this$2._live = true;
+			for (i$0 = 0; i$0 < Kingyo.all.length; ++ i$0) {
+				Kingyo$init$LKingyo$(Kingyo.all[i$0]);
+			}
 			Game.status_text.innerHTML = 'click to start';
 		} else {
-			if (! ! Game.poi._live) {
-				this$2 = Game.poi;
-				this$2._down = true;
+			if (! (this$6 = Game.poi, ! this$6._live)) {
+				this$4 = Game.poi;
+				this$4._down = true;
 				Game.poi_down_time = Date.now() / 1000;
 				if (Game.startTime === 0) {
 					Game.startTime = Date.now();
@@ -255,20 +258,20 @@ function Game$main$SS(canvas_id, life_id) {
 			}
 			hit = Kingyo$hit$NN(pos[0], pos[1]);
 			if (hit.length > 0) {
-				this$3 = Game.poi;
-				this$3._live = false;
+				this$7 = Game.poi;
+				this$7._live = false;
 				s$0 = dom.document.createElement('audio');
 				s$0.src = 'tear.mp3';
 				s$0.play();
 				Game.startTime = 0;
 			}
-			this$4 = Game.water;
-			x$1 = pos[0] / 40 + 0.5;
-			y$1 = pos[1] / 40 + 0.5;
-			this$4._ix = x$1;
-			this$4._iy = y$1;
-			this$4._ir = 0.03;
-			this$4._iz = 0;
+			this$9 = Game.water;
+			x$2 = pos[0] / 40 + 0.5;
+			y$2 = pos[1] / 40 + 0.5;
+			this$9._ix = x$2;
+			this$9._iy = y$2;
+			this$9._ir = 0.03;
+			this$9._iz = 0;
 		}
 	});
 	canvas.addEventListener("mousedown", touchStart);
@@ -279,11 +282,14 @@ function Game$main$SS(canvas_id, life_id) {
 		var this$0;
 		var x$0;
 		var y$0;
-		var s$0;
-		var this$1;
-		var x$1;
-		var y$1;
 		var this$2;
+		var i$0;
+		var s$0;
+		var this$3;
+		var this$4;
+		var x$2;
+		var y$2;
+		var this$6;
 		e.preventDefault();
 		if (e instanceof MouseEvent) {
 			lastTouchPos = getPoint(e);
@@ -294,10 +300,13 @@ function Game$main$SS(canvas_id, life_id) {
 		y$0 = pos[1];
 		this$0._x = x$0;
 		this$0._y = y$0;
-		if (Game.poi._down) {
-			if (! ! Game.poi._live) {
+		this$2 = Game.poi;
+		if (this$2._down) {
+			if (! (this$3 = Game.poi, ! this$3._live)) {
 				hit = Kingyo$hit$NN(pos[0], pos[1]);
-				Kingyo$fish$ALKingyo$(hit);
+				for (i$0 = 0; i$0 < hit.length; ++ i$0) {
+					Kingyo$_fished$LKingyo$(hit[i$0]);
+				}
 				if (hit.length > 0) {
 					s$0 = dom.document.createElement('audio');
 					s$0.src = 'fish.mp3';
@@ -307,16 +316,16 @@ function Game$main$SS(canvas_id, life_id) {
 					Game.startTime = 0;
 				}
 			}
-			this$1 = Game.water;
-			x$1 = pos[0] / 40 + 0.5;
-			y$1 = pos[1] / 40 + 0.5;
-			this$1._ix = x$1;
-			this$1._iy = y$1;
-			this$1._ir = 0.03;
-			this$1._iz = 1;
+			this$4 = Game.water;
+			x$2 = pos[0] / 40 + 0.5;
+			y$2 = pos[1] / 40 + 0.5;
+			this$4._ix = x$2;
+			this$4._iy = y$2;
+			this$4._ir = 0.03;
+			this$4._iz = 1;
 		}
-		this$2 = Game.poi;
-		this$2._down = false;
+		this$6 = Game.poi;
+		this$6._down = false;
 	});
 	canvas.addEventListener("mouseup", touchEnd);
 	canvas.addEventListener("touchend", touchEnd);
@@ -325,9 +334,10 @@ function Game$main$SS(canvas_id, life_id) {
 		var this$0;
 		var x$0;
 		var y$0;
-		var this$1;
-		var x$1;
-		var y$1;
+		var this$2;
+		var this$3;
+		var x$2;
+		var y$2;
 		e.preventDefault();
 		lastTouchPos = getPoint(e);
 		pos = calcMousePosOnXYPlane(lastTouchPos);
@@ -336,14 +346,15 @@ function Game$main$SS(canvas_id, life_id) {
 		y$0 = pos[1];
 		this$0._x = x$0;
 		this$0._y = y$0;
-		if (Game.poi._down) {
-			this$1 = Game.water;
-			x$1 = pos[0] / 40 + 0.5;
-			y$1 = pos[1] / 40 + 0.5;
-			this$1._ix = x$1;
-			this$1._iy = y$1;
-			this$1._ir = 0.02;
-			this$1._iz = 0.2;
+		this$2 = Game.poi;
+		if (this$2._down) {
+			this$3 = Game.water;
+			x$2 = pos[0] / 40 + 0.5;
+			y$2 = pos[1] / 40 + 0.5;
+			this$3._ix = x$2;
+			this$3._iy = y$2;
+			this$3._ir = 0.02;
+			this$3._iz = 0.2;
 		}
 	});
 	canvas.addEventListener("mousemove", touchMove);
@@ -353,15 +364,15 @@ function Game$main$SS(canvas_id, life_id) {
 		var this$0;
 		var x$0;
 		var y$0;
-		var this$1;
+		var this$2;
 		pos = calcMousePosOnXYPlane(getPoint(e));
 		this$0 = Game.poi;
 		x$0 = pos[0];
 		y$0 = pos[1];
 		this$0._x = x$0;
 		this$0._y = y$0;
-		this$1 = Game.poi;
-		this$1._down = false;
+		this$2 = Game.poi;
+		this$2._down = false;
 	});
 	canvas.oncontextmenu = (function (e) {
 		e.preventDefault();
@@ -405,17 +416,20 @@ function Game$update$N(now) {
 	var t;
 	var newStatus;
 	var this$0;
+	var this$1;
 	var s$0;
+	var this$3;
 	t = now / 1000;
 	Kingyo$update$N(t);
-	Water$step_0$LWater$N(Game.water, t);
-	if (Game.poi._down) {
+	Water$step$LWater$N(Game.water, t);
+	this$0 = Game.poi;
+	if (this$0._down) {
 		Game.life -= (t - Game.poi_down_time) * 0.5;
 		Game.poi_down_time = t;
-		if (Game.life < 0 && ! ! Game.poi._live) {
+		if (Game.life < 0 && ! (this$3 = Game.poi, ! this$3._live)) {
 			Game.life = 0;
-			this$0 = Game.poi;
-			this$0._live = false;
+			this$1 = Game.poi;
+			this$1._live = false;
 			s$0 = dom.document.createElement('audio');
 			s$0.src = 'tear.mp3';
 			s$0.play();
@@ -434,34 +448,42 @@ Game.update$N = Game$update$N;
 function Game$render$() {
 	var gl;
 	var this$0;
+	var this$1;
 	var gl$0;
 	var vp$0;
+	var this$3;
+	var this$4;
+	var this$5;
+	var this$6;
+	var gl$2;
+	var err$0;
 	gl = Game.gl;
-	RenderTexture$begin_0$LRenderTexture$(Game.renderTex);
+	RenderTexture$begin$LRenderTexture$(Game.renderTex);
 	gl.clearColor(0.2, 0.6, 0.8, 1);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	gl.enable(gl.DEPTH_TEST);
 	gl.enable(gl.BLEND);
 	gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE);
 	Kingyo$drawUnderWater$LM44$LM44$(Game.projMat, Game.viewMat);
-	if (Game.poi._down) {
+	this$0 = Game.poi;
+	if (this$0._down) {
 		Poi$draw$LPoi$LM44$LM44$(Game.poi, Game.projMat, Game.viewMat);
 	}
-	this$0 = Game.renderTex;
+	this$1 = Game.renderTex;
 	gl$0 = RenderTexture.gl;
 	gl$0.bindFramebuffer(gl$0.FRAMEBUFFER, null);
-	vp$0 = this$0._viewport;
+	vp$0 = this$1._viewport;
 	gl$0.viewport(vp$0[0], vp$0[1], vp$0[2], vp$0[3]);
 	gl.clear(gl.DEPTH_BUFFER_BIT);
 	gl.useProgram(Game.bltProg);
-	gl.bindTexture(gl.TEXTURE_2D, Game.renderTex.texturebuffer);
+	gl.bindTexture(gl.TEXTURE_2D, (this$3 = Game.renderTex, this$3.texturebuffer));
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 	gl.uniform1i(Game.bltULocs.texture, 0);
-	gl.uniformMatrix4fv(Game.bltULocs.projectionMatrix, false, M44$array_0$LM44$(M44$setOrtho_0$LM44$NNNNNN(new M44(), 0, 1, 0, 1, -1, 0)));
-	gl.uniformMatrix4fv(Game.bltULocs.modelviewMatrix, false, M44$array_0$LM44$(M44$set_0$LM44$N(new M44(), 1)));
+	gl.uniformMatrix4fv(Game.bltULocs.projectionMatrix, false, M44$array$LM44$(M44$setOrtho$LM44$NNNNNN(new M44(), 0, 1, 0, 1, -1, 0)));
+	gl.uniformMatrix4fv(Game.bltULocs.modelviewMatrix, false, M44$array$LM44$((this$4 = new M44(), M44$set$LM44$N(this$4, 1))));
 	gl.bindBuffer(gl.ARRAY_BUFFER, Game.bltVTBuf);
 	gl.vertexAttribPointer(Game.bltALocs.vertex, 2, gl.FLOAT, false, 0, 0);
 	gl.vertexAttribPointer(Game.bltALocs.texcoord, 2, gl.FLOAT, false, 0, 0);
@@ -470,12 +492,16 @@ function Game$render$() {
 	gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
 	gl.disableVertexAttribArray(Game.bltALocs.vertex);
 	gl.disableVertexAttribArray(Game.bltALocs.texcoord);
-	Water$draw_0$LWater$LM44$LM44$LWebGLTexture$NN(Game.water, Game.projMat, Game.viewMat, Game.renderTex.texturebuffer, Game.canvas.offsetWidth, Game.canvas.offsetHeight);
+	Water$draw$LWater$LM44$LM44$LWebGLTexture$NN(Game.water, Game.projMat, Game.viewMat, (this$5 = Game.renderTex, this$5.texturebuffer), Game.canvas.offsetWidth, Game.canvas.offsetHeight);
 	Kingyo$drawAboveWater$LM44$LM44$(Game.projMat, Game.viewMat);
-	if (! Game.poi._down) {
+	if (! (this$6 = Game.poi, this$6._down)) {
 		Poi$draw$LPoi$LM44$LM44$(Game.poi, Game.projMat, Game.viewMat);
 	}
-	Util$checkGLError$();
+	gl$2 = Util.gl;
+	err$0 = gl$2.getError();
+	if (err$0) {
+		console.error('GL ERROR! :' + err$0.toString());
+	}
 };
 
 Game.render$ = Game$render$;
@@ -516,6 +542,7 @@ function NumberUtil$format$NI(n, precision) {
 
 NumberUtil.format$NI = NumberUtil$format$NI;
 
+var js$0 = (function () { var global = (function () { return this; }()); return { global: global, eval: global.eval, invoke: function(invocant, methodName, args) { return invocant[methodName].apply(invocant, args); } }; }());
 function dom() {
 };
 
@@ -904,25 +931,25 @@ function Timer() {
 
 $__jsx_extend([Timer], Object);
 function Timer$setTimeout$F$V$N(callback, intervalMS) {
-	return js.global.setTimeout(callback, intervalMS);
+	return js$0.global.setTimeout(callback, intervalMS);
 };
 
 Timer.setTimeout$F$V$N = Timer$setTimeout$F$V$N;
 
 function Timer$clearTimeout$LTimerHandle$(timer) {
-	js.global.clearTimeout(timer);
+	js$0.global.clearTimeout(timer);
 };
 
 Timer.clearTimeout$LTimerHandle$ = Timer$clearTimeout$LTimerHandle$;
 
 function Timer$setInterval$F$V$N(callback, intervalMS) {
-	return js.global.setInterval(callback, intervalMS);
+	return js$0.global.setInterval(callback, intervalMS);
 };
 
 Timer.setInterval$F$V$N = Timer$setInterval$F$V$N;
 
 function Timer$clearInterval$LTimerHandle$(timer) {
-	js.global.clearInterval(timer);
+	js$0.global.clearInterval(timer);
 };
 
 Timer.clearInterval$LTimerHandle$ = Timer$clearInterval$LTimerHandle$;
@@ -949,29 +976,29 @@ Timer.useNativeRAF$B = Timer$useNativeRAF$B;
 function Timer$_getRequestAnimationFrameImpl$B(useNativeImpl) {
 	var lastTime;
 	if (useNativeImpl) {
-		if (js.global.requestAnimationFrame) {
+		if (js$0.global.requestAnimationFrame) {
 			return (function (callback) {
-				return js.global.requestAnimationFrame(callback);
+				return js$0.global.requestAnimationFrame(callback);
 			});
 		} else {
-			if (js.global.webkitRequestAnimationFrame) {
+			if (js$0.global.webkitRequestAnimationFrame) {
 				return (function (callback) {
-					return js.global.webkitRequestAnimationFrame(callback);
+					return js$0.global.webkitRequestAnimationFrame(callback);
 				});
 			} else {
-				if (js.global.mozRequestAnimationFrame) {
+				if (js$0.global.mozRequestAnimationFrame) {
 					return (function (callback) {
-						return js.global.mozRequestAnimationFrame(callback);
+						return js$0.global.mozRequestAnimationFrame(callback);
 					});
 				} else {
-					if (js.global.oRequestAnimationFrame) {
+					if (js$0.global.oRequestAnimationFrame) {
 						return (function (callback) {
-							return js.global.oRequestAnimationFrame(callback);
+							return js$0.global.oRequestAnimationFrame(callback);
 						});
 					} else {
-						if (js.global.msRequestAnimationFrame) {
+						if (js$0.global.msRequestAnimationFrame) {
 							return (function (callback) {
-								return js.global.msRequestAnimationFrame(callback);
+								return js$0.global.msRequestAnimationFrame(callback);
 							});
 						}
 					}
@@ -983,11 +1010,12 @@ function Timer$_getRequestAnimationFrameImpl$B(useNativeImpl) {
 	return (function (callback) {
 		var now;
 		var timeToCall;
-		var max$value2$0;
+		var value2$0;
 		now = Date.now();
-		timeToCall = (max$value2$0 = 16 - (now - lastTime), 0 >= max$value2$0 ? 0 : max$value2$0);
+		value2$0 = 16 - (now - lastTime);
+		timeToCall = (0 >= value2$0 ? 0 : value2$0);
 		lastTime = now + timeToCall;
-		return js.global.setTimeout((function () {
+		return js$0.global.setTimeout((function () {
 			callback(now + timeToCall);
 		}), timeToCall);
 	});
@@ -997,29 +1025,29 @@ Timer._getRequestAnimationFrameImpl$B = Timer$_getRequestAnimationFrameImpl$B;
 
 function Timer$_getCancelAnimationFrameImpl$B(useNativeImpl) {
 	if (useNativeImpl) {
-		if (js.global.cancelAnimationFrame) {
+		if (js$0.global.cancelAnimationFrame) {
 			return (function (timer) {
-				js.global.cancelAnimationFrame(timer);
+				js$0.global.cancelAnimationFrame(timer);
 			});
 		} else {
-			if (js.global.webkitCancelAnimationFrame) {
+			if (js$0.global.webkitCancelAnimationFrame) {
 				return (function (timer) {
-					js.global.webkitCancelAnimationFrame(timer);
+					js$0.global.webkitCancelAnimationFrame(timer);
 				});
 			} else {
-				if (js.global.mozCancelAnimationFrame) {
+				if (js$0.global.mozCancelAnimationFrame) {
 					return (function (timer) {
-						js.global.mozCancelAnimationFrame(timer);
+						js$0.global.mozCancelAnimationFrame(timer);
 					});
 				} else {
-					if (js.global.oCancelAnimationFrame) {
+					if (js$0.global.oCancelAnimationFrame) {
 						return (function (timer) {
-							js.global.oCancelAnimationFrame(timer);
+							js$0.global.oCancelAnimationFrame(timer);
 						});
 					} else {
-						if (js.global.msCancelAnimationFrame) {
+						if (js$0.global.msCancelAnimationFrame) {
 							return (function (timer) {
-								js.global.msCancelAnimationFrame(timer);
+								js$0.global.msCancelAnimationFrame(timer);
 							});
 						}
 					}
@@ -1244,33 +1272,33 @@ V2.prototype.array$ = function () {
 };
 
 
-function V2$array_0$LV2$($this) {
+function V2$array$LV2$($this) {
 	return [ $this.x, $this.y ];
 };
 
-V2.array_0$LV2$ = V2$array_0$LV2$;
+V2.array$LV2$ = V2$array$LV2$;
 
 V2.prototype.V3$N = function (z) {
 	return new V3$4(this, z);
 };
 
 
-function V2$V3_0$LV2$N($this, z) {
+function V2$V3$LV2$N($this, z) {
 	return new V3$4($this, z);
 };
 
-V2.V3_0$LV2$N = V2$V3_0$LV2$N;
+V2.V3$LV2$N = V2$V3$LV2$N;
 
 V2.prototype.V4$NN = function (z, w) {
 	return new V4$4(this, z, w);
 };
 
 
-function V2$V4_0$LV2$NN($this, z, w) {
+function V2$V4$LV2$NN($this, z, w) {
 	return new V4$4($this, z, w);
 };
 
-V2.V4_0$LV2$NN = V2$V4_0$LV2$NN;
+V2.V4$LV2$NN = V2$V4$LV2$NN;
 
 V2.prototype.set$LV3$ = function (v) {
 	var x$0;
@@ -1283,7 +1311,7 @@ V2.prototype.set$LV3$ = function (v) {
 };
 
 
-function V2$set_0$LV2$LV3$($this, v) {
+function V2$set$LV2$LV3$($this, v) {
 	var x$0;
 	var y$0;
 	x$0 = v.x;
@@ -1293,7 +1321,7 @@ function V2$set_0$LV2$LV3$($this, v) {
 	return $this;
 };
 
-V2.set_0$LV2$LV3$ = V2$set_0$LV2$LV3$;
+V2.set$LV2$LV3$ = V2$set$LV2$LV3$;
 
 V2.prototype.set$LV4$ = function (v) {
 	var x$0;
@@ -1306,7 +1334,7 @@ V2.prototype.set$LV4$ = function (v) {
 };
 
 
-function V2$set_0$LV2$LV4$($this, v) {
+function V2$set$LV2$LV4$($this, v) {
 	var x$0;
 	var y$0;
 	x$0 = v.x;
@@ -1316,18 +1344,18 @@ function V2$set_0$LV2$LV4$($this, v) {
 	return $this;
 };
 
-V2.set_0$LV2$LV4$ = V2$set_0$LV2$LV4$;
+V2.set$LV2$LV4$ = V2$set$LV2$LV4$;
 
 V2.prototype.clone$ = function () {
 	return new V2$0(this);
 };
 
 
-function V2$clone_0$LV2$($this) {
+function V2$clone$LV2$($this) {
 	return new V2$0($this);
 };
 
-V2.clone_0$LV2$ = V2$clone_0$LV2$;
+V2.clone$LV2$ = V2$clone$LV2$;
 
 V2.prototype.clear$ = function () {
 	this.x = 0;
@@ -1336,13 +1364,13 @@ V2.prototype.clear$ = function () {
 };
 
 
-function V2$clear_0$LV2$($this) {
+function V2$clear$LV2$($this) {
 	$this.x = 0;
 	$this.y = 0;
 	return $this;
 };
 
-V2.clear_0$LV2$ = V2$clear_0$LV2$;
+V2.clear$LV2$ = V2$clear$LV2$;
 
 V2.prototype.set$NN = function (x, y) {
 	this.x = x;
@@ -1351,13 +1379,13 @@ V2.prototype.set$NN = function (x, y) {
 };
 
 
-function V2$set_0$LV2$NN($this, x, y) {
+function V2$set$LV2$NN($this, x, y) {
 	$this.x = x;
 	$this.y = y;
 	return $this;
 };
 
-V2.set_0$LV2$NN = V2$set_0$LV2$NN;
+V2.set$LV2$NN = V2$set$LV2$NN;
 
 V2.prototype.set$LV2$ = function (v) {
 	var x$0;
@@ -1370,7 +1398,7 @@ V2.prototype.set$LV2$ = function (v) {
 };
 
 
-function V2$set_0$LV2$LV2$($this, v) {
+function V2$set$LV2$LV2$($this, v) {
 	var x$0;
 	var y$0;
 	x$0 = v.x;
@@ -1380,7 +1408,7 @@ function V2$set_0$LV2$LV2$($this, v) {
 	return $this;
 };
 
-V2.set_0$LV2$LV2$ = V2$set_0$LV2$LV2$;
+V2.set$LV2$LV2$ = V2$set$LV2$LV2$;
 
 V2.prototype.set$AN = function (v) {
 	var x$0;
@@ -1393,7 +1421,7 @@ V2.prototype.set$AN = function (v) {
 };
 
 
-function V2$set_0$LV2$AN($this, v) {
+function V2$set$LV2$AN($this, v) {
 	var x$0;
 	var y$0;
 	x$0 = v[0];
@@ -1403,7 +1431,7 @@ function V2$set_0$LV2$AN($this, v) {
 	return $this;
 };
 
-V2.set_0$LV2$AN = V2$set_0$LV2$AN;
+V2.set$LV2$AN = V2$set$LV2$AN;
 
 V2.prototype.set$LFloat32Array$ = function (v) {
 	var x$0;
@@ -1416,7 +1444,7 @@ V2.prototype.set$LFloat32Array$ = function (v) {
 };
 
 
-function V2$set_0$LV2$LFloat32Array$($this, v) {
+function V2$set$LV2$LFloat32Array$($this, v) {
 	var x$0;
 	var y$0;
 	x$0 = v[0];
@@ -1426,33 +1454,33 @@ function V2$set_0$LV2$LFloat32Array$($this, v) {
 	return $this;
 };
 
-V2.set_0$LV2$LFloat32Array$ = V2$set_0$LV2$LFloat32Array$;
+V2.set$LV2$LFloat32Array$ = V2$set$LV2$LFloat32Array$;
 
 V2.prototype.equals$LV2$ = function (v) {
-	return V2$equals_0$LV2$LV2$N(this, v, 0.000001);
+	return V2$equals$LV2$LV2$N(this, v, 0.000001);
 };
 
 
-function V2$equals_0$LV2$LV2$($this, v) {
-	return V2$equals_0$LV2$LV2$N($this, v, 0.000001);
+function V2$equals$LV2$LV2$($this, v) {
+	return V2$equals$LV2$LV2$N($this, v, 0.000001);
 };
 
-V2.equals_0$LV2$LV2$ = V2$equals_0$LV2$LV2$;
+V2.equals$LV2$LV2$ = V2$equals$LV2$LV2$;
 
 V2.prototype.equals$LV2$N = function (v, eps) {
-	var abs$x$0;
-	var abs$x$1;
-	return (abs$x$0 = v.x - this.x, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) < eps && (abs$x$1 = v.y - this.y, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) < eps;
+	var x$0;
+	var x$1;
+	return (x$0 = v.x - this.x, x$0 >= 0 ? x$0 : - x$0) < eps && (x$1 = v.y - this.y, x$1 >= 0 ? x$1 : - x$1) < eps;
 };
 
 
-function V2$equals_0$LV2$LV2$N($this, v, eps) {
-	var abs$x$0;
-	var abs$x$1;
-	return (abs$x$0 = v.x - $this.x, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) < eps && (abs$x$1 = v.y - $this.y, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) < eps;
+function V2$equals$LV2$LV2$N($this, v, eps) {
+	var x$0;
+	var x$1;
+	return (x$0 = v.x - $this.x, x$0 >= 0 ? x$0 : - x$0) < eps && (x$1 = v.y - $this.y, x$1 >= 0 ? x$1 : - x$1) < eps;
 };
 
-V2.equals_0$LV2$LV2$N = V2$equals_0$LV2$LV2$N;
+V2.equals$LV2$LV2$N = V2$equals$LV2$LV2$N;
 
 V2.prototype.add$NN = function (x, y) {
 	this.x += x;
@@ -1461,13 +1489,13 @@ V2.prototype.add$NN = function (x, y) {
 };
 
 
-function V2$add_0$LV2$NN($this, x, y) {
+function V2$add$LV2$NN($this, x, y) {
 	$this.x += x;
 	$this.y += y;
 	return $this;
 };
 
-V2.add_0$LV2$NN = V2$add_0$LV2$NN;
+V2.add$LV2$NN = V2$add$LV2$NN;
 
 V2.prototype.add$LV2$ = function (v) {
 	var x$0;
@@ -1480,7 +1508,7 @@ V2.prototype.add$LV2$ = function (v) {
 };
 
 
-function V2$add_0$LV2$LV2$($this, v) {
+function V2$add$LV2$LV2$($this, v) {
 	var x$0;
 	var y$0;
 	x$0 = v.x;
@@ -1490,7 +1518,7 @@ function V2$add_0$LV2$LV2$($this, v) {
 	return $this;
 };
 
-V2.add_0$LV2$LV2$ = V2$add_0$LV2$LV2$;
+V2.add$LV2$LV2$ = V2$add$LV2$LV2$;
 
 V2.prototype.add$AN = function (v) {
 	var x$0;
@@ -1503,7 +1531,7 @@ V2.prototype.add$AN = function (v) {
 };
 
 
-function V2$add_0$LV2$AN($this, v) {
+function V2$add$LV2$AN($this, v) {
 	var x$0;
 	var y$0;
 	x$0 = v[0];
@@ -1513,7 +1541,7 @@ function V2$add_0$LV2$AN($this, v) {
 	return $this;
 };
 
-V2.add_0$LV2$AN = V2$add_0$LV2$AN;
+V2.add$LV2$AN = V2$add$LV2$AN;
 
 V2.prototype.add$LFloat32Array$ = function (v) {
 	var x$0;
@@ -1526,7 +1554,7 @@ V2.prototype.add$LFloat32Array$ = function (v) {
 };
 
 
-function V2$add_0$LV2$LFloat32Array$($this, v) {
+function V2$add$LV2$LFloat32Array$($this, v) {
 	var x$0;
 	var y$0;
 	x$0 = v[0];
@@ -1536,7 +1564,7 @@ function V2$add_0$LV2$LFloat32Array$($this, v) {
 	return $this;
 };
 
-V2.add_0$LV2$LFloat32Array$ = V2$add_0$LV2$LFloat32Array$;
+V2.add$LV2$LFloat32Array$ = V2$add$LV2$LFloat32Array$;
 
 V2.prototype.sub$NN = function (x, y) {
 	this.x -= x;
@@ -1545,13 +1573,13 @@ V2.prototype.sub$NN = function (x, y) {
 };
 
 
-function V2$sub_0$LV2$NN($this, x, y) {
+function V2$sub$LV2$NN($this, x, y) {
 	$this.x -= x;
 	$this.y -= y;
 	return $this;
 };
 
-V2.sub_0$LV2$NN = V2$sub_0$LV2$NN;
+V2.sub$LV2$NN = V2$sub$LV2$NN;
 
 V2.prototype.sub$LV2$ = function (v) {
 	var x$0;
@@ -1564,7 +1592,7 @@ V2.prototype.sub$LV2$ = function (v) {
 };
 
 
-function V2$sub_0$LV2$LV2$($this, v) {
+function V2$sub$LV2$LV2$($this, v) {
 	var x$0;
 	var y$0;
 	x$0 = v.x;
@@ -1574,7 +1602,7 @@ function V2$sub_0$LV2$LV2$($this, v) {
 	return $this;
 };
 
-V2.sub_0$LV2$LV2$ = V2$sub_0$LV2$LV2$;
+V2.sub$LV2$LV2$ = V2$sub$LV2$LV2$;
 
 V2.prototype.sub$AN = function (v) {
 	var x$0;
@@ -1587,7 +1615,7 @@ V2.prototype.sub$AN = function (v) {
 };
 
 
-function V2$sub_0$LV2$AN($this, v) {
+function V2$sub$LV2$AN($this, v) {
 	var x$0;
 	var y$0;
 	x$0 = v[0];
@@ -1597,7 +1625,7 @@ function V2$sub_0$LV2$AN($this, v) {
 	return $this;
 };
 
-V2.sub_0$LV2$AN = V2$sub_0$LV2$AN;
+V2.sub$LV2$AN = V2$sub$LV2$AN;
 
 V2.prototype.sub$LFloat32Array$ = function (v) {
 	var x$0;
@@ -1610,7 +1638,7 @@ V2.prototype.sub$LFloat32Array$ = function (v) {
 };
 
 
-function V2$sub_0$LV2$LFloat32Array$($this, v) {
+function V2$sub$LV2$LFloat32Array$($this, v) {
 	var x$0;
 	var y$0;
 	x$0 = v[0];
@@ -1620,7 +1648,7 @@ function V2$sub_0$LV2$LFloat32Array$($this, v) {
 	return $this;
 };
 
-V2.sub_0$LV2$LFloat32Array$ = V2$sub_0$LV2$LFloat32Array$;
+V2.sub$LV2$LFloat32Array$ = V2$sub$LV2$LFloat32Array$;
 
 V2.prototype.mul$NN = function (x, y) {
 	this.x *= x;
@@ -1629,13 +1657,13 @@ V2.prototype.mul$NN = function (x, y) {
 };
 
 
-function V2$mul_0$LV2$NN($this, x, y) {
+function V2$mul$LV2$NN($this, x, y) {
 	$this.x *= x;
 	$this.y *= y;
 	return $this;
 };
 
-V2.mul_0$LV2$NN = V2$mul_0$LV2$NN;
+V2.mul$LV2$NN = V2$mul$LV2$NN;
 
 V2.prototype.mul$LV2$ = function (v) {
 	var x$0;
@@ -1648,7 +1676,7 @@ V2.prototype.mul$LV2$ = function (v) {
 };
 
 
-function V2$mul_0$LV2$LV2$($this, v) {
+function V2$mul$LV2$LV2$($this, v) {
 	var x$0;
 	var y$0;
 	x$0 = v.x;
@@ -1658,7 +1686,7 @@ function V2$mul_0$LV2$LV2$($this, v) {
 	return $this;
 };
 
-V2.mul_0$LV2$LV2$ = V2$mul_0$LV2$LV2$;
+V2.mul$LV2$LV2$ = V2$mul$LV2$LV2$;
 
 V2.prototype.mul$AN = function (v) {
 	var x$0;
@@ -1671,7 +1699,7 @@ V2.prototype.mul$AN = function (v) {
 };
 
 
-function V2$mul_0$LV2$AN($this, v) {
+function V2$mul$LV2$AN($this, v) {
 	var x$0;
 	var y$0;
 	x$0 = v[0];
@@ -1681,7 +1709,7 @@ function V2$mul_0$LV2$AN($this, v) {
 	return $this;
 };
 
-V2.mul_0$LV2$AN = V2$mul_0$LV2$AN;
+V2.mul$LV2$AN = V2$mul$LV2$AN;
 
 V2.prototype.mul$LFloat32Array$ = function (v) {
 	var x$0;
@@ -1694,7 +1722,7 @@ V2.prototype.mul$LFloat32Array$ = function (v) {
 };
 
 
-function V2$mul_0$LV2$LFloat32Array$($this, v) {
+function V2$mul$LV2$LFloat32Array$($this, v) {
 	var x$0;
 	var y$0;
 	x$0 = v[0];
@@ -1704,7 +1732,7 @@ function V2$mul_0$LV2$LFloat32Array$($this, v) {
 	return $this;
 };
 
-V2.mul_0$LV2$LFloat32Array$ = V2$mul_0$LV2$LFloat32Array$;
+V2.mul$LV2$LFloat32Array$ = V2$mul$LV2$LFloat32Array$;
 
 V2.prototype.mul$N = function (s) {
 	this.x *= s;
@@ -1713,13 +1741,13 @@ V2.prototype.mul$N = function (s) {
 };
 
 
-function V2$mul_0$LV2$N($this, s) {
+function V2$mul$LV2$N($this, s) {
 	$this.x *= s;
 	$this.y *= s;
 	return $this;
 };
 
-V2.mul_0$LV2$N = V2$mul_0$LV2$N;
+V2.mul$LV2$N = V2$mul$LV2$N;
 
 V2.prototype.neg$ = function () {
 	this.x *= -1;
@@ -1728,61 +1756,71 @@ V2.prototype.neg$ = function () {
 };
 
 
-function V2$neg_0$LV2$($this) {
+function V2$neg$LV2$($this) {
 	$this.x *= -1;
 	$this.y *= -1;
 	return $this;
 };
 
-V2.neg_0$LV2$ = V2$neg_0$LV2$;
+V2.neg$LV2$ = V2$neg$LV2$;
 
 V2.prototype.normalize$ = function () {
 	var l;
-	l = Math.sqrt(V2$len2_0$LV2$(this));
-	return (l > 0 ? V2$mul_0$LV2$N(this, 1 / l) : this);
+	var x$0$0;
+	var y$0$0;
+	var s$0;
+	l = Math.sqrt((x$0$0 = this.x, y$0$0 = this.y, x$0$0 * x$0$0 + y$0$0 * y$0$0));
+	return (l > 0 ? (s$0 = 1 / l, this.x *= s$0, this.y *= s$0, this) : this);
 };
 
 
-function V2$normalize_0$LV2$($this) {
+function V2$normalize$LV2$($this) {
 	var l;
-	l = Math.sqrt(V2$len2_0$LV2$($this));
-	return (l > 0 ? V2$mul_0$LV2$N($this, 1 / l) : $this);
+	var x$0$0;
+	var y$0$0;
+	var s$0;
+	l = Math.sqrt((x$0$0 = $this.x, y$0$0 = $this.y, x$0$0 * x$0$0 + y$0$0 * y$0$0));
+	return (l > 0 ? (s$0 = 1 / l, $this.x *= s$0, $this.y *= s$0, $this) : $this);
 };
 
-V2.normalize_0$LV2$ = V2$normalize_0$LV2$;
+V2.normalize$LV2$ = V2$normalize$LV2$;
 
 V2.prototype.cross$LV2$ = function (v) {
 	return this.x * v.y - v.x * this.y;
 };
 
 
-function V2$cross_0$LV2$LV2$($this, v) {
+function V2$cross$LV2$LV2$($this, v) {
 	return $this.x * v.y - v.x * $this.y;
 };
 
-V2.cross_0$LV2$LV2$ = V2$cross_0$LV2$LV2$;
+V2.cross$LV2$LV2$ = V2$cross$LV2$LV2$;
 
 V2.prototype.dot$LV2$ = function (v) {
 	return this.x * v.x + this.y * v.y;
 };
 
 
-function V2$dot_0$LV2$LV2$($this, v) {
+function V2$dot$LV2$LV2$($this, v) {
 	return $this.x * v.x + $this.y * v.y;
 };
 
-V2.dot_0$LV2$LV2$ = V2$dot_0$LV2$LV2$;
+V2.dot$LV2$LV2$ = V2$dot$LV2$LV2$;
 
 V2.prototype.len$ = function () {
-	return Math.sqrt(V2$len2_0$LV2$(this));
+	var x$0;
+	var y$0;
+	return Math.sqrt((x$0 = this.x, y$0 = this.y, x$0 * x$0 + y$0 * y$0));
 };
 
 
-function V2$len_0$LV2$($this) {
-	return Math.sqrt(V2$len2_0$LV2$($this));
+function V2$len$LV2$($this) {
+	var x$0;
+	var y$0;
+	return Math.sqrt((x$0 = $this.x, y$0 = $this.y, x$0 * x$0 + y$0 * y$0));
 };
 
-V2.len_0$LV2$ = V2$len_0$LV2$;
+V2.len$LV2$ = V2$len$LV2$;
 
 V2.prototype.len2$ = function () {
 	var x;
@@ -1792,25 +1830,29 @@ V2.prototype.len2$ = function () {
 };
 
 
-function V2$len2_0$LV2$($this) {
+function V2$len2$LV2$($this) {
 	var x;
 	var y;
 	(x = $this.x, y = $this.y);
 	return x * x + y * y;
 };
 
-V2.len2_0$LV2$ = V2$len2_0$LV2$;
+V2.len2$LV2$ = V2$len2$LV2$;
 
 V2.prototype.dist$LV2$ = function (v) {
-	return Math.sqrt(V2$dist2_0$LV2$LV2$(this, v));
+	var x$0;
+	var y$0;
+	return Math.sqrt((x$0 = v.x - this.x, y$0 = v.y - this.y, x$0 * x$0 + y$0 * y$0));
 };
 
 
-function V2$dist_0$LV2$LV2$($this, v) {
-	return Math.sqrt(V2$dist2_0$LV2$LV2$($this, v));
+function V2$dist$LV2$LV2$($this, v) {
+	var x$0;
+	var y$0;
+	return Math.sqrt((x$0 = v.x - $this.x, y$0 = v.y - $this.y, x$0 * x$0 + y$0 * y$0));
 };
 
-V2.dist_0$LV2$LV2$ = V2$dist_0$LV2$LV2$;
+V2.dist$LV2$LV2$ = V2$dist$LV2$LV2$;
 
 V2.prototype.dist2$LV2$ = function (v) {
 	var x;
@@ -1821,7 +1863,7 @@ V2.prototype.dist2$LV2$ = function (v) {
 };
 
 
-function V2$dist2_0$LV2$LV2$($this, v) {
+function V2$dist2$LV2$LV2$($this, v) {
 	var x;
 	var y;
 	x = v.x - $this.x;
@@ -1829,7 +1871,7 @@ function V2$dist2_0$LV2$LV2$($this, v) {
 	return x * x + y * y;
 };
 
-V2.dist2_0$LV2$LV2$ = V2$dist2_0$LV2$LV2$;
+V2.dist2$LV2$LV2$ = V2$dist2$LV2$LV2$;
 
 V2.prototype.lerp$LV2$LV2$N = function (v0, v1, ratio) {
 	var x$0;
@@ -1840,7 +1882,7 @@ V2.prototype.lerp$LV2$LV2$N = function (v0, v1, ratio) {
 };
 
 
-function V2$lerp_0$LV2$LV2$LV2$N($this, v0, v1, ratio) {
+function V2$lerp$LV2$LV2$LV2$N($this, v0, v1, ratio) {
 	var x$0;
 	var y$0;
 	$this.x = (x$0 = v0.x) + ratio * (v1.x - x$0);
@@ -1848,7 +1890,7 @@ function V2$lerp_0$LV2$LV2$LV2$N($this, v0, v1, ratio) {
 	return $this;
 };
 
-V2.lerp_0$LV2$LV2$LV2$N = V2$lerp_0$LV2$LV2$LV2$N;
+V2.lerp$LV2$LV2$LV2$N = V2$lerp$LV2$LV2$LV2$N;
 
 V2.prototype.transformBy$LM22$ = function (m) {
 	var x;
@@ -1860,7 +1902,7 @@ V2.prototype.transformBy$LM22$ = function (m) {
 };
 
 
-function V2$transformBy_0$LV2$LM22$($this, m) {
+function V2$transformBy$LV2$LM22$($this, m) {
 	var x;
 	var y;
 	(x = $this.x, y = $this.y);
@@ -1869,7 +1911,7 @@ function V2$transformBy_0$LV2$LM22$($this, m) {
 	return $this;
 };
 
-V2.transformBy_0$LV2$LM22$ = V2$transformBy_0$LV2$LM22$;
+V2.transformBy$LV2$LM22$ = V2$transformBy$LV2$LM22$;
 
 V2.prototype.transformBy$LM33$ = function (m) {
 	var x;
@@ -1881,7 +1923,7 @@ V2.prototype.transformBy$LM33$ = function (m) {
 };
 
 
-function V2$transformBy_0$LV2$LM33$($this, m) {
+function V2$transformBy$LV2$LM33$($this, m) {
 	var x;
 	var y;
 	(x = $this.x, y = $this.y);
@@ -1890,7 +1932,7 @@ function V2$transformBy_0$LV2$LM33$($this, m) {
 	return $this;
 };
 
-V2.transformBy_0$LV2$LM33$ = V2$transformBy_0$LV2$LM33$;
+V2.transformBy$LV2$LM33$ = V2$transformBy$LV2$LM33$;
 
 V2.prototype.toString = function () {
 	return "V2" + JSON.stringify([ this.x, this.y ]);
@@ -1981,33 +2023,33 @@ V3.prototype.array$ = function () {
 };
 
 
-function V3$array_0$LV3$($this) {
+function V3$array$LV3$($this) {
 	return [ $this.x, $this.y, $this.z ];
 };
 
-V3.array_0$LV3$ = V3$array_0$LV3$;
+V3.array$LV3$ = V3$array$LV3$;
 
 V3.prototype.V2$ = function () {
 	return new V2$4(this);
 };
 
 
-function V3$V2_0$LV3$($this) {
+function V3$V2$LV3$($this) {
 	return new V2$4($this);
 };
 
-V3.V2_0$LV3$ = V3$V2_0$LV3$;
+V3.V2$LV3$ = V3$V2$LV3$;
 
 V3.prototype.V4$N = function (w) {
 	return new V4$5(this, w);
 };
 
 
-function V3$V4_0$LV3$N($this, w) {
+function V3$V4$LV3$N($this, w) {
 	return new V4$5($this, w);
 };
 
-V3.V4_0$LV3$N = V3$V4_0$LV3$N;
+V3.V4$LV3$N = V3$V4$LV3$N;
 
 V3.prototype.set$LV2$N = function (v, z) {
 	var x$0;
@@ -2021,7 +2063,7 @@ V3.prototype.set$LV2$N = function (v, z) {
 };
 
 
-function V3$set_0$LV3$LV2$N($this, v, z) {
+function V3$set$LV3$LV2$N($this, v, z) {
 	var x$0;
 	var y$0;
 	x$0 = v.x;
@@ -2032,7 +2074,7 @@ function V3$set_0$LV3$LV2$N($this, v, z) {
 	return $this;
 };
 
-V3.set_0$LV3$LV2$N = V3$set_0$LV3$LV2$N;
+V3.set$LV3$LV2$N = V3$set$LV3$LV2$N;
 
 V3.prototype.set$LV4$ = function (v) {
 	var x$0;
@@ -2048,7 +2090,7 @@ V3.prototype.set$LV4$ = function (v) {
 };
 
 
-function V3$set_0$LV3$LV4$($this, v) {
+function V3$set$LV3$LV4$($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -2061,18 +2103,18 @@ function V3$set_0$LV3$LV4$($this, v) {
 	return $this;
 };
 
-V3.set_0$LV3$LV4$ = V3$set_0$LV3$LV4$;
+V3.set$LV3$LV4$ = V3$set$LV3$LV4$;
 
 V3.prototype.clone$ = function () {
 	return new V3$0(this);
 };
 
 
-function V3$clone_0$LV3$($this) {
+function V3$clone$LV3$($this) {
 	return new V3$0($this);
 };
 
-V3.clone_0$LV3$ = V3$clone_0$LV3$;
+V3.clone$LV3$ = V3$clone$LV3$;
 
 V3.prototype.clear$ = function () {
 	this.x = 0;
@@ -2082,14 +2124,14 @@ V3.prototype.clear$ = function () {
 };
 
 
-function V3$clear_0$LV3$($this) {
+function V3$clear$LV3$($this) {
 	$this.x = 0;
 	$this.y = 0;
 	$this.z = 0;
 	return $this;
 };
 
-V3.clear_0$LV3$ = V3$clear_0$LV3$;
+V3.clear$LV3$ = V3$clear$LV3$;
 
 V3.prototype.set$NNN = function (x, y, z) {
 	this.x = x;
@@ -2099,14 +2141,14 @@ V3.prototype.set$NNN = function (x, y, z) {
 };
 
 
-function V3$set_0$LV3$NNN($this, x, y, z) {
+function V3$set$LV3$NNN($this, x, y, z) {
 	$this.x = x;
 	$this.y = y;
 	$this.z = z;
 	return $this;
 };
 
-V3.set_0$LV3$NNN = V3$set_0$LV3$NNN;
+V3.set$LV3$NNN = V3$set$LV3$NNN;
 
 V3.prototype.set$LV3$ = function (v) {
 	var x$0;
@@ -2122,7 +2164,7 @@ V3.prototype.set$LV3$ = function (v) {
 };
 
 
-function V3$set_0$LV3$LV3$($this, v) {
+function V3$set$LV3$LV3$($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -2135,7 +2177,7 @@ function V3$set_0$LV3$LV3$($this, v) {
 	return $this;
 };
 
-V3.set_0$LV3$LV3$ = V3$set_0$LV3$LV3$;
+V3.set$LV3$LV3$ = V3$set$LV3$LV3$;
 
 V3.prototype.set$AN = function (v) {
 	var x$0;
@@ -2151,7 +2193,7 @@ V3.prototype.set$AN = function (v) {
 };
 
 
-function V3$set_0$LV3$AN($this, v) {
+function V3$set$LV3$AN($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -2164,7 +2206,7 @@ function V3$set_0$LV3$AN($this, v) {
 	return $this;
 };
 
-V3.set_0$LV3$AN = V3$set_0$LV3$AN;
+V3.set$LV3$AN = V3$set$LV3$AN;
 
 V3.prototype.set$LFloat32Array$ = function (v) {
 	var x$0;
@@ -2180,7 +2222,7 @@ V3.prototype.set$LFloat32Array$ = function (v) {
 };
 
 
-function V3$set_0$LV3$LFloat32Array$($this, v) {
+function V3$set$LV3$LFloat32Array$($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -2193,35 +2235,35 @@ function V3$set_0$LV3$LFloat32Array$($this, v) {
 	return $this;
 };
 
-V3.set_0$LV3$LFloat32Array$ = V3$set_0$LV3$LFloat32Array$;
+V3.set$LV3$LFloat32Array$ = V3$set$LV3$LFloat32Array$;
 
 V3.prototype.equals$LV3$ = function (v) {
-	return V3$equals_0$LV3$LV3$N(this, v, 0.000001);
+	return V3$equals$LV3$LV3$N(this, v, 0.000001);
 };
 
 
-function V3$equals_0$LV3$LV3$($this, v) {
-	return V3$equals_0$LV3$LV3$N($this, v, 0.000001);
+function V3$equals$LV3$LV3$($this, v) {
+	return V3$equals$LV3$LV3$N($this, v, 0.000001);
 };
 
-V3.equals_0$LV3$LV3$ = V3$equals_0$LV3$LV3$;
+V3.equals$LV3$LV3$ = V3$equals$LV3$LV3$;
 
 V3.prototype.equals$LV3$N = function (v, eps) {
-	var abs$x$0;
-	var abs$x$1;
-	var abs$x$2;
-	return (abs$x$0 = v.x - this.x, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) < eps && (abs$x$1 = v.y - this.y, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) < eps && (abs$x$2 = v.z - this.z, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) < eps;
+	var x$0;
+	var x$1;
+	var x$2;
+	return (x$0 = v.x - this.x, x$0 >= 0 ? x$0 : - x$0) < eps && (x$1 = v.y - this.y, x$1 >= 0 ? x$1 : - x$1) < eps && (x$2 = v.z - this.z, x$2 >= 0 ? x$2 : - x$2) < eps;
 };
 
 
-function V3$equals_0$LV3$LV3$N($this, v, eps) {
-	var abs$x$0;
-	var abs$x$1;
-	var abs$x$2;
-	return (abs$x$0 = v.x - $this.x, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) < eps && (abs$x$1 = v.y - $this.y, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) < eps && (abs$x$2 = v.z - $this.z, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) < eps;
+function V3$equals$LV3$LV3$N($this, v, eps) {
+	var x$0;
+	var x$1;
+	var x$2;
+	return (x$0 = v.x - $this.x, x$0 >= 0 ? x$0 : - x$0) < eps && (x$1 = v.y - $this.y, x$1 >= 0 ? x$1 : - x$1) < eps && (x$2 = v.z - $this.z, x$2 >= 0 ? x$2 : - x$2) < eps;
 };
 
-V3.equals_0$LV3$LV3$N = V3$equals_0$LV3$LV3$N;
+V3.equals$LV3$LV3$N = V3$equals$LV3$LV3$N;
 
 V3.prototype.add$NNN = function (x, y, z) {
 	this.x += x;
@@ -2231,14 +2273,14 @@ V3.prototype.add$NNN = function (x, y, z) {
 };
 
 
-function V3$add_0$LV3$NNN($this, x, y, z) {
+function V3$add$LV3$NNN($this, x, y, z) {
 	$this.x += x;
 	$this.y += y;
 	$this.z += z;
 	return $this;
 };
 
-V3.add_0$LV3$NNN = V3$add_0$LV3$NNN;
+V3.add$LV3$NNN = V3$add$LV3$NNN;
 
 V3.prototype.add$LV3$ = function (v) {
 	var x$0;
@@ -2254,7 +2296,7 @@ V3.prototype.add$LV3$ = function (v) {
 };
 
 
-function V3$add_0$LV3$LV3$($this, v) {
+function V3$add$LV3$LV3$($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -2267,7 +2309,7 @@ function V3$add_0$LV3$LV3$($this, v) {
 	return $this;
 };
 
-V3.add_0$LV3$LV3$ = V3$add_0$LV3$LV3$;
+V3.add$LV3$LV3$ = V3$add$LV3$LV3$;
 
 V3.prototype.add$AN = function (v) {
 	var x$0;
@@ -2283,7 +2325,7 @@ V3.prototype.add$AN = function (v) {
 };
 
 
-function V3$add_0$LV3$AN($this, v) {
+function V3$add$LV3$AN($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -2296,7 +2338,7 @@ function V3$add_0$LV3$AN($this, v) {
 	return $this;
 };
 
-V3.add_0$LV3$AN = V3$add_0$LV3$AN;
+V3.add$LV3$AN = V3$add$LV3$AN;
 
 V3.prototype.add$LFloat32Array$ = function (v) {
 	var x$0;
@@ -2312,7 +2354,7 @@ V3.prototype.add$LFloat32Array$ = function (v) {
 };
 
 
-function V3$add_0$LV3$LFloat32Array$($this, v) {
+function V3$add$LV3$LFloat32Array$($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -2325,7 +2367,7 @@ function V3$add_0$LV3$LFloat32Array$($this, v) {
 	return $this;
 };
 
-V3.add_0$LV3$LFloat32Array$ = V3$add_0$LV3$LFloat32Array$;
+V3.add$LV3$LFloat32Array$ = V3$add$LV3$LFloat32Array$;
 
 V3.prototype.sub$NNN = function (x, y, z) {
 	this.x -= x;
@@ -2335,14 +2377,14 @@ V3.prototype.sub$NNN = function (x, y, z) {
 };
 
 
-function V3$sub_0$LV3$NNN($this, x, y, z) {
+function V3$sub$LV3$NNN($this, x, y, z) {
 	$this.x -= x;
 	$this.y -= y;
 	$this.z -= z;
 	return $this;
 };
 
-V3.sub_0$LV3$NNN = V3$sub_0$LV3$NNN;
+V3.sub$LV3$NNN = V3$sub$LV3$NNN;
 
 V3.prototype.sub$LV3$ = function (v) {
 	var x$0;
@@ -2358,7 +2400,7 @@ V3.prototype.sub$LV3$ = function (v) {
 };
 
 
-function V3$sub_0$LV3$LV3$($this, v) {
+function V3$sub$LV3$LV3$($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -2371,7 +2413,7 @@ function V3$sub_0$LV3$LV3$($this, v) {
 	return $this;
 };
 
-V3.sub_0$LV3$LV3$ = V3$sub_0$LV3$LV3$;
+V3.sub$LV3$LV3$ = V3$sub$LV3$LV3$;
 
 V3.prototype.sub$AN = function (v) {
 	var x$0;
@@ -2387,7 +2429,7 @@ V3.prototype.sub$AN = function (v) {
 };
 
 
-function V3$sub_0$LV3$AN($this, v) {
+function V3$sub$LV3$AN($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -2400,7 +2442,7 @@ function V3$sub_0$LV3$AN($this, v) {
 	return $this;
 };
 
-V3.sub_0$LV3$AN = V3$sub_0$LV3$AN;
+V3.sub$LV3$AN = V3$sub$LV3$AN;
 
 V3.prototype.sub$LFloat32Array$ = function (v) {
 	var x$0;
@@ -2416,7 +2458,7 @@ V3.prototype.sub$LFloat32Array$ = function (v) {
 };
 
 
-function V3$sub_0$LV3$LFloat32Array$($this, v) {
+function V3$sub$LV3$LFloat32Array$($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -2429,7 +2471,7 @@ function V3$sub_0$LV3$LFloat32Array$($this, v) {
 	return $this;
 };
 
-V3.sub_0$LV3$LFloat32Array$ = V3$sub_0$LV3$LFloat32Array$;
+V3.sub$LV3$LFloat32Array$ = V3$sub$LV3$LFloat32Array$;
 
 V3.prototype.mul$NNN = function (x, y, z) {
 	this.x *= x;
@@ -2439,14 +2481,14 @@ V3.prototype.mul$NNN = function (x, y, z) {
 };
 
 
-function V3$mul_0$LV3$NNN($this, x, y, z) {
+function V3$mul$LV3$NNN($this, x, y, z) {
 	$this.x *= x;
 	$this.y *= y;
 	$this.z *= z;
 	return $this;
 };
 
-V3.mul_0$LV3$NNN = V3$mul_0$LV3$NNN;
+V3.mul$LV3$NNN = V3$mul$LV3$NNN;
 
 V3.prototype.mul$LV3$ = function (v) {
 	var x$0;
@@ -2462,7 +2504,7 @@ V3.prototype.mul$LV3$ = function (v) {
 };
 
 
-function V3$mul_0$LV3$LV3$($this, v) {
+function V3$mul$LV3$LV3$($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -2475,7 +2517,7 @@ function V3$mul_0$LV3$LV3$($this, v) {
 	return $this;
 };
 
-V3.mul_0$LV3$LV3$ = V3$mul_0$LV3$LV3$;
+V3.mul$LV3$LV3$ = V3$mul$LV3$LV3$;
 
 V3.prototype.mul$AN = function (v) {
 	var x$0;
@@ -2491,7 +2533,7 @@ V3.prototype.mul$AN = function (v) {
 };
 
 
-function V3$mul_0$LV3$AN($this, v) {
+function V3$mul$LV3$AN($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -2504,7 +2546,7 @@ function V3$mul_0$LV3$AN($this, v) {
 	return $this;
 };
 
-V3.mul_0$LV3$AN = V3$mul_0$LV3$AN;
+V3.mul$LV3$AN = V3$mul$LV3$AN;
 
 V3.prototype.mul$LFloat32Array$ = function (v) {
 	var x$0;
@@ -2520,7 +2562,7 @@ V3.prototype.mul$LFloat32Array$ = function (v) {
 };
 
 
-function V3$mul_0$LV3$LFloat32Array$($this, v) {
+function V3$mul$LV3$LFloat32Array$($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -2533,7 +2575,7 @@ function V3$mul_0$LV3$LFloat32Array$($this, v) {
 	return $this;
 };
 
-V3.mul_0$LV3$LFloat32Array$ = V3$mul_0$LV3$LFloat32Array$;
+V3.mul$LV3$LFloat32Array$ = V3$mul$LV3$LFloat32Array$;
 
 V3.prototype.mul$N = function (s) {
 	this.x *= s;
@@ -2543,14 +2585,14 @@ V3.prototype.mul$N = function (s) {
 };
 
 
-function V3$mul_0$LV3$N($this, s) {
+function V3$mul$LV3$N($this, s) {
 	$this.x *= s;
 	$this.y *= s;
 	$this.z *= s;
 	return $this;
 };
 
-V3.mul_0$LV3$N = V3$mul_0$LV3$N;
+V3.mul$LV3$N = V3$mul$LV3$N;
 
 V3.prototype.neg$ = function () {
 	this.x *= -1;
@@ -2560,29 +2602,37 @@ V3.prototype.neg$ = function () {
 };
 
 
-function V3$neg_0$LV3$($this) {
+function V3$neg$LV3$($this) {
 	$this.x *= -1;
 	$this.y *= -1;
 	$this.z *= -1;
 	return $this;
 };
 
-V3.neg_0$LV3$ = V3$neg_0$LV3$;
+V3.neg$LV3$ = V3$neg$LV3$;
 
 V3.prototype.normalize$ = function () {
 	var l;
-	l = Math.sqrt(V3$len2_0$LV3$(this));
-	return (l > 0 ? V3$mul_0$LV3$N(this, 1 / l) : this);
+	var x$0$0;
+	var y$0$0;
+	var z$0$0;
+	var s$0;
+	l = Math.sqrt((x$0$0 = this.x, y$0$0 = this.y, z$0$0 = this.z, x$0$0 * x$0$0 + y$0$0 * y$0$0 + z$0$0 * z$0$0));
+	return (l > 0 ? (s$0 = 1 / l, this.x *= s$0, this.y *= s$0, this.z *= s$0, this) : this);
 };
 
 
-function V3$normalize_0$LV3$($this) {
+function V3$normalize$LV3$($this) {
 	var l;
-	l = Math.sqrt(V3$len2_0$LV3$($this));
-	return (l > 0 ? V3$mul_0$LV3$N($this, 1 / l) : $this);
+	var x$0$0;
+	var y$0$0;
+	var z$0$0;
+	var s$0;
+	l = Math.sqrt((x$0$0 = $this.x, y$0$0 = $this.y, z$0$0 = $this.z, x$0$0 * x$0$0 + y$0$0 * y$0$0 + z$0$0 * z$0$0));
+	return (l > 0 ? (s$0 = 1 / l, $this.x *= s$0, $this.y *= s$0, $this.z *= s$0, $this) : $this);
 };
 
-V3.normalize_0$LV3$ = V3$normalize_0$LV3$;
+V3.normalize$LV3$ = V3$normalize$LV3$;
 
 V3.prototype.cross$LV3$LV3$ = function (v0, v1) {
 	var x0;
@@ -2600,7 +2650,7 @@ V3.prototype.cross$LV3$LV3$ = function (v0, v1) {
 };
 
 
-function V3$cross_0$LV3$LV3$LV3$($this, v0, v1) {
+function V3$cross$LV3$LV3$LV3$($this, v0, v1) {
 	var x0;
 	var y0;
 	var z0;
@@ -2615,29 +2665,35 @@ function V3$cross_0$LV3$LV3$LV3$($this, v0, v1) {
 	return $this;
 };
 
-V3.cross_0$LV3$LV3$LV3$ = V3$cross_0$LV3$LV3$LV3$;
+V3.cross$LV3$LV3$LV3$ = V3$cross$LV3$LV3$LV3$;
 
 V3.prototype.dot$LV3$ = function (v) {
 	return this.x * v.x + this.y * v.y + this.z * v.z;
 };
 
 
-function V3$dot_0$LV3$LV3$($this, v) {
+function V3$dot$LV3$LV3$($this, v) {
 	return $this.x * v.x + $this.y * v.y + $this.z * v.z;
 };
 
-V3.dot_0$LV3$LV3$ = V3$dot_0$LV3$LV3$;
+V3.dot$LV3$LV3$ = V3$dot$LV3$LV3$;
 
 V3.prototype.len$ = function () {
-	return Math.sqrt(V3$len2_0$LV3$(this));
+	var x$0;
+	var y$0;
+	var z$0;
+	return Math.sqrt((x$0 = this.x, y$0 = this.y, z$0 = this.z, x$0 * x$0 + y$0 * y$0 + z$0 * z$0));
 };
 
 
-function V3$len_0$LV3$($this) {
-	return Math.sqrt(V3$len2_0$LV3$($this));
+function V3$len$LV3$($this) {
+	var x$0;
+	var y$0;
+	var z$0;
+	return Math.sqrt((x$0 = $this.x, y$0 = $this.y, z$0 = $this.z, x$0 * x$0 + y$0 * y$0 + z$0 * z$0));
 };
 
-V3.len_0$LV3$ = V3$len_0$LV3$;
+V3.len$LV3$ = V3$len$LV3$;
 
 V3.prototype.len2$ = function () {
 	var x;
@@ -2648,7 +2704,7 @@ V3.prototype.len2$ = function () {
 };
 
 
-function V3$len2_0$LV3$($this) {
+function V3$len2$LV3$($this) {
 	var x;
 	var y;
 	var z;
@@ -2656,18 +2712,18 @@ function V3$len2_0$LV3$($this) {
 	return x * x + y * y + z * z;
 };
 
-V3.len2_0$LV3$ = V3$len2_0$LV3$;
+V3.len2$LV3$ = V3$len2$LV3$;
 
 V3.prototype.dist$LV3$ = function (v) {
-	return Math.sqrt(V3$dist2_0$LV3$LV3$(this, v));
+	return Math.sqrt(V3$dist2$LV3$LV3$(this, v));
 };
 
 
-function V3$dist_0$LV3$LV3$($this, v) {
-	return Math.sqrt(V3$dist2_0$LV3$LV3$($this, v));
+function V3$dist$LV3$LV3$($this, v) {
+	return Math.sqrt(V3$dist2$LV3$LV3$($this, v));
 };
 
-V3.dist_0$LV3$LV3$ = V3$dist_0$LV3$LV3$;
+V3.dist$LV3$LV3$ = V3$dist$LV3$LV3$;
 
 V3.prototype.dist2$LV3$ = function (v) {
 	var x;
@@ -2680,7 +2736,7 @@ V3.prototype.dist2$LV3$ = function (v) {
 };
 
 
-function V3$dist2_0$LV3$LV3$($this, v) {
+function V3$dist2$LV3$LV3$($this, v) {
 	var x;
 	var y;
 	var z;
@@ -2690,7 +2746,7 @@ function V3$dist2_0$LV3$LV3$($this, v) {
 	return x * x + y * y + z * z;
 };
 
-V3.dist2_0$LV3$LV3$ = V3$dist2_0$LV3$LV3$;
+V3.dist2$LV3$LV3$ = V3$dist2$LV3$LV3$;
 
 V3.prototype.lerp$LV3$LV3$N = function (v0, v1, ratio) {
 	var x$0;
@@ -2703,7 +2759,7 @@ V3.prototype.lerp$LV3$LV3$N = function (v0, v1, ratio) {
 };
 
 
-function V3$lerp_0$LV3$LV3$LV3$N($this, v0, v1, ratio) {
+function V3$lerp$LV3$LV3$LV3$N($this, v0, v1, ratio) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -2713,7 +2769,7 @@ function V3$lerp_0$LV3$LV3$LV3$N($this, v0, v1, ratio) {
 	return $this;
 };
 
-V3.lerp_0$LV3$LV3$LV3$N = V3$lerp_0$LV3$LV3$LV3$N;
+V3.lerp$LV3$LV3$LV3$N = V3$lerp$LV3$LV3$LV3$N;
 
 V3.prototype.transformBy$LM33$ = function (m) {
 	var x;
@@ -2727,7 +2783,7 @@ V3.prototype.transformBy$LM33$ = function (m) {
 };
 
 
-function V3$transformBy_0$LV3$LM33$($this, m) {
+function V3$transformBy$LV3$LM33$($this, m) {
 	var x;
 	var y;
 	var z;
@@ -2738,7 +2794,7 @@ function V3$transformBy_0$LV3$LM33$($this, m) {
 	return $this;
 };
 
-V3.transformBy_0$LV3$LM33$ = V3$transformBy_0$LV3$LM33$;
+V3.transformBy$LV3$LM33$ = V3$transformBy$LV3$LM33$;
 
 V3.prototype.transformBy$LM44$ = function (m) {
 	var x;
@@ -2752,7 +2808,7 @@ V3.prototype.transformBy$LM44$ = function (m) {
 };
 
 
-function V3$transformBy_0$LV3$LM44$($this, m) {
+function V3$transformBy$LV3$LM44$($this, m) {
 	var x;
 	var y;
 	var z;
@@ -2763,7 +2819,7 @@ function V3$transformBy_0$LV3$LM44$($this, m) {
 	return $this;
 };
 
-V3.transformBy_0$LV3$LM44$ = V3$transformBy_0$LV3$LM44$;
+V3.transformBy$LV3$LM44$ = V3$transformBy$LV3$LM44$;
 
 V3.prototype.toString = function () {
 	return "V3" + JSON.stringify([ this.x, this.y, this.z ]);
@@ -2782,7 +2838,7 @@ function V4$0(v) {
 	this.y = 0;
 	this.z = 0;
 	this.w = 0;
-	V4$set_0$LV4$LV4$(this, v);
+	V4$set$LV4$LV4$(this, v);
 };
 
 function V4$1(v) {
@@ -2790,7 +2846,7 @@ function V4$1(v) {
 	this.y = 0;
 	this.z = 0;
 	this.w = 0;
-	V4$set_0$LV4$AN(this, v);
+	V4$set$LV4$AN(this, v);
 };
 
 function V4$2(v) {
@@ -2798,7 +2854,7 @@ function V4$2(v) {
 	this.y = 0;
 	this.z = 0;
 	this.w = 0;
-	V4$set_0$LV4$LFloat32Array$(this, v);
+	V4$set$LV4$LFloat32Array$(this, v);
 };
 
 function V4$3(x, y, z, w) {
@@ -2843,33 +2899,33 @@ V4.prototype.array$ = function () {
 };
 
 
-function V4$array_0$LV4$($this) {
+function V4$array$LV4$($this) {
 	return [ $this.x, $this.y, $this.z, $this.w ];
 };
 
-V4.array_0$LV4$ = V4$array_0$LV4$;
+V4.array$LV4$ = V4$array$LV4$;
 
 V4.prototype.V2$ = function () {
 	return new V2$5(this);
 };
 
 
-function V4$V2_0$LV4$($this) {
+function V4$V2$LV4$($this) {
 	return new V2$5($this);
 };
 
-V4.V2_0$LV4$ = V4$V2_0$LV4$;
+V4.V2$LV4$ = V4$V2$LV4$;
 
 V4.prototype.V3$ = function () {
 	return new V3$5(this);
 };
 
 
-function V4$V3_0$LV4$($this) {
+function V4$V3$LV4$($this) {
 	return new V3$5($this);
 };
 
-V4.V3_0$LV4$ = V4$V3_0$LV4$;
+V4.V3$LV4$ = V4$V3$LV4$;
 
 V4.prototype.set$LV2$NN = function (v, z, w) {
 	var x$0;
@@ -2884,7 +2940,7 @@ V4.prototype.set$LV2$NN = function (v, z, w) {
 };
 
 
-function V4$set_0$LV4$LV2$NN($this, v, z, w) {
+function V4$set$LV4$LV2$NN($this, v, z, w) {
 	var x$0;
 	var y$0;
 	x$0 = v.x;
@@ -2896,7 +2952,7 @@ function V4$set_0$LV4$LV2$NN($this, v, z, w) {
 	return $this;
 };
 
-V4.set_0$LV4$LV2$NN = V4$set_0$LV4$LV2$NN;
+V4.set$LV4$LV2$NN = V4$set$LV4$LV2$NN;
 
 V4.prototype.set$LV3$N = function (v, w) {
 	var x$0;
@@ -2913,7 +2969,7 @@ V4.prototype.set$LV3$N = function (v, w) {
 };
 
 
-function V4$set_0$LV4$LV3$N($this, v, w) {
+function V4$set$LV4$LV3$N($this, v, w) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -2927,18 +2983,18 @@ function V4$set_0$LV4$LV3$N($this, v, w) {
 	return $this;
 };
 
-V4.set_0$LV4$LV3$N = V4$set_0$LV4$LV3$N;
+V4.set$LV4$LV3$N = V4$set$LV4$LV3$N;
 
 V4.prototype.clone$ = function () {
 	return new V4$0(this);
 };
 
 
-function V4$clone_0$LV4$($this) {
+function V4$clone$LV4$($this) {
 	return new V4$0($this);
 };
 
-V4.clone_0$LV4$ = V4$clone_0$LV4$;
+V4.clone$LV4$ = V4$clone$LV4$;
 
 V4.prototype.clear$ = function () {
 	this.x = 0;
@@ -2949,7 +3005,7 @@ V4.prototype.clear$ = function () {
 };
 
 
-function V4$clear_0$LV4$($this) {
+function V4$clear$LV4$($this) {
 	$this.x = 0;
 	$this.y = 0;
 	$this.z = 0;
@@ -2957,7 +3013,7 @@ function V4$clear_0$LV4$($this) {
 	return $this;
 };
 
-V4.clear_0$LV4$ = V4$clear_0$LV4$;
+V4.clear$LV4$ = V4$clear$LV4$;
 
 V4.prototype.set$NNNN = function (x, y, z, w) {
 	this.x = x;
@@ -2968,7 +3024,7 @@ V4.prototype.set$NNNN = function (x, y, z, w) {
 };
 
 
-function V4$set_0$LV4$NNNN($this, x, y, z, w) {
+function V4$set$LV4$NNNN($this, x, y, z, w) {
 	$this.x = x;
 	$this.y = y;
 	$this.z = z;
@@ -2976,7 +3032,7 @@ function V4$set_0$LV4$NNNN($this, x, y, z, w) {
 	return $this;
 };
 
-V4.set_0$LV4$NNNN = V4$set_0$LV4$NNNN;
+V4.set$LV4$NNNN = V4$set$LV4$NNNN;
 
 V4.prototype.set$LV4$ = function (v) {
 	var x$0;
@@ -2995,7 +3051,7 @@ V4.prototype.set$LV4$ = function (v) {
 };
 
 
-function V4$set_0$LV4$LV4$($this, v) {
+function V4$set$LV4$LV4$($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -3011,7 +3067,7 @@ function V4$set_0$LV4$LV4$($this, v) {
 	return $this;
 };
 
-V4.set_0$LV4$LV4$ = V4$set_0$LV4$LV4$;
+V4.set$LV4$LV4$ = V4$set$LV4$LV4$;
 
 V4.prototype.set$AN = function (v) {
 	var x$0;
@@ -3030,7 +3086,7 @@ V4.prototype.set$AN = function (v) {
 };
 
 
-function V4$set_0$LV4$AN($this, v) {
+function V4$set$LV4$AN($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -3046,7 +3102,7 @@ function V4$set_0$LV4$AN($this, v) {
 	return $this;
 };
 
-V4.set_0$LV4$AN = V4$set_0$LV4$AN;
+V4.set$LV4$AN = V4$set$LV4$AN;
 
 V4.prototype.set$LFloat32Array$ = function (v) {
 	var x$0;
@@ -3065,7 +3121,7 @@ V4.prototype.set$LFloat32Array$ = function (v) {
 };
 
 
-function V4$set_0$LV4$LFloat32Array$($this, v) {
+function V4$set$LV4$LFloat32Array$($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -3081,37 +3137,37 @@ function V4$set_0$LV4$LFloat32Array$($this, v) {
 	return $this;
 };
 
-V4.set_0$LV4$LFloat32Array$ = V4$set_0$LV4$LFloat32Array$;
+V4.set$LV4$LFloat32Array$ = V4$set$LV4$LFloat32Array$;
 
 V4.prototype.equals$LV4$ = function (v) {
-	return V4$equals_0$LV4$LV4$N(this, v, 0.000001);
+	return V4$equals$LV4$LV4$N(this, v, 0.000001);
 };
 
 
-function V4$equals_0$LV4$LV4$($this, v) {
-	return V4$equals_0$LV4$LV4$N($this, v, 0.000001);
+function V4$equals$LV4$LV4$($this, v) {
+	return V4$equals$LV4$LV4$N($this, v, 0.000001);
 };
 
-V4.equals_0$LV4$LV4$ = V4$equals_0$LV4$LV4$;
+V4.equals$LV4$LV4$ = V4$equals$LV4$LV4$;
 
 V4.prototype.equals$LV4$N = function (v, eps) {
-	var abs$x$0;
-	var abs$x$1;
-	var abs$x$2;
-	var abs$x$3;
-	return (abs$x$0 = v.x - this.x, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) < eps && (abs$x$1 = v.y - this.y, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) < eps && (abs$x$2 = v.z - this.z, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) < eps && (abs$x$3 = v.w - this.w, abs$x$3 >= 0 ? abs$x$3 : - abs$x$3) < eps;
+	var x$0;
+	var x$1;
+	var x$2;
+	var x$3;
+	return (x$0 = v.x - this.x, x$0 >= 0 ? x$0 : - x$0) < eps && (x$1 = v.y - this.y, x$1 >= 0 ? x$1 : - x$1) < eps && (x$2 = v.z - this.z, x$2 >= 0 ? x$2 : - x$2) < eps && (x$3 = v.w - this.w, x$3 >= 0 ? x$3 : - x$3) < eps;
 };
 
 
-function V4$equals_0$LV4$LV4$N($this, v, eps) {
-	var abs$x$0;
-	var abs$x$1;
-	var abs$x$2;
-	var abs$x$3;
-	return (abs$x$0 = v.x - $this.x, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) < eps && (abs$x$1 = v.y - $this.y, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) < eps && (abs$x$2 = v.z - $this.z, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) < eps && (abs$x$3 = v.w - $this.w, abs$x$3 >= 0 ? abs$x$3 : - abs$x$3) < eps;
+function V4$equals$LV4$LV4$N($this, v, eps) {
+	var x$0;
+	var x$1;
+	var x$2;
+	var x$3;
+	return (x$0 = v.x - $this.x, x$0 >= 0 ? x$0 : - x$0) < eps && (x$1 = v.y - $this.y, x$1 >= 0 ? x$1 : - x$1) < eps && (x$2 = v.z - $this.z, x$2 >= 0 ? x$2 : - x$2) < eps && (x$3 = v.w - $this.w, x$3 >= 0 ? x$3 : - x$3) < eps;
 };
 
-V4.equals_0$LV4$LV4$N = V4$equals_0$LV4$LV4$N;
+V4.equals$LV4$LV4$N = V4$equals$LV4$LV4$N;
 
 V4.prototype.add$NNNN = function (x, y, z, w) {
 	this.x += x;
@@ -3122,7 +3178,7 @@ V4.prototype.add$NNNN = function (x, y, z, w) {
 };
 
 
-function V4$add_0$LV4$NNNN($this, x, y, z, w) {
+function V4$add$LV4$NNNN($this, x, y, z, w) {
 	$this.x += x;
 	$this.y += y;
 	$this.z += z;
@@ -3130,7 +3186,7 @@ function V4$add_0$LV4$NNNN($this, x, y, z, w) {
 	return $this;
 };
 
-V4.add_0$LV4$NNNN = V4$add_0$LV4$NNNN;
+V4.add$LV4$NNNN = V4$add$LV4$NNNN;
 
 V4.prototype.add$LV4$ = function (v) {
 	var x$0;
@@ -3149,7 +3205,7 @@ V4.prototype.add$LV4$ = function (v) {
 };
 
 
-function V4$add_0$LV4$LV4$($this, v) {
+function V4$add$LV4$LV4$($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -3165,7 +3221,7 @@ function V4$add_0$LV4$LV4$($this, v) {
 	return $this;
 };
 
-V4.add_0$LV4$LV4$ = V4$add_0$LV4$LV4$;
+V4.add$LV4$LV4$ = V4$add$LV4$LV4$;
 
 V4.prototype.add$AN = function (v) {
 	var x$0;
@@ -3184,7 +3240,7 @@ V4.prototype.add$AN = function (v) {
 };
 
 
-function V4$add_0$LV4$AN($this, v) {
+function V4$add$LV4$AN($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -3200,7 +3256,7 @@ function V4$add_0$LV4$AN($this, v) {
 	return $this;
 };
 
-V4.add_0$LV4$AN = V4$add_0$LV4$AN;
+V4.add$LV4$AN = V4$add$LV4$AN;
 
 V4.prototype.add$LFloat32Array$ = function (v) {
 	var x$0;
@@ -3219,7 +3275,7 @@ V4.prototype.add$LFloat32Array$ = function (v) {
 };
 
 
-function V4$add_0$LV4$LFloat32Array$($this, v) {
+function V4$add$LV4$LFloat32Array$($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -3235,7 +3291,7 @@ function V4$add_0$LV4$LFloat32Array$($this, v) {
 	return $this;
 };
 
-V4.add_0$LV4$LFloat32Array$ = V4$add_0$LV4$LFloat32Array$;
+V4.add$LV4$LFloat32Array$ = V4$add$LV4$LFloat32Array$;
 
 V4.prototype.sub$NNNN = function (x, y, z, w) {
 	this.x -= x;
@@ -3246,7 +3302,7 @@ V4.prototype.sub$NNNN = function (x, y, z, w) {
 };
 
 
-function V4$sub_0$LV4$NNNN($this, x, y, z, w) {
+function V4$sub$LV4$NNNN($this, x, y, z, w) {
 	$this.x -= x;
 	$this.y -= y;
 	$this.z -= z;
@@ -3254,7 +3310,7 @@ function V4$sub_0$LV4$NNNN($this, x, y, z, w) {
 	return $this;
 };
 
-V4.sub_0$LV4$NNNN = V4$sub_0$LV4$NNNN;
+V4.sub$LV4$NNNN = V4$sub$LV4$NNNN;
 
 V4.prototype.sub$LV4$ = function (v) {
 	var x$0;
@@ -3273,7 +3329,7 @@ V4.prototype.sub$LV4$ = function (v) {
 };
 
 
-function V4$sub_0$LV4$LV4$($this, v) {
+function V4$sub$LV4$LV4$($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -3289,7 +3345,7 @@ function V4$sub_0$LV4$LV4$($this, v) {
 	return $this;
 };
 
-V4.sub_0$LV4$LV4$ = V4$sub_0$LV4$LV4$;
+V4.sub$LV4$LV4$ = V4$sub$LV4$LV4$;
 
 V4.prototype.sub$AN = function (v) {
 	var x$0;
@@ -3308,7 +3364,7 @@ V4.prototype.sub$AN = function (v) {
 };
 
 
-function V4$sub_0$LV4$AN($this, v) {
+function V4$sub$LV4$AN($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -3324,7 +3380,7 @@ function V4$sub_0$LV4$AN($this, v) {
 	return $this;
 };
 
-V4.sub_0$LV4$AN = V4$sub_0$LV4$AN;
+V4.sub$LV4$AN = V4$sub$LV4$AN;
 
 V4.prototype.sub$LFloat32Array$ = function (v) {
 	var x$0;
@@ -3343,7 +3399,7 @@ V4.prototype.sub$LFloat32Array$ = function (v) {
 };
 
 
-function V4$sub_0$LV4$LFloat32Array$($this, v) {
+function V4$sub$LV4$LFloat32Array$($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -3359,7 +3415,7 @@ function V4$sub_0$LV4$LFloat32Array$($this, v) {
 	return $this;
 };
 
-V4.sub_0$LV4$LFloat32Array$ = V4$sub_0$LV4$LFloat32Array$;
+V4.sub$LV4$LFloat32Array$ = V4$sub$LV4$LFloat32Array$;
 
 V4.prototype.mul$NNNN = function (x, y, z, w) {
 	this.x *= x;
@@ -3370,7 +3426,7 @@ V4.prototype.mul$NNNN = function (x, y, z, w) {
 };
 
 
-function V4$mul_0$LV4$NNNN($this, x, y, z, w) {
+function V4$mul$LV4$NNNN($this, x, y, z, w) {
 	$this.x *= x;
 	$this.y *= y;
 	$this.z *= z;
@@ -3378,7 +3434,7 @@ function V4$mul_0$LV4$NNNN($this, x, y, z, w) {
 	return $this;
 };
 
-V4.mul_0$LV4$NNNN = V4$mul_0$LV4$NNNN;
+V4.mul$LV4$NNNN = V4$mul$LV4$NNNN;
 
 V4.prototype.mul$LV4$ = function (v) {
 	var x$0;
@@ -3397,7 +3453,7 @@ V4.prototype.mul$LV4$ = function (v) {
 };
 
 
-function V4$mul_0$LV4$LV4$($this, v) {
+function V4$mul$LV4$LV4$($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -3413,7 +3469,7 @@ function V4$mul_0$LV4$LV4$($this, v) {
 	return $this;
 };
 
-V4.mul_0$LV4$LV4$ = V4$mul_0$LV4$LV4$;
+V4.mul$LV4$LV4$ = V4$mul$LV4$LV4$;
 
 V4.prototype.mul$AN = function (v) {
 	var x$0;
@@ -3432,7 +3488,7 @@ V4.prototype.mul$AN = function (v) {
 };
 
 
-function V4$mul_0$LV4$AN($this, v) {
+function V4$mul$LV4$AN($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -3448,7 +3504,7 @@ function V4$mul_0$LV4$AN($this, v) {
 	return $this;
 };
 
-V4.mul_0$LV4$AN = V4$mul_0$LV4$AN;
+V4.mul$LV4$AN = V4$mul$LV4$AN;
 
 V4.prototype.mul$LFloat32Array$ = function (v) {
 	var x$0;
@@ -3467,7 +3523,7 @@ V4.prototype.mul$LFloat32Array$ = function (v) {
 };
 
 
-function V4$mul_0$LV4$LFloat32Array$($this, v) {
+function V4$mul$LV4$LFloat32Array$($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -3483,7 +3539,7 @@ function V4$mul_0$LV4$LFloat32Array$($this, v) {
 	return $this;
 };
 
-V4.mul_0$LV4$LFloat32Array$ = V4$mul_0$LV4$LFloat32Array$;
+V4.mul$LV4$LFloat32Array$ = V4$mul$LV4$LFloat32Array$;
 
 V4.prototype.mul$N = function (s) {
 	this.x *= s;
@@ -3494,7 +3550,7 @@ V4.prototype.mul$N = function (s) {
 };
 
 
-function V4$mul_0$LV4$N($this, s) {
+function V4$mul$LV4$N($this, s) {
 	$this.x *= s;
 	$this.y *= s;
 	$this.z *= s;
@@ -3502,7 +3558,7 @@ function V4$mul_0$LV4$N($this, s) {
 	return $this;
 };
 
-V4.mul_0$LV4$N = V4$mul_0$LV4$N;
+V4.mul$LV4$N = V4$mul$LV4$N;
 
 V4.prototype.neg$ = function () {
 	this.x *= -1;
@@ -3513,7 +3569,7 @@ V4.prototype.neg$ = function () {
 };
 
 
-function V4$neg_0$LV4$($this) {
+function V4$neg$LV4$($this) {
 	$this.x *= -1;
 	$this.y *= -1;
 	$this.z *= -1;
@@ -3521,44 +3577,46 @@ function V4$neg_0$LV4$($this) {
 	return $this;
 };
 
-V4.neg_0$LV4$ = V4$neg_0$LV4$;
+V4.neg$LV4$ = V4$neg$LV4$;
 
 V4.prototype.normalize$ = function () {
 	var l;
-	l = Math.sqrt(V4$len2_0$LV4$(this));
-	return (l > 0 ? V4$mul_0$LV4$N(this, 1 / l) : this);
+	var s$0;
+	l = Math.sqrt(V4$len2$LV4$(this));
+	return (l > 0 ? (s$0 = 1 / l, this.x *= s$0, this.y *= s$0, this.z *= s$0, this.w *= s$0, this) : this);
 };
 
 
-function V4$normalize_0$LV4$($this) {
+function V4$normalize$LV4$($this) {
 	var l;
-	l = Math.sqrt(V4$len2_0$LV4$($this));
-	return (l > 0 ? V4$mul_0$LV4$N($this, 1 / l) : $this);
+	var s$0;
+	l = Math.sqrt(V4$len2$LV4$($this));
+	return (l > 0 ? (s$0 = 1 / l, $this.x *= s$0, $this.y *= s$0, $this.z *= s$0, $this.w *= s$0, $this) : $this);
 };
 
-V4.normalize_0$LV4$ = V4$normalize_0$LV4$;
+V4.normalize$LV4$ = V4$normalize$LV4$;
 
 V4.prototype.dot$LV4$ = function (v) {
 	return this.x * v.x + this.y * v.y + this.z * v.z + this.w * v.w;
 };
 
 
-function V4$dot_0$LV4$LV4$($this, v) {
+function V4$dot$LV4$LV4$($this, v) {
 	return $this.x * v.x + $this.y * v.y + $this.z * v.z + $this.w * v.w;
 };
 
-V4.dot_0$LV4$LV4$ = V4$dot_0$LV4$LV4$;
+V4.dot$LV4$LV4$ = V4$dot$LV4$LV4$;
 
 V4.prototype.len$ = function () {
-	return Math.sqrt(V4$len2_0$LV4$(this));
+	return Math.sqrt(V4$len2$LV4$(this));
 };
 
 
-function V4$len_0$LV4$($this) {
-	return Math.sqrt(V4$len2_0$LV4$($this));
+function V4$len$LV4$($this) {
+	return Math.sqrt(V4$len2$LV4$($this));
 };
 
-V4.len_0$LV4$ = V4$len_0$LV4$;
+V4.len$LV4$ = V4$len$LV4$;
 
 V4.prototype.len2$ = function () {
 	var x;
@@ -3570,7 +3628,7 @@ V4.prototype.len2$ = function () {
 };
 
 
-function V4$len2_0$LV4$($this) {
+function V4$len2$LV4$($this) {
 	var x;
 	var y;
 	var z;
@@ -3579,18 +3637,18 @@ function V4$len2_0$LV4$($this) {
 	return x * x + y * y + z * z + w * w;
 };
 
-V4.len2_0$LV4$ = V4$len2_0$LV4$;
+V4.len2$LV4$ = V4$len2$LV4$;
 
 V4.prototype.dist$LV4$ = function (v) {
-	return Math.sqrt(V4$dist2_0$LV4$LV4$(this, v));
+	return Math.sqrt(V4$dist2$LV4$LV4$(this, v));
 };
 
 
-function V4$dist_0$LV4$LV4$($this, v) {
-	return Math.sqrt(V4$dist2_0$LV4$LV4$($this, v));
+function V4$dist$LV4$LV4$($this, v) {
+	return Math.sqrt(V4$dist2$LV4$LV4$($this, v));
 };
 
-V4.dist_0$LV4$LV4$ = V4$dist_0$LV4$LV4$;
+V4.dist$LV4$LV4$ = V4$dist$LV4$LV4$;
 
 V4.prototype.dist2$LV4$ = function (v) {
 	var x;
@@ -3605,7 +3663,7 @@ V4.prototype.dist2$LV4$ = function (v) {
 };
 
 
-function V4$dist2_0$LV4$LV4$($this, v) {
+function V4$dist2$LV4$LV4$($this, v) {
 	var x;
 	var y;
 	var z;
@@ -3617,7 +3675,7 @@ function V4$dist2_0$LV4$LV4$($this, v) {
 	return x * x + y * y + z * z + w * w;
 };
 
-V4.dist2_0$LV4$LV4$ = V4$dist2_0$LV4$LV4$;
+V4.dist2$LV4$LV4$ = V4$dist2$LV4$LV4$;
 
 V4.prototype.lerp$LV4$LV4$N = function (v0, v1, ratio) {
 	var x$0;
@@ -3632,7 +3690,7 @@ V4.prototype.lerp$LV4$LV4$N = function (v0, v1, ratio) {
 };
 
 
-function V4$lerp_0$LV4$LV4$LV4$N($this, v0, v1, ratio) {
+function V4$lerp$LV4$LV4$LV4$N($this, v0, v1, ratio) {
 	var x$0;
 	var y$0;
 	var z$0;
@@ -3644,7 +3702,7 @@ function V4$lerp_0$LV4$LV4$LV4$N($this, v0, v1, ratio) {
 	return $this;
 };
 
-V4.lerp_0$LV4$LV4$LV4$N = V4$lerp_0$LV4$LV4$LV4$N;
+V4.lerp$LV4$LV4$LV4$N = V4$lerp$LV4$LV4$LV4$N;
 
 V4.prototype.transformBy$LM44$ = function (m) {
 	var x;
@@ -3660,7 +3718,7 @@ V4.prototype.transformBy$LM44$ = function (m) {
 };
 
 
-function V4$transformBy_0$LV4$LM44$($this, m) {
+function V4$transformBy$LV4$LM44$($this, m) {
 	var x;
 	var y;
 	var z;
@@ -3673,7 +3731,7 @@ function V4$transformBy_0$LV4$LM44$($this, m) {
 	return $this;
 };
 
-V4.transformBy_0$LV4$LM44$ = V4$transformBy_0$LV4$LM44$;
+V4.transformBy$LV4$LM44$ = V4$transformBy$LV4$LM44$;
 
 V4.prototype.toString = function () {
 	return "V4" + JSON.stringify([ this.x, this.y, this.z, this.w ]);
@@ -3759,44 +3817,44 @@ M22.prototype.array$ = function () {
 };
 
 
-function M22$array_0$LM22$($this) {
+function M22$array$LM22$($this) {
 	return [ $this.m11, $this.m21, $this.m12, $this.m22 ];
 };
 
-M22.array_0$LM22$ = M22$array_0$LM22$;
+M22.array$LM22$ = M22$array$LM22$;
 
 M22.prototype.transposedArray$ = function () {
 	return [ this.m11, this.m12, this.m21, this.m22 ];
 };
 
 
-function M22$transposedArray_0$LM22$($this) {
+function M22$transposedArray$LM22$($this) {
 	return [ $this.m11, $this.m12, $this.m21, $this.m22 ];
 };
 
-M22.transposedArray_0$LM22$ = M22$transposedArray_0$LM22$;
+M22.transposedArray$LM22$ = M22$transposedArray$LM22$;
 
 M22.prototype.M33$N = function (m22) {
 	return new M33$6(this, m22);
 };
 
 
-function M22$M33_0$LM22$N($this, m22) {
+function M22$M33$LM22$N($this, m22) {
 	return new M33$6($this, m22);
 };
 
-M22.M33_0$LM22$N = M22$M33_0$LM22$N;
+M22.M33$LM22$N = M22$M33$LM22$N;
 
 M22.prototype.M44$NN = function (m22, m33) {
 	return new M44$6(this, m22, m33);
 };
 
 
-function M22$M44_0$LM22$NN($this, m22, m33) {
+function M22$M44$LM22$NN($this, m22, m33) {
 	return new M44$6($this, m22, m33);
 };
 
-M22.M44_0$LM22$NN = M22$M44_0$LM22$NN;
+M22.M44$LM22$NN = M22$M44$LM22$NN;
 
 M22.prototype.set$LM33$ = function (m) {
 	this.m11 = m.m11;
@@ -3807,7 +3865,7 @@ M22.prototype.set$LM33$ = function (m) {
 };
 
 
-function M22$set_0$LM22$LM33$($this, m) {
+function M22$set$LM22$LM33$($this, m) {
 	$this.m11 = m.m11;
 	$this.m21 = m.m21;
 	$this.m12 = m.m12;
@@ -3815,7 +3873,7 @@ function M22$set_0$LM22$LM33$($this, m) {
 	return $this;
 };
 
-M22.set_0$LM22$LM33$ = M22$set_0$LM22$LM33$;
+M22.set$LM22$LM33$ = M22$set$LM22$LM33$;
 
 M22.prototype.set$LM44$ = function (m) {
 	this.m11 = m.m11;
@@ -3826,7 +3884,7 @@ M22.prototype.set$LM44$ = function (m) {
 };
 
 
-function M22$set_0$LM22$LM44$($this, m) {
+function M22$set$LM22$LM44$($this, m) {
 	$this.m11 = m.m11;
 	$this.m21 = m.m21;
 	$this.m12 = m.m12;
@@ -3834,18 +3892,18 @@ function M22$set_0$LM22$LM44$($this, m) {
 	return $this;
 };
 
-M22.set_0$LM22$LM44$ = M22$set_0$LM22$LM44$;
+M22.set$LM22$LM44$ = M22$set$LM22$LM44$;
 
 M22.prototype.clone$ = function () {
 	return new M22$0(this);
 };
 
 
-function M22$clone_0$LM22$($this) {
+function M22$clone$LM22$($this) {
 	return new M22$0($this);
 };
 
-M22.clone_0$LM22$ = M22$clone_0$LM22$;
+M22.clone$LM22$ = M22$clone$LM22$;
 
 M22.prototype.setZero$ = function () {
 	this.m11 = this.m22 = 0;
@@ -3854,13 +3912,13 @@ M22.prototype.setZero$ = function () {
 };
 
 
-function M22$setZero_0$LM22$($this) {
+function M22$setZero$LM22$($this) {
 	$this.m11 = $this.m22 = 0;
 	$this.m21 = $this.m12 = 0;
 	return $this;
 };
 
-M22.setZero_0$LM22$ = M22$setZero_0$LM22$;
+M22.setZero$LM22$ = M22$setZero$LM22$;
 
 M22.prototype.setIdentity$ = function () {
 	this.m11 = this.m22 = 1;
@@ -3869,13 +3927,13 @@ M22.prototype.setIdentity$ = function () {
 };
 
 
-function M22$setIdentity_0$LM22$($this) {
+function M22$setIdentity$LM22$($this) {
 	$this.m11 = $this.m22 = 1;
 	$this.m21 = $this.m12 = 0;
 	return $this;
 };
 
-M22.setIdentity_0$LM22$ = M22$setIdentity_0$LM22$;
+M22.setIdentity$LM22$ = M22$setIdentity$LM22$;
 
 function M22$zero$() {
 	var this$0;
@@ -3906,7 +3964,7 @@ M22.prototype.set$NNNN = function (m11, m12, m21, m22) {
 };
 
 
-function M22$set_0$LM22$NNNN($this, m11, m12, m21, m22) {
+function M22$set$LM22$NNNN($this, m11, m12, m21, m22) {
 	$this.m11 = m11;
 	$this.m21 = m21;
 	$this.m12 = m12;
@@ -3914,7 +3972,7 @@ function M22$set_0$LM22$NNNN($this, m11, m12, m21, m22) {
 	return $this;
 };
 
-M22.set_0$LM22$NNNN = M22$set_0$LM22$NNNN;
+M22.set$LM22$NNNN = M22$set$LM22$NNNN;
 
 M22.prototype.set$LV2$LV2$ = function (v0, v1) {
 	this.m11 = v0.x;
@@ -3925,7 +3983,7 @@ M22.prototype.set$LV2$LV2$ = function (v0, v1) {
 };
 
 
-function M22$set_0$LM22$LV2$LV2$($this, v0, v1) {
+function M22$set$LM22$LV2$LV2$($this, v0, v1) {
 	$this.m11 = v0.x;
 	$this.m21 = v0.y;
 	$this.m12 = v1.x;
@@ -3933,7 +3991,7 @@ function M22$set_0$LM22$LV2$LV2$($this, v0, v1) {
 	return $this;
 };
 
-M22.set_0$LM22$LV2$LV2$ = M22$set_0$LM22$LV2$LV2$;
+M22.set$LM22$LV2$LV2$ = M22$set$LM22$LV2$LV2$;
 
 M22.prototype.set$LM22$ = function (m) {
 	this.m11 = m.m11;
@@ -3944,7 +4002,7 @@ M22.prototype.set$LM22$ = function (m) {
 };
 
 
-function M22$set_0$LM22$LM22$($this, m) {
+function M22$set$LM22$LM22$($this, m) {
 	$this.m11 = m.m11;
 	$this.m21 = m.m21;
 	$this.m12 = m.m12;
@@ -3952,7 +4010,7 @@ function M22$set_0$LM22$LM22$($this, m) {
 	return $this;
 };
 
-M22.set_0$LM22$LM22$ = M22$set_0$LM22$LM22$;
+M22.set$LM22$LM22$ = M22$set$LM22$LM22$;
 
 M22.prototype.set$AN = function (m) {
 	this.m11 = m[0];
@@ -3963,7 +4021,7 @@ M22.prototype.set$AN = function (m) {
 };
 
 
-function M22$set_0$LM22$AN($this, m) {
+function M22$set$LM22$AN($this, m) {
 	$this.m11 = m[0];
 	$this.m21 = m[1];
 	$this.m12 = m[2];
@@ -3971,7 +4029,7 @@ function M22$set_0$LM22$AN($this, m) {
 	return $this;
 };
 
-M22.set_0$LM22$AN = M22$set_0$LM22$AN;
+M22.set$LM22$AN = M22$set$LM22$AN;
 
 M22.prototype.set$LFloat32Array$ = function (m) {
 	this.m11 = m[0];
@@ -3982,7 +4040,7 @@ M22.prototype.set$LFloat32Array$ = function (m) {
 };
 
 
-function M22$set_0$LM22$LFloat32Array$($this, m) {
+function M22$set$LM22$LFloat32Array$($this, m) {
 	$this.m11 = m[0];
 	$this.m21 = m[1];
 	$this.m12 = m[2];
@@ -3990,7 +4048,7 @@ function M22$set_0$LM22$LFloat32Array$($this, m) {
 	return $this;
 };
 
-M22.set_0$LM22$LFloat32Array$ = M22$set_0$LM22$LFloat32Array$;
+M22.set$LM22$LFloat32Array$ = M22$set$LM22$LFloat32Array$;
 
 M22.prototype.set$N = function (s) {
 	this.m11 = this.m22 = s;
@@ -3999,43 +4057,43 @@ M22.prototype.set$N = function (s) {
 };
 
 
-function M22$set_0$LM22$N($this, s) {
+function M22$set$LM22$N($this, s) {
 	$this.m11 = $this.m22 = s;
 	$this.m21 = $this.m12 = 0;
 	return $this;
 };
 
-M22.set_0$LM22$N = M22$set_0$LM22$N;
+M22.set$LM22$N = M22$set$LM22$N;
 
 M22.prototype.equals$LM22$ = function (m) {
-	return M22$equals_0$LM22$LM22$N(this, m, 0.000001);
+	return M22$equals$LM22$LM22$N(this, m, 0.000001);
 };
 
 
-function M22$equals_0$LM22$LM22$($this, m) {
-	return M22$equals_0$LM22$LM22$N($this, m, 0.000001);
+function M22$equals$LM22$LM22$($this, m) {
+	return M22$equals$LM22$LM22$N($this, m, 0.000001);
 };
 
-M22.equals_0$LM22$LM22$ = M22$equals_0$LM22$LM22$;
+M22.equals$LM22$LM22$ = M22$equals$LM22$LM22$;
 
 M22.prototype.equals$LM22$N = function (m, eps) {
-	var abs$x$0;
-	var abs$x$1;
-	var abs$x$2;
-	var abs$x$3;
-	return ((abs$x$0 = this.m11 - m.m11, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) >= eps ? false : (abs$x$1 = this.m21 - m.m21, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) >= eps ? false : (abs$x$2 = this.m12 - m.m12, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) >= eps ? false : (abs$x$3 = this.m22 - m.m22, abs$x$3 >= 0 ? abs$x$3 : - abs$x$3) >= eps ? false : true);
+	var x$0;
+	var x$1;
+	var x$2;
+	var x$3;
+	return ((x$0 = this.m11 - m.m11, x$0 >= 0 ? x$0 : - x$0) >= eps ? false : (x$1 = this.m21 - m.m21, x$1 >= 0 ? x$1 : - x$1) >= eps ? false : (x$2 = this.m12 - m.m12, x$2 >= 0 ? x$2 : - x$2) >= eps ? false : (x$3 = this.m22 - m.m22, x$3 >= 0 ? x$3 : - x$3) >= eps ? false : true);
 };
 
 
-function M22$equals_0$LM22$LM22$N($this, m, eps) {
-	var abs$x$0;
-	var abs$x$1;
-	var abs$x$2;
-	var abs$x$3;
-	return ((abs$x$0 = $this.m11 - m.m11, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) >= eps ? false : (abs$x$1 = $this.m21 - m.m21, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) >= eps ? false : (abs$x$2 = $this.m12 - m.m12, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) >= eps ? false : (abs$x$3 = $this.m22 - m.m22, abs$x$3 >= 0 ? abs$x$3 : - abs$x$3) >= eps ? false : true);
+function M22$equals$LM22$LM22$N($this, m, eps) {
+	var x$0;
+	var x$1;
+	var x$2;
+	var x$3;
+	return ((x$0 = $this.m11 - m.m11, x$0 >= 0 ? x$0 : - x$0) >= eps ? false : (x$1 = $this.m21 - m.m21, x$1 >= 0 ? x$1 : - x$1) >= eps ? false : (x$2 = $this.m12 - m.m12, x$2 >= 0 ? x$2 : - x$2) >= eps ? false : (x$3 = $this.m22 - m.m22, x$3 >= 0 ? x$3 : - x$3) >= eps ? false : true);
 };
 
-M22.equals_0$LM22$LM22$N = M22$equals_0$LM22$LM22$N;
+M22.equals$LM22$LM22$N = M22$equals$LM22$LM22$N;
 
 M22.prototype.add$LM22$ = function (m) {
 	this.m11 += m.m11;
@@ -4046,7 +4104,7 @@ M22.prototype.add$LM22$ = function (m) {
 };
 
 
-function M22$add_0$LM22$LM22$($this, m) {
+function M22$add$LM22$LM22$($this, m) {
 	$this.m11 += m.m11;
 	$this.m21 += m.m21;
 	$this.m12 += m.m12;
@@ -4054,7 +4112,7 @@ function M22$add_0$LM22$LM22$($this, m) {
 	return $this;
 };
 
-M22.add_0$LM22$LM22$ = M22$add_0$LM22$LM22$;
+M22.add$LM22$LM22$ = M22$add$LM22$LM22$;
 
 M22.prototype.sub$LM22$ = function (m) {
 	this.m11 -= m.m11;
@@ -4065,7 +4123,7 @@ M22.prototype.sub$LM22$ = function (m) {
 };
 
 
-function M22$sub_0$LM22$LM22$($this, m) {
+function M22$sub$LM22$LM22$($this, m) {
 	$this.m11 -= m.m11;
 	$this.m21 -= m.m21;
 	$this.m12 -= m.m12;
@@ -4073,18 +4131,18 @@ function M22$sub_0$LM22$LM22$($this, m) {
 	return $this;
 };
 
-M22.sub_0$LM22$LM22$ = M22$sub_0$LM22$LM22$;
+M22.sub$LM22$LM22$ = M22$sub$LM22$LM22$;
 
 M22.prototype.mul$LM22$ = function (m) {
-	return M22$mul_0$LM22$LM22$LM22$(this, new M22$0(this), m);
+	return M22$mul$LM22$LM22$LM22$(this, new M22$0(this), m);
 };
 
 
-function M22$mul_0$LM22$LM22$($this, m) {
-	return M22$mul_0$LM22$LM22$LM22$($this, new M22$0($this), m);
+function M22$mul$LM22$LM22$($this, m) {
+	return M22$mul$LM22$LM22$LM22$($this, new M22$0($this), m);
 };
 
-M22.mul_0$LM22$LM22$ = M22$mul_0$LM22$LM22$;
+M22.mul$LM22$LM22$ = M22$mul$LM22$LM22$;
 
 M22.prototype.mul$LM22$LM22$ = function (m0, m1) {
 	var m11$0;
@@ -4103,7 +4161,7 @@ M22.prototype.mul$LM22$LM22$ = function (m0, m1) {
 };
 
 
-function M22$mul_0$LM22$LM22$LM22$($this, m0, m1) {
+function M22$mul$LM22$LM22$LM22$($this, m0, m1) {
 	var m11$0;
 	var m21$0;
 	var m11$1;
@@ -4119,7 +4177,7 @@ function M22$mul_0$LM22$LM22$LM22$($this, m0, m1) {
 	return $this;
 };
 
-M22.mul_0$LM22$LM22$LM22$ = M22$mul_0$LM22$LM22$LM22$;
+M22.mul$LM22$LM22$LM22$ = M22$mul$LM22$LM22$LM22$;
 
 M22.prototype.transpose$ = function () {
 	var m12;
@@ -4130,7 +4188,7 @@ M22.prototype.transpose$ = function () {
 };
 
 
-function M22$transpose_0$LM22$($this) {
+function M22$transpose$LM22$($this) {
 	var m12;
 	m12 = $this.m12;
 	$this.m12 = $this.m21;
@@ -4138,7 +4196,7 @@ function M22$transpose_0$LM22$($this) {
 	return $this;
 };
 
-M22.transpose_0$LM22$ = M22$transpose_0$LM22$;
+M22.transpose$LM22$ = M22$transpose$LM22$;
 
 M22.prototype.transpose$LM22$ = function (m) {
 	this.m11 = m.m11;
@@ -4149,7 +4207,7 @@ M22.prototype.transpose$LM22$ = function (m) {
 };
 
 
-function M22$transpose_0$LM22$LM22$($this, m) {
+function M22$transpose$LM22$LM22$($this, m) {
 	$this.m11 = m.m11;
 	$this.m21 = m.m12;
 	$this.m12 = m.m21;
@@ -4157,18 +4215,18 @@ function M22$transpose_0$LM22$LM22$($this, m) {
 	return $this;
 };
 
-M22.transpose_0$LM22$LM22$ = M22$transpose_0$LM22$LM22$;
+M22.transpose$LM22$LM22$ = M22$transpose$LM22$LM22$;
 
 M22.prototype.det$ = function () {
 	return this.m11 * this.m22 - this.m21 * this.m12;
 };
 
 
-function M22$det_0$LM22$($this) {
+function M22$det$LM22$($this) {
 	return $this.m11 * $this.m22 - $this.m21 * $this.m12;
 };
 
-M22.det_0$LM22$ = M22$det_0$LM22$;
+M22.det$LM22$ = M22$det$LM22$;
 
 M22.prototype.inverse$ = function () {
 	var d;
@@ -4194,7 +4252,7 @@ M22.prototype.inverse$ = function () {
 };
 
 
-function M22$inverse_0$LM22$($this) {
+function M22$inverse$LM22$($this) {
 	var d;
 	var invDet;
 	var org$m11$0;
@@ -4217,7 +4275,7 @@ function M22$inverse_0$LM22$($this) {
 	return $this;
 };
 
-M22.inverse_0$LM22$ = M22$inverse_0$LM22$;
+M22.inverse$LM22$ = M22$inverse$LM22$;
 
 M22.prototype.setScale$N = function (s) {
 	this.m11 = s;
@@ -4227,14 +4285,14 @@ M22.prototype.setScale$N = function (s) {
 };
 
 
-function M22$setScale_0$LM22$N($this, s) {
+function M22$setScale$LM22$N($this, s) {
 	$this.m11 = s;
 	$this.m21 = $this.m12 = 0;
 	$this.m22 = s;
 	return $this;
 };
 
-M22.setScale_0$LM22$N = M22$setScale_0$LM22$N;
+M22.setScale$LM22$N = M22$setScale$LM22$N;
 
 M22.prototype.setScale$NN = function (x, y) {
 	this.m11 = x;
@@ -4244,14 +4302,14 @@ M22.prototype.setScale$NN = function (x, y) {
 };
 
 
-function M22$setScale_0$LM22$NN($this, x, y) {
+function M22$setScale$LM22$NN($this, x, y) {
 	$this.m11 = x;
 	$this.m21 = $this.m12 = 0;
 	$this.m22 = y;
 	return $this;
 };
 
-M22.setScale_0$LM22$NN = M22$setScale_0$LM22$NN;
+M22.setScale$LM22$NN = M22$setScale$LM22$NN;
 
 M22.prototype.setScale$LV2$ = function (v) {
 	var x$0;
@@ -4265,7 +4323,7 @@ M22.prototype.setScale$LV2$ = function (v) {
 };
 
 
-function M22$setScale_0$LM22$LV2$($this, v) {
+function M22$setScale$LM22$LV2$($this, v) {
 	var x$0;
 	var y$0;
 	x$0 = v.x;
@@ -4276,7 +4334,7 @@ function M22$setScale_0$LM22$LV2$($this, v) {
 	return $this;
 };
 
-M22.setScale_0$LM22$LV2$ = M22$setScale_0$LM22$LV2$;
+M22.setScale$LM22$LV2$ = M22$setScale$LM22$LV2$;
 
 M22.prototype.setScale$AN = function (v) {
 	var x$0;
@@ -4290,7 +4348,7 @@ M22.prototype.setScale$AN = function (v) {
 };
 
 
-function M22$setScale_0$LM22$AN($this, v) {
+function M22$setScale$LM22$AN($this, v) {
 	var x$0;
 	var y$0;
 	x$0 = v[0];
@@ -4301,7 +4359,7 @@ function M22$setScale_0$LM22$AN($this, v) {
 	return $this;
 };
 
-M22.setScale_0$LM22$AN = M22$setScale_0$LM22$AN;
+M22.setScale$LM22$AN = M22$setScale$LM22$AN;
 
 M22.prototype.setScale$LFloat32Array$ = function (v) {
 	var x$0;
@@ -4315,7 +4373,7 @@ M22.prototype.setScale$LFloat32Array$ = function (v) {
 };
 
 
-function M22$setScale_0$LM22$LFloat32Array$($this, v) {
+function M22$setScale$LM22$LFloat32Array$($this, v) {
 	var x$0;
 	var y$0;
 	x$0 = v[0];
@@ -4326,7 +4384,7 @@ function M22$setScale_0$LM22$LFloat32Array$($this, v) {
 	return $this;
 };
 
-M22.setScale_0$LM22$LFloat32Array$ = M22$setScale_0$LM22$LFloat32Array$;
+M22.setScale$LM22$LFloat32Array$ = M22$setScale$LM22$LFloat32Array$;
 
 M22.prototype.setRotation$N = function (rad) {
 	var c;
@@ -4340,7 +4398,7 @@ M22.prototype.setRotation$N = function (rad) {
 };
 
 
-function M22$setRotation_0$LM22$N($this, rad) {
+function M22$setRotation$LM22$N($this, rad) {
 	var c;
 	var s;
 	(c = Math.cos(rad), s = Math.sin(rad));
@@ -4351,7 +4409,7 @@ function M22$setRotation_0$LM22$N($this, rad) {
 	return $this;
 };
 
-M22.setRotation_0$LM22$N = M22$setRotation_0$LM22$N;
+M22.setRotation$LM22$N = M22$setRotation$LM22$N;
 
 M22.prototype.toString = function () {
 	return "M22" + JSON.stringify([ this.m11, this.m21, this.m12, this.m22 ]);
@@ -4380,7 +4438,7 @@ function M33$0(m) {
 	this.m13 = 0;
 	this.m23 = 0;
 	this.m33 = 0;
-	M33$set_0$LM33$LM33$(this, m);
+	M33$set$LM33$LM33$(this, m);
 };
 
 function M33$1(m) {
@@ -4393,7 +4451,7 @@ function M33$1(m) {
 	this.m13 = 0;
 	this.m23 = 0;
 	this.m33 = 0;
-	M33$set_0$LM33$AN(this, m);
+	M33$set$LM33$AN(this, m);
 };
 
 function M33$2(m) {
@@ -4406,7 +4464,7 @@ function M33$2(m) {
 	this.m13 = 0;
 	this.m23 = 0;
 	this.m33 = 0;
-	M33$set_0$LM33$LFloat32Array$(this, m);
+	M33$set$LM33$LFloat32Array$(this, m);
 };
 
 function M33$3(m11, m12, m13, m21, m22, m23, m31, m32, m33) {
@@ -4431,7 +4489,7 @@ function M33$4(v0, v1, v2) {
 	this.m13 = 0;
 	this.m23 = 0;
 	this.m33 = 0;
-	M33$set_0$LM33$LV3$LV3$LV3$(this, v0, v1, v2);
+	M33$set$LM33$LV3$LV3$LV3$(this, v0, v1, v2);
 };
 
 function M33$5(s) {
@@ -4444,7 +4502,7 @@ function M33$5(s) {
 	this.m13 = 0;
 	this.m23 = 0;
 	this.m33 = 0;
-	M33$set_0$LM33$N(this, s);
+	M33$set$LM33$N(this, s);
 };
 
 function M33$6(m, m22) {
@@ -4457,7 +4515,7 @@ function M33$6(m, m22) {
 	this.m13 = 0;
 	this.m23 = 0;
 	this.m33 = 0;
-	M33$set_0$LM33$LM22$N(this, m, m22);
+	M33$set$LM33$LM22$N(this, m, m22);
 };
 
 function M33$7(m) {
@@ -4470,7 +4528,7 @@ function M33$7(m) {
 	this.m13 = 0;
 	this.m23 = 0;
 	this.m33 = 0;
-	M33$set_0$LM33$LM44$(this, m);
+	M33$set$LM33$LM44$(this, m);
 };
 
 $__jsx_extend([M33, M33$0, M33$1, M33$2, M33$3, M33$4, M33$5, M33$6, M33$7], Object);
@@ -4479,33 +4537,33 @@ M33.prototype.array$ = function () {
 };
 
 
-function M33$array_0$LM33$($this) {
+function M33$array$LM33$($this) {
 	return [ $this.m11, $this.m21, $this.m31, $this.m12, $this.m22, $this.m32, $this.m13, $this.m23, $this.m33 ];
 };
 
-M33.array_0$LM33$ = M33$array_0$LM33$;
+M33.array$LM33$ = M33$array$LM33$;
 
 M33.prototype.M22$ = function () {
 	return new M22$6(this);
 };
 
 
-function M33$M22_0$LM33$($this) {
+function M33$M22$LM33$($this) {
 	return new M22$6($this);
 };
 
-M33.M22_0$LM33$ = M33$M22_0$LM33$;
+M33.M22$LM33$ = M33$M22$LM33$;
 
 M33.prototype.M44$N = function (m33) {
 	return new M44$7(this, m33);
 };
 
 
-function M33$M44_0$LM33$N($this, m33) {
+function M33$M44$LM33$N($this, m33) {
 	return new M44$7($this, m33);
 };
 
-M33.M44_0$LM33$N = M33$M44_0$LM33$N;
+M33.M44$LM33$N = M33$M44$LM33$N;
 
 M33.prototype.set$LM22$N = function (m, m22) {
 	this.m11 = m.m11;
@@ -4521,7 +4579,7 @@ M33.prototype.set$LM22$N = function (m, m22) {
 };
 
 
-function M33$set_0$LM33$LM22$N($this, m, m22) {
+function M33$set$LM33$LM22$N($this, m, m22) {
 	$this.m11 = m.m11;
 	$this.m21 = m.m21;
 	$this.m31 = 0;
@@ -4534,7 +4592,7 @@ function M33$set_0$LM33$LM22$N($this, m, m22) {
 	return $this;
 };
 
-M33.set_0$LM33$LM22$N = M33$set_0$LM33$LM22$N;
+M33.set$LM33$LM22$N = M33$set$LM33$LM22$N;
 
 M33.prototype.set$LM44$ = function (m) {
 	this.m11 = m.m11;
@@ -4550,7 +4608,7 @@ M33.prototype.set$LM44$ = function (m) {
 };
 
 
-function M33$set_0$LM33$LM44$($this, m) {
+function M33$set$LM33$LM44$($this, m) {
 	$this.m11 = m.m11;
 	$this.m21 = m.m21;
 	$this.m31 = m.m31;
@@ -4563,49 +4621,53 @@ function M33$set_0$LM33$LM44$($this, m) {
 	return $this;
 };
 
-M33.set_0$LM33$LM44$ = M33$set_0$LM33$LM44$;
+M33.set$LM33$LM44$ = M33$set$LM33$LM44$;
 
 M33.prototype.clone$ = function () {
 	return new M33$0(this);
 };
 
 
-function M33$clone_0$LM33$($this) {
+function M33$clone$LM33$($this) {
 	return new M33$0($this);
 };
 
-M33.clone_0$LM33$ = M33$clone_0$LM33$;
+M33.clone$LM33$ = M33$clone$LM33$;
 
 M33.prototype.setZero$ = function () {
-	return M33$set_0$LM33$N(this, 0);
+	return M33$set$LM33$N(this, 0);
 };
 
 
-function M33$setZero_0$LM33$($this) {
-	return M33$set_0$LM33$N($this, 0);
+function M33$setZero$LM33$($this) {
+	return M33$set$LM33$N($this, 0);
 };
 
-M33.setZero_0$LM33$ = M33$setZero_0$LM33$;
+M33.setZero$LM33$ = M33$setZero$LM33$;
 
 M33.prototype.setIdentity$ = function () {
-	return M33$set_0$LM33$N(this, 1);
+	return M33$set$LM33$N(this, 1);
 };
 
 
-function M33$setIdentity_0$LM33$($this) {
-	return M33$set_0$LM33$N($this, 1);
+function M33$setIdentity$LM33$($this) {
+	return M33$set$LM33$N($this, 1);
 };
 
-M33.setIdentity_0$LM33$ = M33$setIdentity_0$LM33$;
+M33.setIdentity$LM33$ = M33$setIdentity$LM33$;
 
 function M33$zero$() {
-	return M33$set_0$LM33$N(new M33(), 0);
+	var this$0;
+	this$0 = new M33();
+	return M33$set$LM33$N(this$0, 0);
 };
 
 M33.zero$ = M33$zero$;
 
 function M33$identity$() {
-	return M33$set_0$LM33$N(new M33(), 1);
+	var this$0;
+	this$0 = new M33();
+	return M33$set$LM33$N(this$0, 1);
 };
 
 M33.identity$ = M33$identity$;
@@ -4624,7 +4686,7 @@ M33.prototype.set$NNNNNNNNN = function (m11, m12, m13, m21, m22, m23, m31, m32, 
 };
 
 
-function M33$set_0$LM33$NNNNNNNNN($this, m11, m12, m13, m21, m22, m23, m31, m32, m33) {
+function M33$set$LM33$NNNNNNNNN($this, m11, m12, m13, m21, m22, m23, m31, m32, m33) {
 	$this.m11 = m11;
 	$this.m21 = m21;
 	$this.m31 = m31;
@@ -4637,7 +4699,7 @@ function M33$set_0$LM33$NNNNNNNNN($this, m11, m12, m13, m21, m22, m23, m31, m32,
 	return $this;
 };
 
-M33.set_0$LM33$NNNNNNNNN = M33$set_0$LM33$NNNNNNNNN;
+M33.set$LM33$NNNNNNNNN = M33$set$LM33$NNNNNNNNN;
 
 M33.prototype.set$LV3$LV3$LV3$ = function (v0, v1, v2) {
 	this.m11 = v0.x;
@@ -4653,7 +4715,7 @@ M33.prototype.set$LV3$LV3$LV3$ = function (v0, v1, v2) {
 };
 
 
-function M33$set_0$LM33$LV3$LV3$LV3$($this, v0, v1, v2) {
+function M33$set$LM33$LV3$LV3$LV3$($this, v0, v1, v2) {
 	$this.m11 = v0.x;
 	$this.m21 = v0.y;
 	$this.m31 = v0.z;
@@ -4666,7 +4728,7 @@ function M33$set_0$LM33$LV3$LV3$LV3$($this, v0, v1, v2) {
 	return $this;
 };
 
-M33.set_0$LM33$LV3$LV3$LV3$ = M33$set_0$LM33$LV3$LV3$LV3$;
+M33.set$LM33$LV3$LV3$LV3$ = M33$set$LM33$LV3$LV3$LV3$;
 
 M33.prototype.set$LM33$ = function (m) {
 	this.m11 = m.m11;
@@ -4682,7 +4744,7 @@ M33.prototype.set$LM33$ = function (m) {
 };
 
 
-function M33$set_0$LM33$LM33$($this, m) {
+function M33$set$LM33$LM33$($this, m) {
 	$this.m11 = m.m11;
 	$this.m21 = m.m21;
 	$this.m31 = m.m31;
@@ -4695,7 +4757,7 @@ function M33$set_0$LM33$LM33$($this, m) {
 	return $this;
 };
 
-M33.set_0$LM33$LM33$ = M33$set_0$LM33$LM33$;
+M33.set$LM33$LM33$ = M33$set$LM33$LM33$;
 
 M33.prototype.set$AN = function (m) {
 	this.m11 = m[0];
@@ -4711,7 +4773,7 @@ M33.prototype.set$AN = function (m) {
 };
 
 
-function M33$set_0$LM33$AN($this, m) {
+function M33$set$LM33$AN($this, m) {
 	$this.m11 = m[0];
 	$this.m21 = m[1];
 	$this.m31 = m[2];
@@ -4724,7 +4786,7 @@ function M33$set_0$LM33$AN($this, m) {
 	return $this;
 };
 
-M33.set_0$LM33$AN = M33$set_0$LM33$AN;
+M33.set$LM33$AN = M33$set$LM33$AN;
 
 M33.prototype.set$LFloat32Array$ = function (m) {
 	this.m11 = m[0];
@@ -4740,7 +4802,7 @@ M33.prototype.set$LFloat32Array$ = function (m) {
 };
 
 
-function M33$set_0$LM33$LFloat32Array$($this, m) {
+function M33$set$LM33$LFloat32Array$($this, m) {
 	$this.m11 = m[0];
 	$this.m21 = m[1];
 	$this.m31 = m[2];
@@ -4753,7 +4815,7 @@ function M33$set_0$LM33$LFloat32Array$($this, m) {
 	return $this;
 };
 
-M33.set_0$LM33$LFloat32Array$ = M33$set_0$LM33$LFloat32Array$;
+M33.set$LM33$LFloat32Array$ = M33$set$LM33$LFloat32Array$;
 
 M33.prototype.set$N = function (s) {
 	this.m11 = this.m22 = this.m33 = s;
@@ -4762,53 +4824,53 @@ M33.prototype.set$N = function (s) {
 };
 
 
-function M33$set_0$LM33$N($this, s) {
+function M33$set$LM33$N($this, s) {
 	$this.m11 = $this.m22 = $this.m33 = s;
 	$this.m21 = $this.m31 = $this.m12 = $this.m32 = $this.m13 = $this.m23 = 0;
 	return $this;
 };
 
-M33.set_0$LM33$N = M33$set_0$LM33$N;
+M33.set$LM33$N = M33$set$LM33$N;
 
 M33.prototype.equals$LM33$ = function (m) {
-	return M33$equals_0$LM33$LM33$N(this, m, 0.000001);
+	return M33$equals$LM33$LM33$N(this, m, 0.000001);
 };
 
 
-function M33$equals_0$LM33$LM33$($this, m) {
-	return M33$equals_0$LM33$LM33$N($this, m, 0.000001);
+function M33$equals$LM33$LM33$($this, m) {
+	return M33$equals$LM33$LM33$N($this, m, 0.000001);
 };
 
-M33.equals_0$LM33$LM33$ = M33$equals_0$LM33$LM33$;
+M33.equals$LM33$LM33$ = M33$equals$LM33$LM33$;
 
 M33.prototype.equals$LM33$N = function (m, eps) {
-	var abs$x$0;
-	var abs$x$1;
-	var abs$x$2;
-	var abs$x$3;
-	var abs$x$4;
-	var abs$x$5;
-	var abs$x$6;
-	var abs$x$7;
-	var abs$x$8;
-	return ((abs$x$0 = this.m11 - m.m11, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) >= eps ? false : (abs$x$1 = this.m21 - m.m21, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) >= eps ? false : (abs$x$2 = this.m31 - m.m31, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) >= eps ? false : (abs$x$3 = this.m12 - m.m12, abs$x$3 >= 0 ? abs$x$3 : - abs$x$3) >= eps ? false : (abs$x$4 = this.m22 - m.m22, abs$x$4 >= 0 ? abs$x$4 : - abs$x$4) >= eps ? false : (abs$x$5 = this.m32 - m.m32, abs$x$5 >= 0 ? abs$x$5 : - abs$x$5) >= eps ? false : (abs$x$6 = this.m13 - m.m13, abs$x$6 >= 0 ? abs$x$6 : - abs$x$6) >= eps ? false : (abs$x$7 = this.m23 - m.m23, abs$x$7 >= 0 ? abs$x$7 : - abs$x$7) >= eps ? false : (abs$x$8 = this.m33 - m.m33, abs$x$8 >= 0 ? abs$x$8 : - abs$x$8) >= eps ? false : true);
+	var x$0;
+	var x$1;
+	var x$2;
+	var x$3;
+	var x$4;
+	var x$5;
+	var x$6;
+	var x$7;
+	var x$8;
+	return ((x$0 = this.m11 - m.m11, x$0 >= 0 ? x$0 : - x$0) >= eps ? false : (x$1 = this.m21 - m.m21, x$1 >= 0 ? x$1 : - x$1) >= eps ? false : (x$2 = this.m31 - m.m31, x$2 >= 0 ? x$2 : - x$2) >= eps ? false : (x$3 = this.m12 - m.m12, x$3 >= 0 ? x$3 : - x$3) >= eps ? false : (x$4 = this.m22 - m.m22, x$4 >= 0 ? x$4 : - x$4) >= eps ? false : (x$5 = this.m32 - m.m32, x$5 >= 0 ? x$5 : - x$5) >= eps ? false : (x$6 = this.m13 - m.m13, x$6 >= 0 ? x$6 : - x$6) >= eps ? false : (x$7 = this.m23 - m.m23, x$7 >= 0 ? x$7 : - x$7) >= eps ? false : (x$8 = this.m33 - m.m33, x$8 >= 0 ? x$8 : - x$8) >= eps ? false : true);
 };
 
 
-function M33$equals_0$LM33$LM33$N($this, m, eps) {
-	var abs$x$0;
-	var abs$x$1;
-	var abs$x$2;
-	var abs$x$3;
-	var abs$x$4;
-	var abs$x$5;
-	var abs$x$6;
-	var abs$x$7;
-	var abs$x$8;
-	return ((abs$x$0 = $this.m11 - m.m11, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) >= eps ? false : (abs$x$1 = $this.m21 - m.m21, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) >= eps ? false : (abs$x$2 = $this.m31 - m.m31, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) >= eps ? false : (abs$x$3 = $this.m12 - m.m12, abs$x$3 >= 0 ? abs$x$3 : - abs$x$3) >= eps ? false : (abs$x$4 = $this.m22 - m.m22, abs$x$4 >= 0 ? abs$x$4 : - abs$x$4) >= eps ? false : (abs$x$5 = $this.m32 - m.m32, abs$x$5 >= 0 ? abs$x$5 : - abs$x$5) >= eps ? false : (abs$x$6 = $this.m13 - m.m13, abs$x$6 >= 0 ? abs$x$6 : - abs$x$6) >= eps ? false : (abs$x$7 = $this.m23 - m.m23, abs$x$7 >= 0 ? abs$x$7 : - abs$x$7) >= eps ? false : (abs$x$8 = $this.m33 - m.m33, abs$x$8 >= 0 ? abs$x$8 : - abs$x$8) >= eps ? false : true);
+function M33$equals$LM33$LM33$N($this, m, eps) {
+	var x$0;
+	var x$1;
+	var x$2;
+	var x$3;
+	var x$4;
+	var x$5;
+	var x$6;
+	var x$7;
+	var x$8;
+	return ((x$0 = $this.m11 - m.m11, x$0 >= 0 ? x$0 : - x$0) >= eps ? false : (x$1 = $this.m21 - m.m21, x$1 >= 0 ? x$1 : - x$1) >= eps ? false : (x$2 = $this.m31 - m.m31, x$2 >= 0 ? x$2 : - x$2) >= eps ? false : (x$3 = $this.m12 - m.m12, x$3 >= 0 ? x$3 : - x$3) >= eps ? false : (x$4 = $this.m22 - m.m22, x$4 >= 0 ? x$4 : - x$4) >= eps ? false : (x$5 = $this.m32 - m.m32, x$5 >= 0 ? x$5 : - x$5) >= eps ? false : (x$6 = $this.m13 - m.m13, x$6 >= 0 ? x$6 : - x$6) >= eps ? false : (x$7 = $this.m23 - m.m23, x$7 >= 0 ? x$7 : - x$7) >= eps ? false : (x$8 = $this.m33 - m.m33, x$8 >= 0 ? x$8 : - x$8) >= eps ? false : true);
 };
 
-M33.equals_0$LM33$LM33$N = M33$equals_0$LM33$LM33$N;
+M33.equals$LM33$LM33$N = M33$equals$LM33$LM33$N;
 
 M33.prototype.add$LM33$ = function (m) {
 	this.m11 += m.m11;
@@ -4824,7 +4886,7 @@ M33.prototype.add$LM33$ = function (m) {
 };
 
 
-function M33$add_0$LM33$LM33$($this, m) {
+function M33$add$LM33$LM33$($this, m) {
 	$this.m11 += m.m11;
 	$this.m21 += m.m21;
 	$this.m31 += m.m31;
@@ -4837,7 +4899,7 @@ function M33$add_0$LM33$LM33$($this, m) {
 	return $this;
 };
 
-M33.add_0$LM33$LM33$ = M33$add_0$LM33$LM33$;
+M33.add$LM33$LM33$ = M33$add$LM33$LM33$;
 
 M33.prototype.sub$LM33$ = function (m) {
 	this.m11 -= m.m11;
@@ -4853,7 +4915,7 @@ M33.prototype.sub$LM33$ = function (m) {
 };
 
 
-function M33$sub_0$LM33$LM33$($this, m) {
+function M33$sub$LM33$LM33$($this, m) {
 	$this.m11 -= m.m11;
 	$this.m21 -= m.m21;
 	$this.m31 -= m.m31;
@@ -4866,18 +4928,18 @@ function M33$sub_0$LM33$LM33$($this, m) {
 	return $this;
 };
 
-M33.sub_0$LM33$LM33$ = M33$sub_0$LM33$LM33$;
+M33.sub$LM33$LM33$ = M33$sub$LM33$LM33$;
 
 M33.prototype.mul$LM33$ = function (m) {
-	return M33$mul_0$LM33$LM33$LM33$(this, new M33$0(this), m);
+	return M33$mul$LM33$LM33$LM33$(this, new M33$0(this), m);
 };
 
 
-function M33$mul_0$LM33$LM33$($this, m) {
-	return M33$mul_0$LM33$LM33$LM33$($this, new M33$0($this), m);
+function M33$mul$LM33$LM33$($this, m) {
+	return M33$mul$LM33$LM33$LM33$($this, new M33$0($this), m);
 };
 
-M33.mul_0$LM33$LM33$ = M33$mul_0$LM33$LM33$;
+M33.mul$LM33$LM33$ = M33$mul$LM33$LM33$;
 
 M33.prototype.mul$LM33$LM33$ = function (m0, m1) {
 	var m11$0;
@@ -4911,7 +4973,7 @@ M33.prototype.mul$LM33$LM33$ = function (m0, m1) {
 };
 
 
-function M33$mul_0$LM33$LM33$LM33$($this, m0, m1) {
+function M33$mul$LM33$LM33$LM33$($this, m0, m1) {
 	var m11$0;
 	var m21$0;
 	var m31$0;
@@ -4942,7 +5004,7 @@ function M33$mul_0$LM33$LM33$LM33$($this, m0, m1) {
 	return $this;
 };
 
-M33.mul_0$LM33$LM33$LM33$ = M33$mul_0$LM33$LM33$LM33$;
+M33.mul$LM33$LM33$LM33$ = M33$mul$LM33$LM33$LM33$;
 
 M33.prototype.transpose$ = function () {
 	var m21;
@@ -4959,7 +5021,7 @@ M33.prototype.transpose$ = function () {
 };
 
 
-function M33$transpose_0$LM33$($this) {
+function M33$transpose$LM33$($this) {
 	var m21;
 	var m31;
 	var m32;
@@ -4973,7 +5035,7 @@ function M33$transpose_0$LM33$($this) {
 	return $this;
 };
 
-M33.transpose_0$LM33$ = M33$transpose_0$LM33$;
+M33.transpose$LM33$ = M33$transpose$LM33$;
 
 M33.prototype.transpose$LM33$ = function (m) {
 	this.m11 = m.m11;
@@ -4989,7 +5051,7 @@ M33.prototype.transpose$LM33$ = function (m) {
 };
 
 
-function M33$transpose_0$LM33$LM33$($this, m) {
+function M33$transpose$LM33$LM33$($this, m) {
 	$this.m11 = m.m11;
 	$this.m21 = m.m12;
 	$this.m31 = m.m13;
@@ -5002,7 +5064,7 @@ function M33$transpose_0$LM33$LM33$($this, m) {
 	return $this;
 };
 
-M33.transpose_0$LM33$LM33$ = M33$transpose_0$LM33$LM33$;
+M33.transpose$LM33$LM33$ = M33$transpose$LM33$LM33$;
 
 M33.prototype.det$ = function () {
 	var m11;
@@ -5021,7 +5083,7 @@ M33.prototype.det$ = function () {
 };
 
 
-function M33$det_0$LM33$($this) {
+function M33$det$LM33$($this) {
 	var m11;
 	var m12;
 	var m13;
@@ -5037,7 +5099,7 @@ function M33$det_0$LM33$($this) {
 	return m11 * (m22 * m33 - m23 * m32) + m12 * (m23 * m31 - m21 * m33) + m13 * (m21 * m32 - m22 * m31);
 };
 
-M33.det_0$LM33$ = M33$det_0$LM33$;
+M33.det$LM33$ = M33$det$LM33$;
 
 M33.prototype.inverse$ = function () {
 	var d;
@@ -5051,7 +5113,7 @@ M33.prototype.inverse$ = function () {
 	var m13;
 	var m23;
 	var m33;
-	d = M33$det_0$LM33$(this);
+	d = M33$det$LM33$(this);
 	if (d === 0) {
 		return null;
 	}
@@ -5072,7 +5134,7 @@ M33.prototype.inverse$ = function () {
 };
 
 
-function M33$inverse_0$LM33$($this) {
+function M33$inverse$LM33$($this) {
 	var d;
 	var invDet;
 	var m11;
@@ -5084,7 +5146,7 @@ function M33$inverse_0$LM33$($this) {
 	var m13;
 	var m23;
 	var m33;
-	d = M33$det_0$LM33$($this);
+	d = M33$det$LM33$($this);
 	if (d === 0) {
 		return null;
 	}
@@ -5104,18 +5166,18 @@ function M33$inverse_0$LM33$($this) {
 	return $this;
 };
 
-M33.inverse_0$LM33$ = M33$inverse_0$LM33$;
+M33.inverse$LM33$ = M33$inverse$LM33$;
 
 M33.prototype.setScale$N = function (s) {
-	return M33$set_0$LM33$N(this, s);
+	return M33$set$LM33$N(this, s);
 };
 
 
-function M33$setScale_0$LM33$N($this, s) {
-	return M33$set_0$LM33$N($this, s);
+function M33$setScale$LM33$N($this, s) {
+	return M33$set$LM33$N($this, s);
 };
 
-M33.setScale_0$LM33$N = M33$setScale_0$LM33$N;
+M33.setScale$LM33$N = M33$setScale$LM33$N;
 
 M33.prototype.setScale$NNN = function (x, y, z) {
 	this.m11 = x;
@@ -5126,7 +5188,7 @@ M33.prototype.setScale$NNN = function (x, y, z) {
 };
 
 
-function M33$setScale_0$LM33$NNN($this, x, y, z) {
+function M33$setScale$LM33$NNN($this, x, y, z) {
 	$this.m11 = x;
 	$this.m22 = y;
 	$this.m33 = z;
@@ -5134,40 +5196,40 @@ function M33$setScale_0$LM33$NNN($this, x, y, z) {
 	return $this;
 };
 
-M33.setScale_0$LM33$NNN = M33$setScale_0$LM33$NNN;
+M33.setScale$LM33$NNN = M33$setScale$LM33$NNN;
 
 M33.prototype.setScale$LV3$ = function (v) {
-	return M33$setScale_0$LM33$NNN(this, v.x, v.y, v.z);
+	return M33$setScale$LM33$NNN(this, v.x, v.y, v.z);
 };
 
 
-function M33$setScale_0$LM33$LV3$($this, v) {
-	return M33$setScale_0$LM33$NNN($this, v.x, v.y, v.z);
+function M33$setScale$LM33$LV3$($this, v) {
+	return M33$setScale$LM33$NNN($this, v.x, v.y, v.z);
 };
 
-M33.setScale_0$LM33$LV3$ = M33$setScale_0$LM33$LV3$;
+M33.setScale$LM33$LV3$ = M33$setScale$LM33$LV3$;
 
 M33.prototype.setScale$AN = function (v) {
-	return M33$setScale_0$LM33$NNN(this, v[0], v[1], v[2]);
+	return M33$setScale$LM33$NNN(this, v[0], v[1], v[2]);
 };
 
 
-function M33$setScale_0$LM33$AN($this, v) {
-	return M33$setScale_0$LM33$NNN($this, v[0], v[1], v[2]);
+function M33$setScale$LM33$AN($this, v) {
+	return M33$setScale$LM33$NNN($this, v[0], v[1], v[2]);
 };
 
-M33.setScale_0$LM33$AN = M33$setScale_0$LM33$AN;
+M33.setScale$LM33$AN = M33$setScale$LM33$AN;
 
 M33.prototype.setScale$LFloat32Array$ = function (v) {
-	return M33$setScale_0$LM33$NNN(this, v[0], v[1], v[2]);
+	return M33$setScale$LM33$NNN(this, v[0], v[1], v[2]);
 };
 
 
-function M33$setScale_0$LM33$LFloat32Array$($this, v) {
-	return M33$setScale_0$LM33$NNN($this, v[0], v[1], v[2]);
+function M33$setScale$LM33$LFloat32Array$($this, v) {
+	return M33$setScale$LM33$NNN($this, v[0], v[1], v[2]);
 };
 
-M33.setScale_0$LM33$LFloat32Array$ = M33$setScale_0$LM33$LFloat32Array$;
+M33.setScale$LM33$LFloat32Array$ = M33$setScale$LM33$LFloat32Array$;
 
 M33.prototype.setRotation$NNNN = function (rad, x, y, z) {
 	var l;
@@ -5198,7 +5260,7 @@ M33.prototype.setRotation$NNNN = function (rad, x, y, z) {
 };
 
 
-function M33$setRotation_0$LM33$NNNN($this, rad, x, y, z) {
+function M33$setRotation$LM33$NNNN($this, rad, x, y, z) {
 	var l;
 	var il;
 	var c;
@@ -5226,73 +5288,73 @@ function M33$setRotation_0$LM33$NNNN($this, rad, x, y, z) {
 	return $this;
 };
 
-M33.setRotation_0$LM33$NNNN = M33$setRotation_0$LM33$NNNN;
+M33.setRotation$LM33$NNNN = M33$setRotation$LM33$NNNN;
 
 M33.prototype.setRotation$NLV3$ = function (rad, a) {
-	return M33$setRotation_0$LM33$NNNN(this, rad, a.x, a.y, a.z);
+	return M33$setRotation$LM33$NNNN(this, rad, a.x, a.y, a.z);
 };
 
 
-function M33$setRotation_0$LM33$NLV3$($this, rad, a) {
-	return M33$setRotation_0$LM33$NNNN($this, rad, a.x, a.y, a.z);
+function M33$setRotation$LM33$NLV3$($this, rad, a) {
+	return M33$setRotation$LM33$NNNN($this, rad, a.x, a.y, a.z);
 };
 
-M33.setRotation_0$LM33$NLV3$ = M33$setRotation_0$LM33$NLV3$;
+M33.setRotation$LM33$NLV3$ = M33$setRotation$LM33$NLV3$;
 
 M33.prototype.setRotation$NAN = function (rad, a) {
-	return M33$setRotation_0$LM33$NNNN(this, rad, this.m11, this.m21, this.m31);
+	return M33$setRotation$LM33$NNNN(this, rad, this.m11, this.m21, this.m31);
 };
 
 
-function M33$setRotation_0$LM33$NAN($this, rad, a) {
-	return M33$setRotation_0$LM33$NNNN($this, rad, $this.m11, $this.m21, $this.m31);
+function M33$setRotation$LM33$NAN($this, rad, a) {
+	return M33$setRotation$LM33$NNNN($this, rad, $this.m11, $this.m21, $this.m31);
 };
 
-M33.setRotation_0$LM33$NAN = M33$setRotation_0$LM33$NAN;
+M33.setRotation$LM33$NAN = M33$setRotation$LM33$NAN;
 
 M33.prototype.setRotation$NLFloat32Array$ = function (rad, a) {
-	return M33$setRotation_0$LM33$NNNN(this, rad, this.m11, this.m21, this.m31);
+	return M33$setRotation$LM33$NNNN(this, rad, this.m11, this.m21, this.m31);
 };
 
 
-function M33$setRotation_0$LM33$NLFloat32Array$($this, rad, a) {
-	return M33$setRotation_0$LM33$NNNN($this, rad, $this.m11, $this.m21, $this.m31);
+function M33$setRotation$LM33$NLFloat32Array$($this, rad, a) {
+	return M33$setRotation$LM33$NNNN($this, rad, $this.m11, $this.m21, $this.m31);
 };
 
-M33.setRotation_0$LM33$NLFloat32Array$ = M33$setRotation_0$LM33$NLFloat32Array$;
+M33.setRotation$LM33$NLFloat32Array$ = M33$setRotation$LM33$NLFloat32Array$;
 
 M33.prototype.setRotateX$N = function (rad) {
-	return M33$setRotation_0$LM33$NNNN(this, rad, 1, 0, 0);
+	return M33$setRotation$LM33$NNNN(this, rad, 1, 0, 0);
 };
 
 
-function M33$setRotateX_0$LM33$N($this, rad) {
-	return M33$setRotation_0$LM33$NNNN($this, rad, 1, 0, 0);
+function M33$setRotateX$LM33$N($this, rad) {
+	return M33$setRotation$LM33$NNNN($this, rad, 1, 0, 0);
 };
 
-M33.setRotateX_0$LM33$N = M33$setRotateX_0$LM33$N;
+M33.setRotateX$LM33$N = M33$setRotateX$LM33$N;
 
 M33.prototype.setRotateY$N = function (rad) {
-	return M33$setRotation_0$LM33$NNNN(this, rad, 0, 1, 0);
+	return M33$setRotation$LM33$NNNN(this, rad, 0, 1, 0);
 };
 
 
-function M33$setRotateY_0$LM33$N($this, rad) {
-	return M33$setRotation_0$LM33$NNNN($this, rad, 0, 1, 0);
+function M33$setRotateY$LM33$N($this, rad) {
+	return M33$setRotation$LM33$NNNN($this, rad, 0, 1, 0);
 };
 
-M33.setRotateY_0$LM33$N = M33$setRotateY_0$LM33$N;
+M33.setRotateY$LM33$N = M33$setRotateY$LM33$N;
 
 M33.prototype.setRotateZ$N = function (rad) {
-	return M33$setRotation_0$LM33$NNNN(this, rad, 0, 0, 1);
+	return M33$setRotation$LM33$NNNN(this, rad, 0, 0, 1);
 };
 
 
-function M33$setRotateZ_0$LM33$N($this, rad) {
-	return M33$setRotation_0$LM33$NNNN($this, rad, 0, 0, 1);
+function M33$setRotateZ$LM33$N($this, rad) {
+	return M33$setRotation$LM33$NNNN($this, rad, 0, 0, 1);
 };
 
-M33.setRotateZ_0$LM33$N = M33$setRotateZ_0$LM33$N;
+M33.setRotateZ$LM33$N = M33$setRotateZ$LM33$N;
 
 M33.prototype.toString = function () {
 	return "M33" + JSON.stringify([ this.m11, this.m21, this.m31, this.m12, this.m22, this.m32, this.m13, this.m23, this.m33 ]);
@@ -5335,7 +5397,7 @@ function M44$0(m) {
 	this.m24 = 0;
 	this.m34 = 0;
 	this.m44 = 0;
-	M44$set_0$LM44$LM44$(this, m);
+	M44$set$LM44$LM44$(this, m);
 };
 
 function M44$1(m) {
@@ -5355,7 +5417,7 @@ function M44$1(m) {
 	this.m24 = 0;
 	this.m34 = 0;
 	this.m44 = 0;
-	M44$set_0$LM44$AN(this, m);
+	M44$set$LM44$AN(this, m);
 };
 
 function M44$2(m) {
@@ -5375,7 +5437,7 @@ function M44$2(m) {
 	this.m24 = 0;
 	this.m34 = 0;
 	this.m44 = 0;
-	M44$set_0$LM44$LFloat32Array$(this, m);
+	M44$set$LM44$LFloat32Array$(this, m);
 };
 
 function M44$3(m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44) {
@@ -5414,7 +5476,7 @@ function M44$4(v0, v1, v2, v3) {
 	this.m24 = 0;
 	this.m34 = 0;
 	this.m44 = 0;
-	M44$set_0$LM44$LV4$LV4$LV4$LV4$(this, v0, v1, v2, v3);
+	M44$set$LM44$LV4$LV4$LV4$LV4$(this, v0, v1, v2, v3);
 };
 
 function M44$5(s) {
@@ -5434,7 +5496,7 @@ function M44$5(s) {
 	this.m24 = 0;
 	this.m34 = 0;
 	this.m44 = 0;
-	M44$set_0$LM44$N(this, s);
+	M44$set$LM44$N(this, s);
 };
 
 function M44$6(m, m22, m33) {
@@ -5454,7 +5516,7 @@ function M44$6(m, m22, m33) {
 	this.m24 = 0;
 	this.m34 = 0;
 	this.m44 = 0;
-	M44$set_0$LM44$LM22$NN(this, m, m22, m33);
+	M44$set$LM44$LM22$NN(this, m, m22, m33);
 };
 
 function M44$7(m, m33) {
@@ -5474,7 +5536,7 @@ function M44$7(m, m33) {
 	this.m24 = 0;
 	this.m34 = 0;
 	this.m44 = 0;
-	M44$set_0$LM44$LM33$N(this, m, m33);
+	M44$set$LM44$LM33$N(this, m, m33);
 };
 
 $__jsx_extend([M44, M44$0, M44$1, M44$2, M44$3, M44$4, M44$5, M44$6, M44$7], Object);
@@ -5483,33 +5545,33 @@ M44.prototype.array$ = function () {
 };
 
 
-function M44$array_0$LM44$($this) {
+function M44$array$LM44$($this) {
 	return [ $this.m11, $this.m21, $this.m31, $this.m41, $this.m12, $this.m22, $this.m32, $this.m42, $this.m13, $this.m23, $this.m33, $this.m43, $this.m14, $this.m24, $this.m34, $this.m44 ];
 };
 
-M44.array_0$LM44$ = M44$array_0$LM44$;
+M44.array$LM44$ = M44$array$LM44$;
 
 M44.prototype.M22$ = function () {
 	return new M22$7(this);
 };
 
 
-function M44$M22_0$LM44$($this) {
+function M44$M22$LM44$($this) {
 	return new M22$7($this);
 };
 
-M44.M22_0$LM44$ = M44$M22_0$LM44$;
+M44.M22$LM44$ = M44$M22$LM44$;
 
 M44.prototype.M33$N = function (m33) {
 	return new M33$7(this);
 };
 
 
-function M44$M33_0$LM44$N($this, m33) {
+function M44$M33$LM44$N($this, m33) {
 	return new M33$7($this);
 };
 
-M44.M33_0$LM44$N = M44$M33_0$LM44$N;
+M44.M33$LM44$N = M44$M33$LM44$N;
 
 M44.prototype.set$LM22$NN = function (m, m33, m44) {
 	this.m11 = m.m11;
@@ -5532,7 +5594,7 @@ M44.prototype.set$LM22$NN = function (m, m33, m44) {
 };
 
 
-function M44$set_0$LM44$LM22$NN($this, m, m33, m44) {
+function M44$set$LM44$LM22$NN($this, m, m33, m44) {
 	$this.m11 = m.m11;
 	$this.m21 = m.m21;
 	$this.m31 = 0;
@@ -5552,7 +5614,7 @@ function M44$set_0$LM44$LM22$NN($this, m, m33, m44) {
 	return $this;
 };
 
-M44.set_0$LM44$LM22$NN = M44$set_0$LM44$LM22$NN;
+M44.set$LM44$LM22$NN = M44$set$LM44$LM22$NN;
 
 M44.prototype.set$LM33$N = function (m, m44) {
 	this.m11 = m.m11;
@@ -5575,7 +5637,7 @@ M44.prototype.set$LM33$N = function (m, m44) {
 };
 
 
-function M44$set_0$LM44$LM33$N($this, m, m44) {
+function M44$set$LM44$LM33$N($this, m, m44) {
 	$this.m11 = m.m11;
 	$this.m21 = m.m21;
 	$this.m31 = m.m31;
@@ -5595,49 +5657,53 @@ function M44$set_0$LM44$LM33$N($this, m, m44) {
 	return $this;
 };
 
-M44.set_0$LM44$LM33$N = M44$set_0$LM44$LM33$N;
+M44.set$LM44$LM33$N = M44$set$LM44$LM33$N;
 
 M44.prototype.clone$ = function () {
 	return new M44$0(this);
 };
 
 
-function M44$clone_0$LM44$($this) {
+function M44$clone$LM44$($this) {
 	return new M44$0($this);
 };
 
-M44.clone_0$LM44$ = M44$clone_0$LM44$;
+M44.clone$LM44$ = M44$clone$LM44$;
 
 M44.prototype.setZero$ = function () {
-	return M44$set_0$LM44$N(this, 0);
+	return M44$set$LM44$N(this, 0);
 };
 
 
-function M44$setZero_0$LM44$($this) {
-	return M44$set_0$LM44$N($this, 0);
+function M44$setZero$LM44$($this) {
+	return M44$set$LM44$N($this, 0);
 };
 
-M44.setZero_0$LM44$ = M44$setZero_0$LM44$;
+M44.setZero$LM44$ = M44$setZero$LM44$;
 
 M44.prototype.setIdentity$ = function () {
-	return M44$set_0$LM44$N(this, 1);
+	return M44$set$LM44$N(this, 1);
 };
 
 
-function M44$setIdentity_0$LM44$($this) {
-	return M44$set_0$LM44$N($this, 1);
+function M44$setIdentity$LM44$($this) {
+	return M44$set$LM44$N($this, 1);
 };
 
-M44.setIdentity_0$LM44$ = M44$setIdentity_0$LM44$;
+M44.setIdentity$LM44$ = M44$setIdentity$LM44$;
 
 function M44$zero$() {
-	return M44$set_0$LM44$N(new M44(), 0);
+	var this$0;
+	this$0 = new M44();
+	return M44$set$LM44$N(this$0, 0);
 };
 
 M44.zero$ = M44$zero$;
 
 function M44$identity$() {
-	return M44$set_0$LM44$N(new M44(), 1);
+	var this$0;
+	this$0 = new M44();
+	return M44$set$LM44$N(this$0, 1);
 };
 
 M44.identity$ = M44$identity$;
@@ -5663,7 +5729,7 @@ M44.prototype.set$NNNNNNNNNNNNNNNN = function (m11, m12, m13, m14, m21, m22, m23
 };
 
 
-function M44$set_0$LM44$NNNNNNNNNNNNNNNN($this, m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44) {
+function M44$set$LM44$NNNNNNNNNNNNNNNN($this, m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44) {
 	$this.m11 = m11;
 	$this.m21 = m21;
 	$this.m31 = m31;
@@ -5683,7 +5749,7 @@ function M44$set_0$LM44$NNNNNNNNNNNNNNNN($this, m11, m12, m13, m14, m21, m22, m2
 	return $this;
 };
 
-M44.set_0$LM44$NNNNNNNNNNNNNNNN = M44$set_0$LM44$NNNNNNNNNNNNNNNN;
+M44.set$LM44$NNNNNNNNNNNNNNNN = M44$set$LM44$NNNNNNNNNNNNNNNN;
 
 M44.prototype.set$LV4$LV4$LV4$LV4$ = function (v1, v2, v3, v4) {
 	this.m11 = v1.x;
@@ -5706,7 +5772,7 @@ M44.prototype.set$LV4$LV4$LV4$LV4$ = function (v1, v2, v3, v4) {
 };
 
 
-function M44$set_0$LM44$LV4$LV4$LV4$LV4$($this, v1, v2, v3, v4) {
+function M44$set$LM44$LV4$LV4$LV4$LV4$($this, v1, v2, v3, v4) {
 	$this.m11 = v1.x;
 	$this.m21 = v1.y;
 	$this.m31 = v1.z;
@@ -5726,7 +5792,7 @@ function M44$set_0$LM44$LV4$LV4$LV4$LV4$($this, v1, v2, v3, v4) {
 	return $this;
 };
 
-M44.set_0$LM44$LV4$LV4$LV4$LV4$ = M44$set_0$LM44$LV4$LV4$LV4$LV4$;
+M44.set$LM44$LV4$LV4$LV4$LV4$ = M44$set$LM44$LV4$LV4$LV4$LV4$;
 
 M44.prototype.set$LM44$ = function (m) {
 	this.m11 = m.m11;
@@ -5749,7 +5815,7 @@ M44.prototype.set$LM44$ = function (m) {
 };
 
 
-function M44$set_0$LM44$LM44$($this, m) {
+function M44$set$LM44$LM44$($this, m) {
 	$this.m11 = m.m11;
 	$this.m21 = m.m21;
 	$this.m31 = m.m31;
@@ -5769,7 +5835,7 @@ function M44$set_0$LM44$LM44$($this, m) {
 	return $this;
 };
 
-M44.set_0$LM44$LM44$ = M44$set_0$LM44$LM44$;
+M44.set$LM44$LM44$ = M44$set$LM44$LM44$;
 
 M44.prototype.set$AN = function (m) {
 	this.m11 = m[0];
@@ -5792,7 +5858,7 @@ M44.prototype.set$AN = function (m) {
 };
 
 
-function M44$set_0$LM44$AN($this, m) {
+function M44$set$LM44$AN($this, m) {
 	$this.m11 = m[0];
 	$this.m21 = m[1];
 	$this.m31 = m[2];
@@ -5812,7 +5878,7 @@ function M44$set_0$LM44$AN($this, m) {
 	return $this;
 };
 
-M44.set_0$LM44$AN = M44$set_0$LM44$AN;
+M44.set$LM44$AN = M44$set$LM44$AN;
 
 M44.prototype.set$LFloat32Array$ = function (m) {
 	this.m11 = m[0];
@@ -5835,7 +5901,7 @@ M44.prototype.set$LFloat32Array$ = function (m) {
 };
 
 
-function M44$set_0$LM44$LFloat32Array$($this, m) {
+function M44$set$LM44$LFloat32Array$($this, m) {
 	$this.m11 = m[0];
 	$this.m21 = m[1];
 	$this.m31 = m[2];
@@ -5855,7 +5921,7 @@ function M44$set_0$LM44$LFloat32Array$($this, m) {
 	return $this;
 };
 
-M44.set_0$LM44$LFloat32Array$ = M44$set_0$LM44$LFloat32Array$;
+M44.set$LM44$LFloat32Array$ = M44$set$LM44$LFloat32Array$;
 
 M44.prototype.set$N = function (s) {
 	this.m11 = this.m22 = this.m33 = this.m44 = s;
@@ -5864,67 +5930,67 @@ M44.prototype.set$N = function (s) {
 };
 
 
-function M44$set_0$LM44$N($this, s) {
+function M44$set$LM44$N($this, s) {
 	$this.m11 = $this.m22 = $this.m33 = $this.m44 = s;
 	$this.m21 = $this.m31 = $this.m41 = $this.m12 = $this.m32 = $this.m42 = $this.m13 = $this.m23 = $this.m43 = $this.m14 = $this.m24 = $this.m34 = 0;
 	return $this;
 };
 
-M44.set_0$LM44$N = M44$set_0$LM44$N;
+M44.set$LM44$N = M44$set$LM44$N;
 
 M44.prototype.equals$LM44$ = function (m) {
-	return M44$equals_0$LM44$LM44$N(this, m, 0.000001);
+	return M44$equals$LM44$LM44$N(this, m, 0.000001);
 };
 
 
-function M44$equals_0$LM44$LM44$($this, m) {
-	return M44$equals_0$LM44$LM44$N($this, m, 0.000001);
+function M44$equals$LM44$LM44$($this, m) {
+	return M44$equals$LM44$LM44$N($this, m, 0.000001);
 };
 
-M44.equals_0$LM44$LM44$ = M44$equals_0$LM44$LM44$;
+M44.equals$LM44$LM44$ = M44$equals$LM44$LM44$;
 
 M44.prototype.equals$LM44$N = function (m, eps) {
-	var abs$x$0;
-	var abs$x$1;
-	var abs$x$2;
-	var abs$x$3;
-	var abs$x$4;
-	var abs$x$5;
-	var abs$x$6;
-	var abs$x$7;
-	var abs$x$8;
-	var abs$x$9;
-	var abs$x$10;
-	var abs$x$11;
-	var abs$x$12;
-	var abs$x$13;
-	var abs$x$14;
-	var abs$x$15;
-	return ((abs$x$0 = this.m11 - m.m11, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) >= eps ? false : (abs$x$1 = this.m21 - m.m21, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) >= eps ? false : (abs$x$2 = this.m31 - m.m31, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) >= eps ? false : (abs$x$3 = this.m41 - m.m41, abs$x$3 >= 0 ? abs$x$3 : - abs$x$3) >= eps ? false : (abs$x$4 = this.m12 - m.m12, abs$x$4 >= 0 ? abs$x$4 : - abs$x$4) >= eps ? false : (abs$x$5 = this.m22 - m.m22, abs$x$5 >= 0 ? abs$x$5 : - abs$x$5) >= eps ? false : (abs$x$6 = this.m32 - m.m32, abs$x$6 >= 0 ? abs$x$6 : - abs$x$6) >= eps ? false : (abs$x$7 = this.m42 - m.m42, abs$x$7 >= 0 ? abs$x$7 : - abs$x$7) >= eps ? false : (abs$x$8 = this.m13 - m.m13, abs$x$8 >= 0 ? abs$x$8 : - abs$x$8) >= eps ? false : (abs$x$9 = this.m23 - m.m23, abs$x$9 >= 0 ? abs$x$9 : - abs$x$9) >= eps ? false : (abs$x$10 = this.m33 - m.m33, abs$x$10 >= 0 ? abs$x$10 : - abs$x$10) >= eps ? false : (abs$x$11 = this.m43 - m.m43, abs$x$11 >= 0 ? abs$x$11 : - abs$x$11) >= eps ? false : (abs$x$12 = this.m14 - m.m14, abs$x$12 >= 0 ? abs$x$12 : - abs$x$12) >= eps ? false : (abs$x$13 = this.m24 - m.m24, abs$x$13 >= 0 ? abs$x$13 : - abs$x$13) >= eps ? false : (abs$x$14 = this.m34 - m.m34, abs$x$14 >= 0 ? abs$x$14 : - abs$x$14) >= eps ? false : (abs$x$15 = this.m44 - m.m44, abs$x$15 >= 0 ? abs$x$15 : - abs$x$15) >= eps ? false : true);
+	var x$0;
+	var x$1;
+	var x$2;
+	var x$3;
+	var x$4;
+	var x$5;
+	var x$6;
+	var x$7;
+	var x$8;
+	var x$9;
+	var x$10;
+	var x$11;
+	var x$12;
+	var x$13;
+	var x$14;
+	var x$15;
+	return ((x$0 = this.m11 - m.m11, x$0 >= 0 ? x$0 : - x$0) >= eps ? false : (x$1 = this.m21 - m.m21, x$1 >= 0 ? x$1 : - x$1) >= eps ? false : (x$2 = this.m31 - m.m31, x$2 >= 0 ? x$2 : - x$2) >= eps ? false : (x$3 = this.m41 - m.m41, x$3 >= 0 ? x$3 : - x$3) >= eps ? false : (x$4 = this.m12 - m.m12, x$4 >= 0 ? x$4 : - x$4) >= eps ? false : (x$5 = this.m22 - m.m22, x$5 >= 0 ? x$5 : - x$5) >= eps ? false : (x$6 = this.m32 - m.m32, x$6 >= 0 ? x$6 : - x$6) >= eps ? false : (x$7 = this.m42 - m.m42, x$7 >= 0 ? x$7 : - x$7) >= eps ? false : (x$8 = this.m13 - m.m13, x$8 >= 0 ? x$8 : - x$8) >= eps ? false : (x$9 = this.m23 - m.m23, x$9 >= 0 ? x$9 : - x$9) >= eps ? false : (x$10 = this.m33 - m.m33, x$10 >= 0 ? x$10 : - x$10) >= eps ? false : (x$11 = this.m43 - m.m43, x$11 >= 0 ? x$11 : - x$11) >= eps ? false : (x$12 = this.m14 - m.m14, x$12 >= 0 ? x$12 : - x$12) >= eps ? false : (x$13 = this.m24 - m.m24, x$13 >= 0 ? x$13 : - x$13) >= eps ? false : (x$14 = this.m34 - m.m34, x$14 >= 0 ? x$14 : - x$14) >= eps ? false : (x$15 = this.m44 - m.m44, x$15 >= 0 ? x$15 : - x$15) >= eps ? false : true);
 };
 
 
-function M44$equals_0$LM44$LM44$N($this, m, eps) {
-	var abs$x$0;
-	var abs$x$1;
-	var abs$x$2;
-	var abs$x$3;
-	var abs$x$4;
-	var abs$x$5;
-	var abs$x$6;
-	var abs$x$7;
-	var abs$x$8;
-	var abs$x$9;
-	var abs$x$10;
-	var abs$x$11;
-	var abs$x$12;
-	var abs$x$13;
-	var abs$x$14;
-	var abs$x$15;
-	return ((abs$x$0 = $this.m11 - m.m11, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) >= eps ? false : (abs$x$1 = $this.m21 - m.m21, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) >= eps ? false : (abs$x$2 = $this.m31 - m.m31, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) >= eps ? false : (abs$x$3 = $this.m41 - m.m41, abs$x$3 >= 0 ? abs$x$3 : - abs$x$3) >= eps ? false : (abs$x$4 = $this.m12 - m.m12, abs$x$4 >= 0 ? abs$x$4 : - abs$x$4) >= eps ? false : (abs$x$5 = $this.m22 - m.m22, abs$x$5 >= 0 ? abs$x$5 : - abs$x$5) >= eps ? false : (abs$x$6 = $this.m32 - m.m32, abs$x$6 >= 0 ? abs$x$6 : - abs$x$6) >= eps ? false : (abs$x$7 = $this.m42 - m.m42, abs$x$7 >= 0 ? abs$x$7 : - abs$x$7) >= eps ? false : (abs$x$8 = $this.m13 - m.m13, abs$x$8 >= 0 ? abs$x$8 : - abs$x$8) >= eps ? false : (abs$x$9 = $this.m23 - m.m23, abs$x$9 >= 0 ? abs$x$9 : - abs$x$9) >= eps ? false : (abs$x$10 = $this.m33 - m.m33, abs$x$10 >= 0 ? abs$x$10 : - abs$x$10) >= eps ? false : (abs$x$11 = $this.m43 - m.m43, abs$x$11 >= 0 ? abs$x$11 : - abs$x$11) >= eps ? false : (abs$x$12 = $this.m14 - m.m14, abs$x$12 >= 0 ? abs$x$12 : - abs$x$12) >= eps ? false : (abs$x$13 = $this.m24 - m.m24, abs$x$13 >= 0 ? abs$x$13 : - abs$x$13) >= eps ? false : (abs$x$14 = $this.m34 - m.m34, abs$x$14 >= 0 ? abs$x$14 : - abs$x$14) >= eps ? false : (abs$x$15 = $this.m44 - m.m44, abs$x$15 >= 0 ? abs$x$15 : - abs$x$15) >= eps ? false : true);
+function M44$equals$LM44$LM44$N($this, m, eps) {
+	var x$0;
+	var x$1;
+	var x$2;
+	var x$3;
+	var x$4;
+	var x$5;
+	var x$6;
+	var x$7;
+	var x$8;
+	var x$9;
+	var x$10;
+	var x$11;
+	var x$12;
+	var x$13;
+	var x$14;
+	var x$15;
+	return ((x$0 = $this.m11 - m.m11, x$0 >= 0 ? x$0 : - x$0) >= eps ? false : (x$1 = $this.m21 - m.m21, x$1 >= 0 ? x$1 : - x$1) >= eps ? false : (x$2 = $this.m31 - m.m31, x$2 >= 0 ? x$2 : - x$2) >= eps ? false : (x$3 = $this.m41 - m.m41, x$3 >= 0 ? x$3 : - x$3) >= eps ? false : (x$4 = $this.m12 - m.m12, x$4 >= 0 ? x$4 : - x$4) >= eps ? false : (x$5 = $this.m22 - m.m22, x$5 >= 0 ? x$5 : - x$5) >= eps ? false : (x$6 = $this.m32 - m.m32, x$6 >= 0 ? x$6 : - x$6) >= eps ? false : (x$7 = $this.m42 - m.m42, x$7 >= 0 ? x$7 : - x$7) >= eps ? false : (x$8 = $this.m13 - m.m13, x$8 >= 0 ? x$8 : - x$8) >= eps ? false : (x$9 = $this.m23 - m.m23, x$9 >= 0 ? x$9 : - x$9) >= eps ? false : (x$10 = $this.m33 - m.m33, x$10 >= 0 ? x$10 : - x$10) >= eps ? false : (x$11 = $this.m43 - m.m43, x$11 >= 0 ? x$11 : - x$11) >= eps ? false : (x$12 = $this.m14 - m.m14, x$12 >= 0 ? x$12 : - x$12) >= eps ? false : (x$13 = $this.m24 - m.m24, x$13 >= 0 ? x$13 : - x$13) >= eps ? false : (x$14 = $this.m34 - m.m34, x$14 >= 0 ? x$14 : - x$14) >= eps ? false : (x$15 = $this.m44 - m.m44, x$15 >= 0 ? x$15 : - x$15) >= eps ? false : true);
 };
 
-M44.equals_0$LM44$LM44$N = M44$equals_0$LM44$LM44$N;
+M44.equals$LM44$LM44$N = M44$equals$LM44$LM44$N;
 
 M44.prototype.add$LM44$ = function (m) {
 	this.m11 += m.m11;
@@ -5947,7 +6013,7 @@ M44.prototype.add$LM44$ = function (m) {
 };
 
 
-function M44$add_0$LM44$LM44$($this, m) {
+function M44$add$LM44$LM44$($this, m) {
 	$this.m11 += m.m11;
 	$this.m21 += m.m21;
 	$this.m31 += m.m31;
@@ -5967,7 +6033,7 @@ function M44$add_0$LM44$LM44$($this, m) {
 	return $this;
 };
 
-M44.add_0$LM44$LM44$ = M44$add_0$LM44$LM44$;
+M44.add$LM44$LM44$ = M44$add$LM44$LM44$;
 
 M44.prototype.sub$LM44$ = function (m) {
 	this.m11 -= m.m11;
@@ -5990,7 +6056,7 @@ M44.prototype.sub$LM44$ = function (m) {
 };
 
 
-function M44$sub_0$LM44$LM44$($this, m) {
+function M44$sub$LM44$LM44$($this, m) {
 	$this.m11 -= m.m11;
 	$this.m21 -= m.m21;
 	$this.m31 -= m.m31;
@@ -6010,18 +6076,18 @@ function M44$sub_0$LM44$LM44$($this, m) {
 	return $this;
 };
 
-M44.sub_0$LM44$LM44$ = M44$sub_0$LM44$LM44$;
+M44.sub$LM44$LM44$ = M44$sub$LM44$LM44$;
 
 M44.prototype.mul$LM44$ = function (m) {
-	return M44$mul_0$LM44$LM44$LM44$(this, new M44$0(this), m);
+	return M44$mul$LM44$LM44$LM44$(this, new M44$0(this), m);
 };
 
 
-function M44$mul_0$LM44$LM44$($this, m) {
-	return M44$mul_0$LM44$LM44$LM44$($this, new M44$0($this), m);
+function M44$mul$LM44$LM44$($this, m) {
+	return M44$mul$LM44$LM44$LM44$($this, new M44$0($this), m);
 };
 
-M44.mul_0$LM44$LM44$ = M44$mul_0$LM44$LM44$;
+M44.mul$LM44$LM44$ = M44$mul$LM44$LM44$;
 
 M44.prototype.mul$LM44$LM44$ = function (m0, m1) {
 	var m11$0;
@@ -6076,7 +6142,7 @@ M44.prototype.mul$LM44$LM44$ = function (m0, m1) {
 };
 
 
-function M44$mul_0$LM44$LM44$LM44$($this, m0, m1) {
+function M44$mul$LM44$LM44$LM44$($this, m0, m1) {
 	var m11$0;
 	var m21$0;
 	var m31$0;
@@ -6128,7 +6194,7 @@ function M44$mul_0$LM44$LM44$LM44$($this, m0, m1) {
 	return $this;
 };
 
-M44.mul_0$LM44$LM44$LM44$ = M44$mul_0$LM44$LM44$LM44$;
+M44.mul$LM44$LM44$LM44$ = M44$mul$LM44$LM44$LM44$;
 
 M44.prototype.transpose$ = function () {
 	var m21;
@@ -6154,7 +6220,7 @@ M44.prototype.transpose$ = function () {
 };
 
 
-function M44$transpose_0$LM44$($this) {
+function M44$transpose$LM44$($this) {
 	var m21;
 	var m31;
 	var m41;
@@ -6177,7 +6243,7 @@ function M44$transpose_0$LM44$($this) {
 	return $this;
 };
 
-M44.transpose_0$LM44$ = M44$transpose_0$LM44$;
+M44.transpose$LM44$ = M44$transpose$LM44$;
 
 M44.prototype.transpose$LM44$ = function (m) {
 	this.m11 = m.m11;
@@ -6200,7 +6266,7 @@ M44.prototype.transpose$LM44$ = function (m) {
 };
 
 
-function M44$transpose_0$LM44$LM44$($this, m) {
+function M44$transpose$LM44$LM44$($this, m) {
 	$this.m11 = m.m11;
 	$this.m21 = m.m12;
 	$this.m31 = m.m13;
@@ -6220,7 +6286,7 @@ function M44$transpose_0$LM44$LM44$($this, m) {
 	return $this;
 };
 
-M44.transpose_0$LM44$LM44$ = M44$transpose_0$LM44$LM44$;
+M44.transpose$LM44$LM44$ = M44$transpose$LM44$LM44$;
 
 M44.prototype.det$ = function () {
 	var m11;
@@ -6247,7 +6313,7 @@ M44.prototype.det$ = function () {
 };
 
 
-function M44$det_0$LM44$($this) {
+function M44$det$LM44$($this) {
 	var m11;
 	var m21;
 	var m31;
@@ -6271,7 +6337,7 @@ function M44$det_0$LM44$($this) {
 	return m14 * m23 * m32 * m41 - m13 * m24 * m32 * m41 - m14 * m22 * m33 * m41 + m12 * m24 * m33 * m41 + m13 * m22 * m34 * m41 - m12 * m23 * m34 * m41 - m14 * m23 * m31 * m42 + m13 * m24 * m31 * m42 + m14 * m21 * m33 * m42 - m11 * m24 * m33 * m42 - m13 * m21 * m34 * m42 + m11 * m23 * m34 * m42 + m14 * m22 * m31 * m43 - m12 * m24 * m31 * m43 - m14 * m21 * m32 * m43 + m11 * m24 * m32 * m43 + m12 * m21 * m34 * m43 - m11 * m22 * m34 * m43 - m13 * m22 * m31 * m44 + m12 * m23 * m31 * m44 + m13 * m21 * m32 * m44 - m11 * m23 * m32 * m44 - m12 * m21 * m33 * m44 + m11 * m22 * m33 * m44;
 };
 
-M44.det_0$LM44$ = M44$det_0$LM44$;
+M44.det$LM44$ = M44$det$LM44$;
 
 M44.prototype.inverse$ = function () {
 	var m11;
@@ -6331,7 +6397,7 @@ M44.prototype.inverse$ = function () {
 };
 
 
-function M44$inverse_0$LM44$($this) {
+function M44$inverse$LM44$($this) {
 	var m11;
 	var m21;
 	var m31;
@@ -6388,10 +6454,10 @@ function M44$inverse_0$LM44$($this) {
 	return $this;
 };
 
-M44.inverse_0$LM44$ = M44$inverse_0$LM44$;
+M44.inverse$LM44$ = M44$inverse$LM44$;
 
 M44.prototype.setTranslation$NNN = function (x, y, z) {
-	M44$set_0$LM44$N(this, 1);
+	M44$set$LM44$N(this, 1);
 	this.m14 = x;
 	this.m24 = y;
 	this.m34 = z;
@@ -6399,15 +6465,15 @@ M44.prototype.setTranslation$NNN = function (x, y, z) {
 };
 
 
-function M44$setTranslation_0$LM44$NNN($this, x, y, z) {
-	M44$set_0$LM44$N($this, 1);
+function M44$setTranslation$LM44$NNN($this, x, y, z) {
+	M44$set$LM44$N($this, 1);
 	$this.m14 = x;
 	$this.m24 = y;
 	$this.m34 = z;
 	return $this;
 };
 
-M44.setTranslation_0$LM44$NNN = M44$setTranslation_0$LM44$NNN;
+M44.setTranslation$LM44$NNN = M44$setTranslation$LM44$NNN;
 
 M44.prototype.setTranslation$LV3$ = function (v) {
 	var x$0;
@@ -6416,7 +6482,7 @@ M44.prototype.setTranslation$LV3$ = function (v) {
 	x$0 = v.x;
 	y$0 = v.y;
 	z$0 = v.z;
-	M44$set_0$LM44$N(this, 1);
+	M44$set$LM44$N(this, 1);
 	this.m14 = x$0;
 	this.m24 = y$0;
 	this.m34 = z$0;
@@ -6424,21 +6490,21 @@ M44.prototype.setTranslation$LV3$ = function (v) {
 };
 
 
-function M44$setTranslation_0$LM44$LV3$($this, v) {
+function M44$setTranslation$LM44$LV3$($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
 	x$0 = v.x;
 	y$0 = v.y;
 	z$0 = v.z;
-	M44$set_0$LM44$N($this, 1);
+	M44$set$LM44$N($this, 1);
 	$this.m14 = x$0;
 	$this.m24 = y$0;
 	$this.m34 = z$0;
 	return $this;
 };
 
-M44.setTranslation_0$LM44$LV3$ = M44$setTranslation_0$LM44$LV3$;
+M44.setTranslation$LM44$LV3$ = M44$setTranslation$LM44$LV3$;
 
 M44.prototype.setTranslation$AN = function (v) {
 	var x$0;
@@ -6447,7 +6513,7 @@ M44.prototype.setTranslation$AN = function (v) {
 	x$0 = v[0];
 	y$0 = v[1];
 	z$0 = v[2];
-	M44$set_0$LM44$N(this, 1);
+	M44$set$LM44$N(this, 1);
 	this.m14 = x$0;
 	this.m24 = y$0;
 	this.m34 = z$0;
@@ -6455,21 +6521,21 @@ M44.prototype.setTranslation$AN = function (v) {
 };
 
 
-function M44$setTranslation_0$LM44$AN($this, v) {
+function M44$setTranslation$LM44$AN($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
 	x$0 = v[0];
 	y$0 = v[1];
 	z$0 = v[2];
-	M44$set_0$LM44$N($this, 1);
+	M44$set$LM44$N($this, 1);
 	$this.m14 = x$0;
 	$this.m24 = y$0;
 	$this.m34 = z$0;
 	return $this;
 };
 
-M44.setTranslation_0$LM44$AN = M44$setTranslation_0$LM44$AN;
+M44.setTranslation$LM44$AN = M44$setTranslation$LM44$AN;
 
 M44.prototype.setTranslation$LFloat32Array$ = function (v) {
 	var x$0;
@@ -6478,7 +6544,7 @@ M44.prototype.setTranslation$LFloat32Array$ = function (v) {
 	x$0 = v[0];
 	y$0 = v[1];
 	z$0 = v[2];
-	M44$set_0$LM44$N(this, 1);
+	M44$set$LM44$N(this, 1);
 	this.m14 = x$0;
 	this.m24 = y$0;
 	this.m34 = z$0;
@@ -6486,26 +6552,26 @@ M44.prototype.setTranslation$LFloat32Array$ = function (v) {
 };
 
 
-function M44$setTranslation_0$LM44$LFloat32Array$($this, v) {
+function M44$setTranslation$LM44$LFloat32Array$($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
 	x$0 = v[0];
 	y$0 = v[1];
 	z$0 = v[2];
-	M44$set_0$LM44$N($this, 1);
+	M44$set$LM44$N($this, 1);
 	$this.m14 = x$0;
 	$this.m24 = y$0;
 	$this.m34 = z$0;
 	return $this;
 };
 
-M44.setTranslation_0$LM44$LFloat32Array$ = M44$setTranslation_0$LM44$LFloat32Array$;
+M44.setTranslation$LM44$LFloat32Array$ = M44$setTranslation$LM44$LFloat32Array$;
 
 function M44$translation$NNN(x, y, z) {
 	var this$0;
 	this$0 = new M44();
-	M44$set_0$LM44$N(this$0, 1);
+	M44$set$LM44$N(this$0, 1);
 	this$0.m14 = x;
 	this$0.m24 = y;
 	this$0.m34 = z;
@@ -6523,7 +6589,7 @@ function M44$translation$LV3$(v) {
 	x$0$0 = v.x;
 	y$0$0 = v.y;
 	z$0$0 = v.z;
-	M44$set_0$LM44$N(this$0, 1);
+	M44$set$LM44$N(this$0, 1);
 	this$0.m14 = x$0$0;
 	this$0.m24 = y$0$0;
 	this$0.m34 = z$0$0;
@@ -6533,19 +6599,19 @@ function M44$translation$LV3$(v) {
 M44.translation$LV3$ = M44$translation$LV3$;
 
 function M44$translation$AN(v) {
-	return M44$setTranslation_0$LM44$AN(new M44(), v);
+	return M44$setTranslation$LM44$AN(new M44(), v);
 };
 
 M44.translation$AN = M44$translation$AN;
 
 function M44$translation$LFloat32Array$(v) {
-	return M44$setTranslation_0$LM44$LFloat32Array$(new M44(), v);
+	return M44$setTranslation$LM44$LFloat32Array$(new M44(), v);
 };
 
 M44.translation$LFloat32Array$ = M44$translation$LFloat32Array$;
 
 M44.prototype.setScale$N = function (s) {
-	M44$set_0$LM44$N(this, 0);
+	M44$set$LM44$N(this, 0);
 	this.m11 = s;
 	this.m22 = s;
 	this.m33 = s;
@@ -6554,8 +6620,8 @@ M44.prototype.setScale$N = function (s) {
 };
 
 
-function M44$setScale_0$LM44$N($this, s) {
-	M44$set_0$LM44$N($this, 0);
+function M44$setScale$LM44$N($this, s) {
+	M44$set$LM44$N($this, 0);
 	$this.m11 = s;
 	$this.m22 = s;
 	$this.m33 = s;
@@ -6563,10 +6629,10 @@ function M44$setScale_0$LM44$N($this, s) {
 	return $this;
 };
 
-M44.setScale_0$LM44$N = M44$setScale_0$LM44$N;
+M44.setScale$LM44$N = M44$setScale$LM44$N;
 
 M44.prototype.setScale$NNN = function (x, y, z) {
-	M44$set_0$LM44$N(this, 0);
+	M44$set$LM44$N(this, 0);
 	this.m11 = x;
 	this.m22 = y;
 	this.m33 = z;
@@ -6575,8 +6641,8 @@ M44.prototype.setScale$NNN = function (x, y, z) {
 };
 
 
-function M44$setScale_0$LM44$NNN($this, x, y, z) {
-	M44$set_0$LM44$N($this, 0);
+function M44$setScale$LM44$NNN($this, x, y, z) {
+	M44$set$LM44$N($this, 0);
 	$this.m11 = x;
 	$this.m22 = y;
 	$this.m33 = z;
@@ -6584,7 +6650,7 @@ function M44$setScale_0$LM44$NNN($this, x, y, z) {
 	return $this;
 };
 
-M44.setScale_0$LM44$NNN = M44$setScale_0$LM44$NNN;
+M44.setScale$LM44$NNN = M44$setScale$LM44$NNN;
 
 M44.prototype.setScale$LV3$ = function (v) {
 	var x$0;
@@ -6593,7 +6659,7 @@ M44.prototype.setScale$LV3$ = function (v) {
 	x$0 = v.x;
 	y$0 = v.y;
 	z$0 = v.z;
-	M44$set_0$LM44$N(this, 0);
+	M44$set$LM44$N(this, 0);
 	this.m11 = x$0;
 	this.m22 = y$0;
 	this.m33 = z$0;
@@ -6602,14 +6668,14 @@ M44.prototype.setScale$LV3$ = function (v) {
 };
 
 
-function M44$setScale_0$LM44$LV3$($this, v) {
+function M44$setScale$LM44$LV3$($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
 	x$0 = v.x;
 	y$0 = v.y;
 	z$0 = v.z;
-	M44$set_0$LM44$N($this, 0);
+	M44$set$LM44$N($this, 0);
 	$this.m11 = x$0;
 	$this.m22 = y$0;
 	$this.m33 = z$0;
@@ -6617,7 +6683,7 @@ function M44$setScale_0$LM44$LV3$($this, v) {
 	return $this;
 };
 
-M44.setScale_0$LM44$LV3$ = M44$setScale_0$LM44$LV3$;
+M44.setScale$LM44$LV3$ = M44$setScale$LM44$LV3$;
 
 M44.prototype.setScale$AN = function (v) {
 	var x$0;
@@ -6626,7 +6692,7 @@ M44.prototype.setScale$AN = function (v) {
 	x$0 = v[0];
 	y$0 = v[1];
 	z$0 = v[2];
-	M44$set_0$LM44$N(this, 0);
+	M44$set$LM44$N(this, 0);
 	this.m11 = x$0;
 	this.m22 = y$0;
 	this.m33 = z$0;
@@ -6635,14 +6701,14 @@ M44.prototype.setScale$AN = function (v) {
 };
 
 
-function M44$setScale_0$LM44$AN($this, v) {
+function M44$setScale$LM44$AN($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
 	x$0 = v[0];
 	y$0 = v[1];
 	z$0 = v[2];
-	M44$set_0$LM44$N($this, 0);
+	M44$set$LM44$N($this, 0);
 	$this.m11 = x$0;
 	$this.m22 = y$0;
 	$this.m33 = z$0;
@@ -6650,7 +6716,7 @@ function M44$setScale_0$LM44$AN($this, v) {
 	return $this;
 };
 
-M44.setScale_0$LM44$AN = M44$setScale_0$LM44$AN;
+M44.setScale$LM44$AN = M44$setScale$LM44$AN;
 
 M44.prototype.setScale$LFloat32Array$ = function (v) {
 	var x$0;
@@ -6659,7 +6725,7 @@ M44.prototype.setScale$LFloat32Array$ = function (v) {
 	x$0 = v[0];
 	y$0 = v[1];
 	z$0 = v[2];
-	M44$set_0$LM44$N(this, 0);
+	M44$set$LM44$N(this, 0);
 	this.m11 = x$0;
 	this.m22 = y$0;
 	this.m33 = z$0;
@@ -6668,14 +6734,14 @@ M44.prototype.setScale$LFloat32Array$ = function (v) {
 };
 
 
-function M44$setScale_0$LM44$LFloat32Array$($this, v) {
+function M44$setScale$LM44$LFloat32Array$($this, v) {
 	var x$0;
 	var y$0;
 	var z$0;
 	x$0 = v[0];
 	y$0 = v[1];
 	z$0 = v[2];
-	M44$set_0$LM44$N($this, 0);
+	M44$set$LM44$N($this, 0);
 	$this.m11 = x$0;
 	$this.m22 = y$0;
 	$this.m33 = z$0;
@@ -6683,12 +6749,12 @@ function M44$setScale_0$LM44$LFloat32Array$($this, v) {
 	return $this;
 };
 
-M44.setScale_0$LM44$LFloat32Array$ = M44$setScale_0$LM44$LFloat32Array$;
+M44.setScale$LM44$LFloat32Array$ = M44$setScale$LM44$LFloat32Array$;
 
 function M44$scale$NNN(x, y, z) {
 	var this$0;
 	this$0 = new M44();
-	M44$set_0$LM44$N(this$0, 0);
+	M44$set$LM44$N(this$0, 0);
 	this$0.m11 = x;
 	this$0.m22 = y;
 	this$0.m33 = z;
@@ -6699,19 +6765,19 @@ function M44$scale$NNN(x, y, z) {
 M44.scale$NNN = M44$scale$NNN;
 
 function M44$scale$LV3$(v) {
-	return M44$setScale_0$LM44$LV3$(new M44(), v);
+	return M44$setScale$LM44$LV3$(new M44(), v);
 };
 
 M44.scale$LV3$ = M44$scale$LV3$;
 
 function M44$scale$AN(v) {
-	return M44$setScale_0$LM44$AN(new M44(), v);
+	return M44$setScale$LM44$AN(new M44(), v);
 };
 
 M44.scale$AN = M44$scale$AN;
 
 function M44$scale$LFloat32Array$(v) {
-	return M44$setScale_0$LM44$LFloat32Array$(new M44(), v);
+	return M44$setScale$LM44$LFloat32Array$(new M44(), v);
 };
 
 M44.scale$LFloat32Array$ = M44$scale$LFloat32Array$;
@@ -6730,7 +6796,7 @@ M44.prototype.setRotation$NNNN = function (rad, x, y, z) {
 	x *= il;
 	y *= il;
 	z *= il;
-	M44$array_0$LM44$(this);
+	M44$array$LM44$(this);
 	(c = Math.cos(rad), s = Math.sin(rad));
 	_c = 1 - c;
 	this.m11 = x * x * _c + c;
@@ -6748,7 +6814,7 @@ M44.prototype.setRotation$NNNN = function (rad, x, y, z) {
 };
 
 
-function M44$setRotation_0$LM44$NNNN($this, rad, x, y, z) {
+function M44$setRotation$LM44$NNNN($this, rad, x, y, z) {
 	var l;
 	var il;
 	var c;
@@ -6762,7 +6828,7 @@ function M44$setRotation_0$LM44$NNNN($this, rad, x, y, z) {
 	x *= il;
 	y *= il;
 	z *= il;
-	M44$array_0$LM44$($this);
+	M44$array$LM44$($this);
 	(c = Math.cos(rad), s = Math.sin(rad));
 	_c = 1 - c;
 	$this.m11 = x * x * _c + c;
@@ -6779,114 +6845,124 @@ function M44$setRotation_0$LM44$NNNN($this, rad, x, y, z) {
 	return $this;
 };
 
-M44.setRotation_0$LM44$NNNN = M44$setRotation_0$LM44$NNNN;
+M44.setRotation$LM44$NNNN = M44$setRotation$LM44$NNNN;
 
 M44.prototype.setRotation$NLV3$ = function (rad, a) {
-	return M44$setRotation_0$LM44$NNNN(this, rad, a.x, a.y, a.z);
+	return M44$setRotation$LM44$NNNN(this, rad, a.x, a.y, a.z);
 };
 
 
-function M44$setRotation_0$LM44$NLV3$($this, rad, a) {
-	return M44$setRotation_0$LM44$NNNN($this, rad, a.x, a.y, a.z);
+function M44$setRotation$LM44$NLV3$($this, rad, a) {
+	return M44$setRotation$LM44$NNNN($this, rad, a.x, a.y, a.z);
 };
 
-M44.setRotation_0$LM44$NLV3$ = M44$setRotation_0$LM44$NLV3$;
+M44.setRotation$LM44$NLV3$ = M44$setRotation$LM44$NLV3$;
 
 M44.prototype.setRotation$NAN = function (rad, a) {
-	return M44$setRotation_0$LM44$NNNN(this, rad, this.m11, this.m21, this.m31);
+	return M44$setRotation$LM44$NNNN(this, rad, this.m11, this.m21, this.m31);
 };
 
 
-function M44$setRotation_0$LM44$NAN($this, rad, a) {
-	return M44$setRotation_0$LM44$NNNN($this, rad, $this.m11, $this.m21, $this.m31);
+function M44$setRotation$LM44$NAN($this, rad, a) {
+	return M44$setRotation$LM44$NNNN($this, rad, $this.m11, $this.m21, $this.m31);
 };
 
-M44.setRotation_0$LM44$NAN = M44$setRotation_0$LM44$NAN;
+M44.setRotation$LM44$NAN = M44$setRotation$LM44$NAN;
 
 M44.prototype.setRotation$NLFloat32Array$ = function (rad, a) {
-	return M44$setRotation_0$LM44$NNNN(this, rad, this.m11, this.m21, this.m31);
+	return M44$setRotation$LM44$NNNN(this, rad, this.m11, this.m21, this.m31);
 };
 
 
-function M44$setRotation_0$LM44$NLFloat32Array$($this, rad, a) {
-	return M44$setRotation_0$LM44$NNNN($this, rad, $this.m11, $this.m21, $this.m31);
+function M44$setRotation$LM44$NLFloat32Array$($this, rad, a) {
+	return M44$setRotation$LM44$NNNN($this, rad, $this.m11, $this.m21, $this.m31);
 };
 
-M44.setRotation_0$LM44$NLFloat32Array$ = M44$setRotation_0$LM44$NLFloat32Array$;
+M44.setRotation$LM44$NLFloat32Array$ = M44$setRotation$LM44$NLFloat32Array$;
 
 function M44$rotation$NNNN(rad, ax, ay, az) {
-	return M44$setRotation_0$LM44$NNNN(new M44(), rad, ax, ay, az);
+	return M44$setRotation$LM44$NNNN(new M44(), rad, ax, ay, az);
 };
 
 M44.rotation$NNNN = M44$rotation$NNNN;
 
 function M44$rotation$NLV3$(rad, axis) {
-	return M44$setRotation_0$LM44$NNNN(new M44(), rad, axis.x, axis.y, axis.z);
+	var this$0;
+	this$0 = new M44();
+	return M44$setRotation$LM44$NNNN(this$0, rad, axis.x, axis.y, axis.z);
 };
 
 M44.rotation$NLV3$ = M44$rotation$NLV3$;
 
 function M44$rotation$NAN(rad, axis) {
-	var setRotation$this$0;
-	return (setRotation$this$0 = new M44(), M44$setRotation_0$LM44$NNNN(setRotation$this$0, rad, setRotation$this$0.m11, setRotation$this$0.m21, setRotation$this$0.m31));
+	var this$0;
+	this$0 = new M44();
+	return M44$setRotation$LM44$NNNN(this$0, rad, this$0.m11, this$0.m21, this$0.m31);
 };
 
 M44.rotation$NAN = M44$rotation$NAN;
 
 function M44$rotation$NLFloat32Array$(rad, axis) {
-	var setRotation$this$0;
-	return (setRotation$this$0 = new M44(), M44$setRotation_0$LM44$NNNN(setRotation$this$0, rad, setRotation$this$0.m11, setRotation$this$0.m21, setRotation$this$0.m31));
+	var this$0;
+	this$0 = new M44();
+	return M44$setRotation$LM44$NNNN(this$0, rad, this$0.m11, this$0.m21, this$0.m31);
 };
 
 M44.rotation$NLFloat32Array$ = M44$rotation$NLFloat32Array$;
 
 M44.prototype.setRotationX$N = function (rad) {
-	return M44$setRotation_0$LM44$NNNN(this, rad, 1, 0, 0);
+	return M44$setRotation$LM44$NNNN(this, rad, 1, 0, 0);
 };
 
 
-function M44$setRotationX_0$LM44$N($this, rad) {
-	return M44$setRotation_0$LM44$NNNN($this, rad, 1, 0, 0);
+function M44$setRotationX$LM44$N($this, rad) {
+	return M44$setRotation$LM44$NNNN($this, rad, 1, 0, 0);
 };
 
-M44.setRotationX_0$LM44$N = M44$setRotationX_0$LM44$N;
+M44.setRotationX$LM44$N = M44$setRotationX$LM44$N;
 
 M44.prototype.setRotationY$N = function (rad) {
-	return M44$setRotation_0$LM44$NNNN(this, rad, 0, 1, 0);
+	return M44$setRotation$LM44$NNNN(this, rad, 0, 1, 0);
 };
 
 
-function M44$setRotationY_0$LM44$N($this, rad) {
-	return M44$setRotation_0$LM44$NNNN($this, rad, 0, 1, 0);
+function M44$setRotationY$LM44$N($this, rad) {
+	return M44$setRotation$LM44$NNNN($this, rad, 0, 1, 0);
 };
 
-M44.setRotationY_0$LM44$N = M44$setRotationY_0$LM44$N;
+M44.setRotationY$LM44$N = M44$setRotationY$LM44$N;
 
 M44.prototype.setRotationZ$N = function (rad) {
-	return M44$setRotation_0$LM44$NNNN(this, rad, 0, 0, 1);
+	return M44$setRotation$LM44$NNNN(this, rad, 0, 0, 1);
 };
 
 
-function M44$setRotationZ_0$LM44$N($this, rad) {
-	return M44$setRotation_0$LM44$NNNN($this, rad, 0, 0, 1);
+function M44$setRotationZ$LM44$N($this, rad) {
+	return M44$setRotation$LM44$NNNN($this, rad, 0, 0, 1);
 };
 
-M44.setRotationZ_0$LM44$N = M44$setRotationZ_0$LM44$N;
+M44.setRotationZ$LM44$N = M44$setRotationZ$LM44$N;
 
 function M44$rotationX$N(rad) {
-	return M44$setRotation_0$LM44$NNNN(new M44(), rad, 1, 0, 0);
+	var this$0;
+	this$0 = new M44();
+	return M44$setRotation$LM44$NNNN(this$0, rad, 1, 0, 0);
 };
 
 M44.rotationX$N = M44$rotationX$N;
 
 function M44$rotationY$N(rad) {
-	return M44$setRotation_0$LM44$NNNN(new M44(), rad, 0, 1, 0);
+	var this$0;
+	this$0 = new M44();
+	return M44$setRotation$LM44$NNNN(this$0, rad, 0, 1, 0);
 };
 
 M44.rotationY$N = M44$rotationY$N;
 
 function M44$rotationZ$N(rad) {
-	return M44$setRotation_0$LM44$NNNN(new M44(), rad, 0, 0, 1);
+	var this$0;
+	this$0 = new M44();
+	return M44$setRotation$LM44$NNNN(this$0, rad, 0, 0, 1);
 };
 
 M44.rotationZ$N = M44$rotationZ$N;
@@ -6895,7 +6971,7 @@ M44.prototype.setFrustum$NNNNNN = function (l, r, b, t, n, f) {
 	var rl;
 	var tb;
 	var fn;
-	M44$array_0$LM44$(this);
+	M44$array$LM44$(this);
 	(rl = r - l, tb = t - b, fn = f - n);
 	this.m11 = 2 * n / rl;
 	this.m22 = 2 * n / tb;
@@ -6909,11 +6985,11 @@ M44.prototype.setFrustum$NNNNNN = function (l, r, b, t, n, f) {
 };
 
 
-function M44$setFrustum_0$LM44$NNNNNN($this, l, r, b, t, n, f) {
+function M44$setFrustum$LM44$NNNNNN($this, l, r, b, t, n, f) {
 	var rl;
 	var tb;
 	var fn;
-	M44$array_0$LM44$($this);
+	M44$array$LM44$($this);
 	(rl = r - l, tb = t - b, fn = f - n);
 	$this.m11 = 2 * n / rl;
 	$this.m22 = 2 * n / tb;
@@ -6926,10 +7002,10 @@ function M44$setFrustum_0$LM44$NNNNNN($this, l, r, b, t, n, f) {
 	return $this;
 };
 
-M44.setFrustum_0$LM44$NNNNNN = M44$setFrustum_0$LM44$NNNNNN;
+M44.setFrustum$LM44$NNNNNN = M44$setFrustum$LM44$NNNNNN;
 
 function M44$frustum$NNNNNN(l, r, b, t, n, f) {
-	return M44$setFrustum_0$LM44$NNNNNN(new M44(), l, r, b, t, n, f);
+	return M44$setFrustum$LM44$NNNNNN(new M44(), l, r, b, t, n, f);
 };
 
 M44.frustum$NNNNNN = M44$frustum$NNNNNN;
@@ -6938,7 +7014,7 @@ M44.prototype.setOrtho$NNNNNN = function (l, r, b, t, n, f) {
 	var rl;
 	var tb;
 	var fn;
-	M44$array_0$LM44$(this);
+	M44$array$LM44$(this);
 	(rl = r - l, tb = t - b, fn = f - n);
 	this.m11 = 2 / rl;
 	this.m22 = 2 / tb;
@@ -6952,11 +7028,11 @@ M44.prototype.setOrtho$NNNNNN = function (l, r, b, t, n, f) {
 };
 
 
-function M44$setOrtho_0$LM44$NNNNNN($this, l, r, b, t, n, f) {
+function M44$setOrtho$LM44$NNNNNN($this, l, r, b, t, n, f) {
 	var rl;
 	var tb;
 	var fn;
-	M44$array_0$LM44$($this);
+	M44$array$LM44$($this);
 	(rl = r - l, tb = t - b, fn = f - n);
 	$this.m11 = 2 / rl;
 	$this.m22 = 2 / tb;
@@ -6969,16 +7045,16 @@ function M44$setOrtho_0$LM44$NNNNNN($this, l, r, b, t, n, f) {
 	return $this;
 };
 
-M44.setOrtho_0$LM44$NNNNNN = M44$setOrtho_0$LM44$NNNNNN;
+M44.setOrtho$LM44$NNNNNN = M44$setOrtho$LM44$NNNNNN;
 
 function M44$ortho$NNNNNN(l, r, b, t, n, f) {
-	return M44$setOrtho_0$LM44$NNNNNN(new M44(), l, r, b, t, n, f);
+	return M44$setOrtho$LM44$NNNNNN(new M44(), l, r, b, t, n, f);
 };
 
 M44.ortho$NNNNNN = M44$ortho$NNNNNN;
 
 M44.prototype.toString = function () {
-	return "M44" + JSON.stringify(M44$array_0$LM44$(this));
+	return "M44" + JSON.stringify(M44$array$LM44$(this));
 };
 
 
@@ -7027,22 +7103,22 @@ Quat.prototype.array$ = function () {
 };
 
 
-function Quat$array_0$LQuat$($this) {
+function Quat$array$LQuat$($this) {
 	return [ $this.w, $this.x, $this.y, $this.z ];
 };
 
-Quat.array_0$LQuat$ = Quat$array_0$LQuat$;
+Quat.array$LQuat$ = Quat$array$LQuat$;
 
 Quat.prototype.clone$ = function () {
 	return new Quat$0(this);
 };
 
 
-function Quat$clone_0$LQuat$($this) {
+function Quat$clone$LQuat$($this) {
 	return new Quat$0($this);
 };
 
-Quat.clone_0$LQuat$ = Quat$clone_0$LQuat$;
+Quat.clone$LQuat$ = Quat$clone$LQuat$;
 
 Quat.prototype.setZero$ = function () {
 	this.w = 0;
@@ -7053,7 +7129,7 @@ Quat.prototype.setZero$ = function () {
 };
 
 
-function Quat$setZero_0$LQuat$($this) {
+function Quat$setZero$LQuat$($this) {
 	$this.w = 0;
 	$this.x = 0;
 	$this.y = 0;
@@ -7061,7 +7137,7 @@ function Quat$setZero_0$LQuat$($this) {
 	return $this;
 };
 
-Quat.setZero_0$LQuat$ = Quat$setZero_0$LQuat$;
+Quat.setZero$LQuat$ = Quat$setZero$LQuat$;
 
 Quat.prototype.setIdentity$ = function () {
 	this.w = 1;
@@ -7072,7 +7148,7 @@ Quat.prototype.setIdentity$ = function () {
 };
 
 
-function Quat$setIdentity_0$LQuat$($this) {
+function Quat$setIdentity$LQuat$($this) {
 	$this.w = 1;
 	$this.x = 0;
 	$this.y = 0;
@@ -7080,7 +7156,7 @@ function Quat$setIdentity_0$LQuat$($this) {
 	return $this;
 };
 
-Quat.setIdentity_0$LQuat$ = Quat$setIdentity_0$LQuat$;
+Quat.setIdentity$LQuat$ = Quat$setIdentity$LQuat$;
 
 function Quat$zero$() {
 	var this$0;
@@ -7115,7 +7191,7 @@ Quat.prototype.set$NNNN = function (w, x, y, z) {
 };
 
 
-function Quat$set_0$LQuat$NNNN($this, w, x, y, z) {
+function Quat$set$LQuat$NNNN($this, w, x, y, z) {
 	$this.w = w;
 	$this.x = x;
 	$this.y = y;
@@ -7123,7 +7199,7 @@ function Quat$set_0$LQuat$NNNN($this, w, x, y, z) {
 	return $this;
 };
 
-Quat.set_0$LQuat$NNNN = Quat$set_0$LQuat$NNNN;
+Quat.set$LQuat$NNNN = Quat$set$LQuat$NNNN;
 
 Quat.prototype.set$LQuat$ = function (q) {
 	this.w = q.w;
@@ -7134,7 +7210,7 @@ Quat.prototype.set$LQuat$ = function (q) {
 };
 
 
-function Quat$set_0$LQuat$LQuat$($this, q) {
+function Quat$set$LQuat$LQuat$($this, q) {
 	$this.w = q.w;
 	$this.x = q.x;
 	$this.y = q.y;
@@ -7142,7 +7218,7 @@ function Quat$set_0$LQuat$LQuat$($this, q) {
 	return $this;
 };
 
-Quat.set_0$LQuat$LQuat$ = Quat$set_0$LQuat$LQuat$;
+Quat.set$LQuat$LQuat$ = Quat$set$LQuat$LQuat$;
 
 Quat.prototype.set$AN = function (q) {
 	this.w = q[0];
@@ -7153,7 +7229,7 @@ Quat.prototype.set$AN = function (q) {
 };
 
 
-function Quat$set_0$LQuat$AN($this, q) {
+function Quat$set$LQuat$AN($this, q) {
 	$this.w = q[0];
 	$this.x = q[1];
 	$this.y = q[2];
@@ -7161,7 +7237,7 @@ function Quat$set_0$LQuat$AN($this, q) {
 	return $this;
 };
 
-Quat.set_0$LQuat$AN = Quat$set_0$LQuat$AN;
+Quat.set$LQuat$AN = Quat$set$LQuat$AN;
 
 Quat.prototype.set$LFloat32Array$ = function (q) {
 	this.w = q[0];
@@ -7172,7 +7248,7 @@ Quat.prototype.set$LFloat32Array$ = function (q) {
 };
 
 
-function Quat$set_0$LQuat$LFloat32Array$($this, q) {
+function Quat$set$LQuat$LFloat32Array$($this, q) {
 	$this.w = q[0];
 	$this.x = q[1];
 	$this.y = q[2];
@@ -7180,7 +7256,7 @@ function Quat$set_0$LQuat$LFloat32Array$($this, q) {
 	return $this;
 };
 
-Quat.set_0$LQuat$LFloat32Array$ = Quat$set_0$LQuat$LFloat32Array$;
+Quat.set$LQuat$LFloat32Array$ = Quat$set$LQuat$LFloat32Array$;
 
 Quat.prototype.set$NLV3$ = function (w, v) {
 	this.w = w;
@@ -7191,7 +7267,7 @@ Quat.prototype.set$NLV3$ = function (w, v) {
 };
 
 
-function Quat$set_0$LQuat$NLV3$($this, w, v) {
+function Quat$set$LQuat$NLV3$($this, w, v) {
 	$this.w = w;
 	$this.x = v.x;
 	$this.y = v.y;
@@ -7199,48 +7275,48 @@ function Quat$set_0$LQuat$NLV3$($this, w, v) {
 	return $this;
 };
 
-Quat.set_0$LQuat$NLV3$ = Quat$set_0$LQuat$NLV3$;
+Quat.set$LQuat$NLV3$ = Quat$set$LQuat$NLV3$;
 
 Quat.prototype.equals$LQuat$ = function (q) {
-	return Quat$equals_0$LQuat$LQuat$N(this, q, 0.000001);
+	return Quat$equals$LQuat$LQuat$N(this, q, 0.000001);
 };
 
 
-function Quat$equals_0$LQuat$LQuat$($this, q) {
-	return Quat$equals_0$LQuat$LQuat$N($this, q, 0.000001);
+function Quat$equals$LQuat$LQuat$($this, q) {
+	return Quat$equals$LQuat$LQuat$N($this, q, 0.000001);
 };
 
-Quat.equals_0$LQuat$LQuat$ = Quat$equals_0$LQuat$LQuat$;
+Quat.equals$LQuat$LQuat$ = Quat$equals$LQuat$LQuat$;
 
 Quat.prototype.equals$LQuat$N = function (q, eps) {
-	var abs$x$0;
-	var abs$x$1;
-	var abs$x$2;
-	var abs$x$3;
-	return ((abs$x$0 = this.w - q.w, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) >= eps ? false : (abs$x$1 = this.x - q.x, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) >= eps ? false : (abs$x$2 = this.y - q.y, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) >= eps ? false : (abs$x$3 = this.z - q.z, abs$x$3 >= 0 ? abs$x$3 : - abs$x$3) >= eps ? false : true);
+	var x$0;
+	var x$1;
+	var x$2;
+	var x$3;
+	return ((x$0 = this.w - q.w, x$0 >= 0 ? x$0 : - x$0) >= eps ? false : (x$1 = this.x - q.x, x$1 >= 0 ? x$1 : - x$1) >= eps ? false : (x$2 = this.y - q.y, x$2 >= 0 ? x$2 : - x$2) >= eps ? false : (x$3 = this.z - q.z, x$3 >= 0 ? x$3 : - x$3) >= eps ? false : true);
 };
 
 
-function Quat$equals_0$LQuat$LQuat$N($this, q, eps) {
-	var abs$x$0;
-	var abs$x$1;
-	var abs$x$2;
-	var abs$x$3;
-	return ((abs$x$0 = $this.w - q.w, abs$x$0 >= 0 ? abs$x$0 : - abs$x$0) >= eps ? false : (abs$x$1 = $this.x - q.x, abs$x$1 >= 0 ? abs$x$1 : - abs$x$1) >= eps ? false : (abs$x$2 = $this.y - q.y, abs$x$2 >= 0 ? abs$x$2 : - abs$x$2) >= eps ? false : (abs$x$3 = $this.z - q.z, abs$x$3 >= 0 ? abs$x$3 : - abs$x$3) >= eps ? false : true);
+function Quat$equals$LQuat$LQuat$N($this, q, eps) {
+	var x$0;
+	var x$1;
+	var x$2;
+	var x$3;
+	return ((x$0 = $this.w - q.w, x$0 >= 0 ? x$0 : - x$0) >= eps ? false : (x$1 = $this.x - q.x, x$1 >= 0 ? x$1 : - x$1) >= eps ? false : (x$2 = $this.y - q.y, x$2 >= 0 ? x$2 : - x$2) >= eps ? false : (x$3 = $this.z - q.z, x$3 >= 0 ? x$3 : - x$3) >= eps ? false : true);
 };
 
-Quat.equals_0$LQuat$LQuat$N = Quat$equals_0$LQuat$LQuat$N;
+Quat.equals$LQuat$LQuat$N = Quat$equals$LQuat$LQuat$N;
 
 Quat.prototype.dot$LQuat$ = function (q) {
 	return this.w * q.w + this.x * q.x + this.y * q.y + this.z * q.z;
 };
 
 
-function Quat$dot_0$LQuat$LQuat$($this, q) {
+function Quat$dot$LQuat$LQuat$($this, q) {
 	return $this.w * q.w + $this.x * q.x + $this.y * q.y + $this.z * q.z;
 };
 
-Quat.dot_0$LQuat$LQuat$ = Quat$dot_0$LQuat$LQuat$;
+Quat.dot$LQuat$LQuat$ = Quat$dot$LQuat$LQuat$;
 
 Quat.prototype.inverse$ = function () {
 	var q0;
@@ -7263,7 +7339,7 @@ Quat.prototype.inverse$ = function () {
 };
 
 
-function Quat$inverse_0$LQuat$($this) {
+function Quat$inverse$LQuat$($this) {
 	var q0;
 	var q1;
 	var q2;
@@ -7283,7 +7359,7 @@ function Quat$inverse_0$LQuat$($this) {
 	return $this;
 };
 
-Quat.inverse_0$LQuat$ = Quat$inverse_0$LQuat$;
+Quat.inverse$LQuat$ = Quat$inverse$LQuat$;
 
 Quat.prototype.conjugate$ = function () {
 	this.x *= -1;
@@ -7293,25 +7369,25 @@ Quat.prototype.conjugate$ = function () {
 };
 
 
-function Quat$conjugate_0$LQuat$($this) {
+function Quat$conjugate$LQuat$($this) {
 	$this.x *= -1;
 	$this.y *= -1;
 	$this.z *= -1;
 	return $this;
 };
 
-Quat.conjugate_0$LQuat$ = Quat$conjugate_0$LQuat$;
+Quat.conjugate$LQuat$ = Quat$conjugate$LQuat$;
 
 Quat.prototype.len$ = function () {
-	return Math.sqrt(Quat$len2_0$LQuat$(this));
+	return Math.sqrt(Quat$len2$LQuat$(this));
 };
 
 
-function Quat$len_0$LQuat$($this) {
-	return Math.sqrt(Quat$len2_0$LQuat$($this));
+function Quat$len$LQuat$($this) {
+	return Math.sqrt(Quat$len2$LQuat$($this));
 };
 
-Quat.len_0$LQuat$ = Quat$len_0$LQuat$;
+Quat.len$LQuat$ = Quat$len$LQuat$;
 
 Quat.prototype.len2$ = function () {
 	var w;
@@ -7323,7 +7399,7 @@ Quat.prototype.len2$ = function () {
 };
 
 
-function Quat$len2_0$LQuat$($this) {
+function Quat$len2$LQuat$($this) {
 	var w;
 	var x;
 	var y;
@@ -7332,7 +7408,7 @@ function Quat$len2_0$LQuat$($this) {
 	return w * w + x * x + y * y + z * z;
 };
 
-Quat.len2_0$LQuat$ = Quat$len2_0$LQuat$;
+Quat.len2$LQuat$ = Quat$len2$LQuat$;
 
 Quat.prototype.normalize$ = function () {
 	var w;
@@ -7355,7 +7431,7 @@ Quat.prototype.normalize$ = function () {
 };
 
 
-function Quat$normalize_0$LQuat$($this) {
+function Quat$normalize$LQuat$($this) {
 	var w;
 	var x;
 	var y;
@@ -7375,7 +7451,7 @@ function Quat$normalize_0$LQuat$($this) {
 	return $this;
 };
 
-Quat.normalize_0$LQuat$ = Quat$normalize_0$LQuat$;
+Quat.normalize$LQuat$ = Quat$normalize$LQuat$;
 
 Quat.prototype.add$LQuat$ = function (q) {
 	this.w += q.w;
@@ -7386,7 +7462,7 @@ Quat.prototype.add$LQuat$ = function (q) {
 };
 
 
-function Quat$add_0$LQuat$LQuat$($this, q) {
+function Quat$add$LQuat$LQuat$($this, q) {
 	$this.w += q.w;
 	$this.x += q.x;
 	$this.y += q.y;
@@ -7394,7 +7470,7 @@ function Quat$add_0$LQuat$LQuat$($this, q) {
 	return $this;
 };
 
-Quat.add_0$LQuat$LQuat$ = Quat$add_0$LQuat$LQuat$;
+Quat.add$LQuat$LQuat$ = Quat$add$LQuat$LQuat$;
 
 Quat.prototype.sub$LQuat$ = function (q) {
 	this.w -= q.w;
@@ -7405,7 +7481,7 @@ Quat.prototype.sub$LQuat$ = function (q) {
 };
 
 
-function Quat$sub_0$LQuat$LQuat$($this, q) {
+function Quat$sub$LQuat$LQuat$($this, q) {
 	$this.w -= q.w;
 	$this.x -= q.x;
 	$this.y -= q.y;
@@ -7413,7 +7489,7 @@ function Quat$sub_0$LQuat$LQuat$($this, q) {
 	return $this;
 };
 
-Quat.sub_0$LQuat$LQuat$ = Quat$sub_0$LQuat$LQuat$;
+Quat.sub$LQuat$LQuat$ = Quat$sub$LQuat$LQuat$;
 
 Quat.prototype.mul$LQuat$ = function (q) {
 	var aw;
@@ -7434,7 +7510,7 @@ Quat.prototype.mul$LQuat$ = function (q) {
 };
 
 
-function Quat$mul_0$LQuat$LQuat$($this, q) {
+function Quat$mul$LQuat$LQuat$($this, q) {
 	var aw;
 	var ax;
 	var ay;
@@ -7452,7 +7528,7 @@ function Quat$mul_0$LQuat$LQuat$($this, q) {
 	return $this;
 };
 
-Quat.mul_0$LQuat$LQuat$ = Quat$mul_0$LQuat$LQuat$;
+Quat.mul$LQuat$LQuat$ = Quat$mul$LQuat$LQuat$;
 
 Quat.prototype.mul$N = function (s) {
 	this.w *= s;
@@ -7463,7 +7539,7 @@ Quat.prototype.mul$N = function (s) {
 };
 
 
-function Quat$mul_0$LQuat$N($this, s) {
+function Quat$mul$LQuat$N($this, s) {
 	$this.w *= s;
 	$this.x *= s;
 	$this.y *= s;
@@ -7471,7 +7547,7 @@ function Quat$mul_0$LQuat$N($this, s) {
 	return $this;
 };
 
-Quat.mul_0$LQuat$N = Quat$mul_0$LQuat$N;
+Quat.mul$LQuat$N = Quat$mul$LQuat$N;
 
 Quat.prototype.slerp$LQuat$LQuat$N = function (q0, q1, slerp) {
 	var aw;
@@ -7512,7 +7588,7 @@ Quat.prototype.slerp$LQuat$LQuat$N = function (q0, q1, slerp) {
 };
 
 
-function Quat$slerp_0$LQuat$LQuat$LQuat$N($this, q0, q1, slerp) {
+function Quat$slerp$LQuat$LQuat$LQuat$N($this, q0, q1, slerp) {
 	var aw;
 	var ax;
 	var ay;
@@ -7550,7 +7626,7 @@ function Quat$slerp_0$LQuat$LQuat$LQuat$N($this, q0, q1, slerp) {
 	return $this;
 };
 
-Quat.slerp_0$LQuat$LQuat$LQuat$N = Quat$slerp_0$LQuat$LQuat$LQuat$N;
+Quat.slerp$LQuat$LQuat$LQuat$N = Quat$slerp$LQuat$LQuat$LQuat$N;
 
 Quat.prototype.toString = function () {
 	return "Quat" + JSON.stringify([ this.w, this.x, this.y, this.z ]);
@@ -7654,7 +7730,7 @@ function Kingyo() {
 	this._color = [ 0.7, 0, 0 ];
 	this._color2 = [ 0.7, 0, 0 ];
 	this._color2pos = [ 0, 0, 0, 0 ];
-	Kingyo$init_0$LKingyo$(this);
+	Kingyo$init$LKingyo$(this);
 	if (Math.random() < 0.3) {
 		this._color2 = [ 0.7, 0.7, 0.8 ];
 		this._color2pos = [ 2 * Math.random() - 1, 2 * Math.random() - 1, 2 * Math.random() - 1, 0.5 * Math.random() + 0.5 ];
@@ -7672,13 +7748,28 @@ function Kingyo$initWithGL$LWebGLRenderingContext$(gl) {
 	var ex;
 	var ey;
 	var ez;
+	var this$0;
+	var gl$0$0;
+	var buf$0$0;
+	var this$1;
+	var gl$0$1;
+	var buf$0$1;
+	var this$2;
+	var gl$0$2;
+	var buf$0$2;
+	var this$3;
+	var gl$0$3;
+	var buf$0$3;
+	var this$4;
+	var gl$0$4;
+	var buf$0$4;
 	Kingyo.gl = gl;
 	Kingyo.prog = Util$getProgram$SS('kbody.vs', 'kbody.fs');
-	Kingyo.body = _Part$setIndex$L_Part$AI(_Part$setNormal$L_Part$AN(_Part$setVertex$L_Part$AN(({vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0}), [ 0, 0, 1, 0.7, 0, 0, 0, 1, 0, -0.7, 0, 0, 0, -1, 0, 0, 0, -1 ]), [ 0, 0, 1, 1, 0, 0, 0, 1, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1 ]), [ 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 1, 5, 2, 1, 5, 3, 2, 5, 4, 3, 5, 1, 4 ]);
-	Kingyo.lfin = _Part$setIndex$L_Part$AI(_Part$setNormal$L_Part$AN(_Part$setVertex$L_Part$AN(({vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0}), [ 0, 0, 0, 0.5, -0.25, 0, 0.8, 0.25, 0 ]), [ 0, 0, 1, 0, 0, 1, 0, 0, 1 ]), [ 0, 1, 2 ]);
-	Kingyo.rfin = _Part$setIndex$L_Part$AI(_Part$setNormal$L_Part$AN(_Part$setVertex$L_Part$AN(({vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0}), [ 0, 0, 0, -0.8, 0.25, 0, -0.5, -0.25, 0 ]), [ 0, 0, 1, 0, 0, 1, 0, 0, 1 ]), [ 0, 1, 2 ]);
-	Kingyo.bfin = _Part$setIndex$L_Part$AI(_Part$setNormal$L_Part$AN(_Part$setVertex$L_Part$AN(({vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0}), [ 0, 0, 0, 0, -0.5, -1, 0, 0.5, -0.8 ]), [ 1, 0, 0, 1, 0, 0, 1, 0, 0 ]), [ 0, 1, 2 ]);
-	Kingyo.tfin = _Part$setIndex$L_Part$AI(_Part$setNormal$L_Part$AN(_Part$setVertex$L_Part$AN(({vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0}), [ 0, 0, 0, 0.8, -0.5, -1, 0, 0.4, -0.8, -0.8, -0.5, -1 ]), [ 0, 1, 1, 1, 1, 1, 0, 1, 0, -1, 1, 1 ]), [ 0, 1, 2, 0, 2, 3 ]);
+	Kingyo.body = _Part$setIndex$L_Part$AI((this$0 = _Part$setVertex$L_Part$AN(({vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0}), [ 0, 0, 1, 0.7, 0, 0, 0, 1, 0, -0.7, 0, 0, 0, -1, 0, 0, 0, -1 ]), gl$0$0 = Kingyo.gl, buf$0$0 = gl$0$0.createBuffer(), gl$0$0.bindBuffer(gl$0$0.ARRAY_BUFFER, buf$0$0), gl$0$0.bufferData(gl$0$0.ARRAY_BUFFER, new Float32Array([ 0, 0, 1, 1, 0, 0, 0, 1, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1 ]), gl$0$0.STATIC_DRAW), this$0.nbuf = buf$0$0, this$0), [ 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 1, 5, 2, 1, 5, 3, 2, 5, 4, 3, 5, 1, 4 ]);
+	Kingyo.lfin = _Part$setIndex$L_Part$AI((this$1 = _Part$setVertex$L_Part$AN(({vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0}), [ 0, 0, 0, 0.5, -0.25, 0, 0.8, 0.25, 0 ]), gl$0$1 = Kingyo.gl, buf$0$1 = gl$0$1.createBuffer(), gl$0$1.bindBuffer(gl$0$1.ARRAY_BUFFER, buf$0$1), gl$0$1.bufferData(gl$0$1.ARRAY_BUFFER, new Float32Array([ 0, 0, 1, 0, 0, 1, 0, 0, 1 ]), gl$0$1.STATIC_DRAW), this$1.nbuf = buf$0$1, this$1), [ 0, 1, 2 ]);
+	Kingyo.rfin = _Part$setIndex$L_Part$AI((this$2 = _Part$setVertex$L_Part$AN(({vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0}), [ 0, 0, 0, -0.8, 0.25, 0, -0.5, -0.25, 0 ]), gl$0$2 = Kingyo.gl, buf$0$2 = gl$0$2.createBuffer(), gl$0$2.bindBuffer(gl$0$2.ARRAY_BUFFER, buf$0$2), gl$0$2.bufferData(gl$0$2.ARRAY_BUFFER, new Float32Array([ 0, 0, 1, 0, 0, 1, 0, 0, 1 ]), gl$0$2.STATIC_DRAW), this$2.nbuf = buf$0$2, this$2), [ 0, 1, 2 ]);
+	Kingyo.bfin = _Part$setIndex$L_Part$AI((this$3 = _Part$setVertex$L_Part$AN(({vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0}), [ 0, 0, 0, 0, -0.5, -1, 0, 0.5, -0.8 ]), gl$0$3 = Kingyo.gl, buf$0$3 = gl$0$3.createBuffer(), gl$0$3.bindBuffer(gl$0$3.ARRAY_BUFFER, buf$0$3), gl$0$3.bufferData(gl$0$3.ARRAY_BUFFER, new Float32Array([ 1, 0, 0, 1, 0, 0, 1, 0, 0 ]), gl$0$3.STATIC_DRAW), this$3.nbuf = buf$0$3, this$3), [ 0, 1, 2 ]);
+	Kingyo.tfin = _Part$setIndex$L_Part$AI((this$4 = _Part$setVertex$L_Part$AN(({vbuf: null, nbuf: null, ibuf: null, numv: 0, numi: 0}), [ 0, 0, 0, 0.8, -0.5, -1, 0, 0.4, -0.8, -0.8, -0.5, -1 ]), gl$0$4 = Kingyo.gl, buf$0$4 = gl$0$4.createBuffer(), gl$0$4.bindBuffer(gl$0$4.ARRAY_BUFFER, buf$0$4), gl$0$4.bufferData(gl$0$4.ARRAY_BUFFER, new Float32Array([ 0, 1, 1, 1, 1, 1, 0, 1, 0, -1, 1, 1 ]), gl$0$4.STATIC_DRAW), this$4.nbuf = buf$0$4, this$4), [ 0, 1, 2, 0, 2, 3 ]);
 	Kingyo.ulocs = Util$getUniformLocations$LWebGLProgram$(Kingyo.prog);
 	Kingyo.alocs = Util$getAttribLocations$LWebGLProgram$(Kingyo.prog);
 	Kingyo.eyeProg = Util$getProgram$SS('keye.vs', 'keye.fs');
@@ -7702,7 +7793,7 @@ Kingyo.init$I = Kingyo$init$I;
 function Kingyo$reset$() {
 	var i;
 	for (i = 0; i < Kingyo.all.length; ++ i) {
-		Kingyo$init_0$LKingyo$(Kingyo.all[i]);
+		Kingyo$init$LKingyo$(Kingyo.all[i]);
 	}
 };
 
@@ -7730,7 +7821,7 @@ function Kingyo$update$N(t) {
 	}
 	dt = t - Kingyo.prevTime;
 	for (i = 0; i < Kingyo.all.length; ++ i) {
-		Kingyo$_update_0$LKingyo$N(Kingyo.all[i], dt);
+		Kingyo$_update$LKingyo$N(Kingyo.all[i], dt);
 	}
 	Kingyo.prevTime = t;
 };
@@ -7765,15 +7856,15 @@ function Kingyo$draw$LM44$LM44$F$LKingyo$B$(projMat, viewMat, pred) {
 	ulocs = Kingyo.ulocs;
 	alocs = Kingyo.alocs;
 	gl.useProgram(Kingyo.prog);
-	gl.uniformMatrix4fv(ulocs.projectionMatrix, false, M44$array_0$LM44$(projMat));
-	gl.uniformMatrix4fv(ulocs.viewMatrix, false, M44$array_0$LM44$(viewMat));
+	gl.uniformMatrix4fv(ulocs.projectionMatrix, false, M44$array$LM44$(projMat));
+	gl.uniformMatrix4fv(ulocs.viewMatrix, false, M44$array$LM44$(viewMat));
 	gl.uniform4fv(ulocs.lightPosition, [ 0, 1, 1, 0 ]);
 	gl.enableVertexAttribArray(alocs.vertex);
 	gl.enableVertexAttribArray(alocs.normal);
 	for (i = 0; i < Kingyo.all.length; ++ i) {
 		k = Kingyo.all[i];
 		if (pred(k)) {
-			Kingyo$_draw_0$LKingyo$(k);
+			Kingyo$_draw$LKingyo$(k);
 		}
 	}
 	gl.disableVertexAttribArray(alocs.vertex);
@@ -7781,8 +7872,8 @@ function Kingyo$draw$LM44$LM44$F$LKingyo$B$(projMat, viewMat, pred) {
 	eulocs = Kingyo.eyeULocs;
 	ealocs = Kingyo.eyeALocs;
 	gl.useProgram(Kingyo.eyeProg);
-	gl.uniformMatrix4fv(eulocs.projectionMatrix, false, M44$array_0$LM44$(projMat));
-	gl.uniformMatrix4fv(eulocs.viewMatrix, false, M44$array_0$LM44$(viewMat));
+	gl.uniformMatrix4fv(eulocs.projectionMatrix, false, M44$array$LM44$(projMat));
+	gl.uniformMatrix4fv(eulocs.viewMatrix, false, M44$array$LM44$(viewMat));
 	gl.uniform4fv(eulocs.lightPosition, [ 0, 1, 1, 0 ]);
 	gl.uniform1f(eulocs.radius, 0.2);
 	gl.bindBuffer(gl.ARRAY_BUFFER, Kingyo.eyes.vbuf);
@@ -7791,7 +7882,7 @@ function Kingyo$draw$LM44$LM44$F$LKingyo$B$(projMat, viewMat, pred) {
 	for (i = 0; i < Kingyo.all.length; ++ i) {
 		k = Kingyo.all[i];
 		if (pred(k)) {
-			Kingyo$_drawEyes_0$LKingyo$(k);
+			Kingyo$_drawEyes$LKingyo$(k);
 		}
 	}
 	gl.disableVertexAttribArray(ealocs.position);
@@ -7828,7 +7919,7 @@ Kingyo.hit$NN = Kingyo$hit$NN;
 function Kingyo$fish$ALKingyo$(kingyos) {
 	var i;
 	for (i = 0; i < kingyos.length; ++ i) {
-		Kingyo$_fished_0$LKingyo$(kingyos[i]);
+		Kingyo$_fished$LKingyo$(kingyos[i]);
 	}
 };
 
@@ -7840,7 +7931,8 @@ Kingyo.prototype.init$ = function () {
 	var y;
 	var this$0;
 	var z$0;
-	var this$1;
+	var this$2;
+	var this$4;
 	this._vangle = Math.random() * 2 * 3.141592653589793;
 	this._velo = Math.random() * 15 + 1;
 	r = 8 * Math.random();
@@ -7853,23 +7945,25 @@ Kingyo.prototype.init$ = function () {
 	this$0.z = z$0;
 	this._anim = 0;
 	this._state = 'swimming';
-	M44$set_0$LM44$N(this._spinMat, 1);
-	this$1 = this._spinAxis;
-	this$1.x = 0;
-	this$1.y = 0;
-	this$1.z = 0;
+	this$2 = this._spinMat;
+	M44$set$LM44$N(this$2, 1);
+	this$4 = this._spinAxis;
+	this$4.x = 0;
+	this$4.y = 0;
+	this$4.z = 0;
 	this._spinSpeed = 0;
 	this._vz = 0;
 };
 
 
-function Kingyo$init_0$LKingyo$($this) {
+function Kingyo$init$LKingyo$($this) {
 	var r;
 	var x;
 	var y;
 	var this$0;
 	var z$0;
-	var this$1;
+	var this$2;
+	var this$4;
 	$this._vangle = Math.random() * 2 * 3.141592653589793;
 	$this._velo = Math.random() * 15 + 1;
 	r = 8 * Math.random();
@@ -7882,16 +7976,17 @@ function Kingyo$init_0$LKingyo$($this) {
 	this$0.z = z$0;
 	$this._anim = 0;
 	$this._state = 'swimming';
-	M44$set_0$LM44$N($this._spinMat, 1);
-	this$1 = $this._spinAxis;
-	this$1.x = 0;
-	this$1.y = 0;
-	this$1.z = 0;
+	this$2 = $this._spinMat;
+	M44$set$LM44$N(this$2, 1);
+	this$4 = $this._spinAxis;
+	this$4.x = 0;
+	this$4.y = 0;
+	this$4.z = 0;
 	$this._spinSpeed = 0;
 	$this._vz = 0;
 };
 
-Kingyo.init_0$LKingyo$ = Kingyo$init_0$LKingyo$;
+Kingyo.init$LKingyo$ = Kingyo$init$LKingyo$;
 
 Kingyo.prototype._setRandom$ = function () {
 	this._vangle = Math.random() * 2 * 3.141592653589793;
@@ -7899,16 +7994,17 @@ Kingyo.prototype._setRandom$ = function () {
 };
 
 
-function Kingyo$_setRandom_0$LKingyo$($this) {
+function Kingyo$_setRandom$LKingyo$($this) {
 	$this._vangle = Math.random() * 2 * 3.141592653589793;
 	$this._velo = Math.random() * 15 + 1;
 };
 
-Kingyo._setRandom_0$LKingyo$ = Kingyo$_setRandom_0$LKingyo$;
+Kingyo._setRandom$LKingyo$ = Kingyo$_setRandom$LKingyo$;
 
 Kingyo.prototype._fished$ = function () {
 	var a;
 	var this$0;
+	var this$2;
 	var x$0;
 	var y$0;
 	var z$0;
@@ -7916,22 +8012,24 @@ Kingyo.prototype._fished$ = function () {
 	this._pos.z = 2;
 	this._vz = 150 + Math.random() * 50;
 	this._velo = 12;
-	M44$set_0$LM44$N(this._spinMat, 1);
+	this$0 = this._spinMat;
+	M44$set$LM44$N(this$0, 1);
 	a = 6.283185307179586 * Math.random();
-	this$0 = this._spinAxis;
+	this$2 = this._spinAxis;
 	x$0 = Math.cos(a);
 	y$0 = Math.sin(a);
 	z$0 = Math.random() - 0.5;
-	this$0.x = x$0;
-	this$0.y = y$0;
-	this$0.z = z$0;
+	this$2.x = x$0;
+	this$2.y = y$0;
+	this$2.z = z$0;
 	this._spinSpeed = 10 * Math.random() + 2;
 };
 
 
-function Kingyo$_fished_0$LKingyo$($this) {
+function Kingyo$_fished$LKingyo$($this) {
 	var a;
 	var this$0;
+	var this$2;
 	var x$0;
 	var y$0;
 	var z$0;
@@ -7939,19 +8037,20 @@ function Kingyo$_fished_0$LKingyo$($this) {
 	$this._pos.z = 2;
 	$this._vz = 150 + Math.random() * 50;
 	$this._velo = 12;
-	M44$set_0$LM44$N($this._spinMat, 1);
+	this$0 = $this._spinMat;
+	M44$set$LM44$N(this$0, 1);
 	a = 6.283185307179586 * Math.random();
-	this$0 = $this._spinAxis;
+	this$2 = $this._spinAxis;
 	x$0 = Math.cos(a);
 	y$0 = Math.sin(a);
 	z$0 = Math.random() - 0.5;
-	this$0.x = x$0;
-	this$0.y = y$0;
-	this$0.z = z$0;
+	this$2.x = x$0;
+	this$2.y = y$0;
+	this$2.z = z$0;
 	$this._spinSpeed = 10 * Math.random() + 2;
 };
 
-Kingyo._fished_0$LKingyo$ = Kingyo$_fished_0$LKingyo$;
+Kingyo._fished$LKingyo$ = Kingyo$_fished$LKingyo$;
 
 Kingyo.prototype._update$N = function (dt) {
 	var x;
@@ -7959,10 +8058,14 @@ Kingyo.prototype._update$N = function (dt) {
 	var b;
 	var num_listed;
 	var i;
-	var setRotation$a$0;
-	var mul$this$0;
 	var this$0;
+	var m$0;
+	var this$3;
 	var x$0;
+	var this$5;
+	var this$7;
+	var rad$1;
+	var a$1;
 	var _pos$0;
 	var _pos$1;
 	var _vz$0;
@@ -7999,7 +8102,12 @@ Kingyo.prototype._update$N = function (dt) {
 	case 'flying':
 		_vz$0 = this._vz -= 300 * dt;
 		(_pos$1 = this._pos).z = _pos$1.z + _vz$0 * dt;
-		(mul$this$0 = this._spinMat, M44$mul_0$LM44$LM44$LM44$(mul$this$0, new M44$0(mul$this$0), (setRotation$a$0 = this._spinAxis, M44$setRotation_0$LM44$NNNN(new M44(), dt * this._spinSpeed, setRotation$a$0.x, setRotation$a$0.y, setRotation$a$0.z))));
+		this$0 = this._spinMat;
+		this$7 = new M44();
+		rad$1 = dt * this._spinSpeed;
+		a$1 = this._spinAxis;
+		m$0 = M44$setRotation$LM44$NNNN(this$7, rad$1, a$1.x, a$1.y, a$1.z);
+		M44$mul$LM44$LM44$LM44$(this$0, new M44$0(this$0), m$0);
 		if (this._pos.z >= 2) {
 			break;
 		}
@@ -8009,13 +8117,14 @@ Kingyo.prototype._update$N = function (dt) {
 				++ num_listed;
 			}
 		}
-		this$0 = this._pos;
+		this$3 = this._pos;
 		x$0 = num_listed * 1.5 - 10 - 4.25;
-		this$0.x = x$0;
-		this$0.y = 13;
-		this$0.z = 2;
+		this$3.x = x$0;
+		this$3.y = 13;
+		this$3.z = 2;
 		this._vangle = 1.5707963267948966;
-		M44$set_0$LM44$N(this._spinMat, 1);
+		this$5 = this._spinMat;
+		M44$set$LM44$N(this$5, 1);
 		this._velo = 2;
 		this._state = 'listed';
 	case 'listed':
@@ -8025,16 +8134,20 @@ Kingyo.prototype._update$N = function (dt) {
 };
 
 
-function Kingyo$_update_0$LKingyo$N($this, dt) {
+function Kingyo$_update$LKingyo$N($this, dt) {
 	var x;
 	var y;
 	var b;
 	var num_listed;
 	var i;
-	var setRotation$a$0;
-	var mul$this$0;
 	var this$0;
+	var m$0;
+	var this$3;
 	var x$0;
+	var this$5;
+	var this$7;
+	var rad$1;
+	var a$1;
 	var _pos$0;
 	var _pos$1;
 	var _vz$0;
@@ -8071,7 +8184,12 @@ function Kingyo$_update_0$LKingyo$N($this, dt) {
 	case 'flying':
 		_vz$0 = $this._vz -= 300 * dt;
 		(_pos$1 = $this._pos).z = _pos$1.z + _vz$0 * dt;
-		(mul$this$0 = $this._spinMat, M44$mul_0$LM44$LM44$LM44$(mul$this$0, new M44$0(mul$this$0), (setRotation$a$0 = $this._spinAxis, M44$setRotation_0$LM44$NNNN(new M44(), dt * $this._spinSpeed, setRotation$a$0.x, setRotation$a$0.y, setRotation$a$0.z))));
+		this$0 = $this._spinMat;
+		this$7 = new M44();
+		rad$1 = dt * $this._spinSpeed;
+		a$1 = $this._spinAxis;
+		m$0 = M44$setRotation$LM44$NNNN(this$7, rad$1, a$1.x, a$1.y, a$1.z);
+		M44$mul$LM44$LM44$LM44$(this$0, new M44$0(this$0), m$0);
 		if ($this._pos.z >= 2) {
 			break;
 		}
@@ -8081,13 +8199,14 @@ function Kingyo$_update_0$LKingyo$N($this, dt) {
 				++ num_listed;
 			}
 		}
-		this$0 = $this._pos;
+		this$3 = $this._pos;
 		x$0 = num_listed * 1.5 - 10 - 4.25;
-		this$0.x = x$0;
-		this$0.y = 13;
-		this$0.z = 2;
+		this$3.x = x$0;
+		this$3.y = 13;
+		this$3.z = 2;
 		$this._vangle = 1.5707963267948966;
-		M44$set_0$LM44$N($this._spinMat, 1);
+		this$5 = $this._spinMat;
+		M44$set$LM44$N(this$5, 1);
 		$this._velo = 2;
 		$this._state = 'listed';
 	case 'listed':
@@ -8096,7 +8215,7 @@ function Kingyo$_update_0$LKingyo$N($this, dt) {
 	$this._anim += dt * $this._velo;
 };
 
-Kingyo._update_0$LKingyo$N = Kingyo$_update_0$LKingyo$N;
+Kingyo._update$LKingyo$N = Kingyo$_update$LKingyo$N;
 
 Kingyo.prototype._draw$ = function () {
 	var gl;
@@ -8107,43 +8226,89 @@ Kingyo.prototype._draw$ = function () {
 	var rfinMat;
 	var bfinMat;
 	var tfinMat;
-	var mul$this$0;
-	var mul$this$1;
-	var mul$this$2;
-	var mul$this$3;
-	var mul$this$4;
-	var mul$this$5;
-	var mul$this$6;
-	var mul$this$7;
-	var mul$this$8;
-	var mul$this$9;
-	var mul$this$10;
-	var mul$this$11;
+	var this$0;
+	var m$0;
+	var this$1;
+	var v$0;
+	var x$0$0;
+	var y$0$0;
+	var z$0$0;
+	var this$2;
+	var m$1;
+	var this$3;
+	var rad$0;
+	var this$4;
+	var m$2;
+	var this$5;
+	var this$9;
+	var m$5;
+	var this$10;
+	var this$13;
+	var m$8;
+	var this$14;
+	var this$17;
+	var m$11;
+	var this$18;
+	var this$21;
+	var m$14;
+	var this$22;
+	var this$25;
+	var m$17;
+	var this$27;
+	var this$29;
+	var m$19;
+	var this$31;
+	var m$21;
+	var this$33;
+	var m$23;
+	var this$35;
+	var m$25;
 	gl = Kingyo.gl;
 	gl.uniform3fv(Kingyo.ulocs.color, this._color);
 	gl.uniform3fv(Kingyo.ulocs.color2, this._color2);
 	gl.uniform4fv(Kingyo.ulocs.color2pos, this._color2pos);
 	modelMatLoc = Kingyo.ulocs.modelMatrix;
 	s = Math.sin(this._anim * 5);
-	bodyMat = (mul$this$3 = (mul$this$2 = (mul$this$1 = (mul$this$0 = M44$setTranslation_0$LM44$LV3$(new M44(), this._pos), M44$mul_0$LM44$LM44$LM44$(mul$this$0, new M44$0(mul$this$0), this._spinMat)), M44$mul_0$LM44$LM44$LM44$(mul$this$1, new M44$0(mul$this$1), M44$setRotation_0$LM44$NNNN(new M44(), this._vangle - s / 10, 0, 0, 1))), M44$mul_0$LM44$LM44$LM44$(mul$this$2, new M44$0(mul$this$2), M44$setRotation_0$LM44$NNNN(new M44(), 1.5707963267948966, 1, 0, 0))), M44$mul_0$LM44$LM44$LM44$(mul$this$3, new M44$0(mul$this$3), M44$setRotation_0$LM44$NNNN(new M44(), 1.5707963267948966, 0, 1, 0)));
-	gl.uniformMatrix4fv(modelMatLoc, false, M44$array_0$LM44$(bodyMat));
-	Kingyo$_drawPart_0$LKingyo$L_Part$(this, Kingyo.body);
-	lfinMat = (mul$this$5 = (mul$this$4 = new M44$0(bodyMat), M44$mul_0$LM44$LM44$LM44$(mul$this$4, new M44$0(mul$this$4), M44$setTranslation_0$LM44$NNN(new M44(), 0.5, -0.3, 0))), M44$mul_0$LM44$LM44$LM44$(mul$this$5, new M44$0(mul$this$5), M44$setRotation_0$LM44$NNNN(new M44(), 1 + s / 2, 0.2, 1, -0.5)));
-	gl.uniformMatrix4fv(modelMatLoc, false, M44$array_0$LM44$(lfinMat));
-	Kingyo$_drawPart_0$LKingyo$L_Part$(this, Kingyo.lfin);
-	rfinMat = (mul$this$7 = (mul$this$6 = new M44$0(bodyMat), M44$mul_0$LM44$LM44$LM44$(mul$this$6, new M44$0(mul$this$6), M44$setTranslation_0$LM44$NNN(new M44(), -0.5, -0.3, 0))), M44$mul_0$LM44$LM44$LM44$(mul$this$7, new M44$0(mul$this$7), M44$setRotation_0$LM44$NNNN(new M44(), -1 - s / 2, -0.2, 1, -0.5)));
-	gl.uniformMatrix4fv(modelMatLoc, false, M44$array_0$LM44$(rfinMat));
-	Kingyo$_drawPart_0$LKingyo$L_Part$(this, Kingyo.rfin);
-	bfinMat = (mul$this$9 = (mul$this$8 = new M44$0(bodyMat), M44$mul_0$LM44$LM44$LM44$(mul$this$8, new M44$0(mul$this$8), M44$setTranslation_0$LM44$NNN(new M44(), 0, 0.7, 0))), M44$mul_0$LM44$LM44$LM44$(mul$this$9, new M44$0(mul$this$9), M44$setRotation_0$LM44$NNNN(new M44(), s / 2, 0, 1, 1)));
-	gl.uniformMatrix4fv(modelMatLoc, false, M44$array_0$LM44$(bfinMat));
-	Kingyo$_drawPart_0$LKingyo$L_Part$(this, Kingyo.bfin);
-	tfinMat = (mul$this$11 = (mul$this$10 = new M44$0(bodyMat), M44$mul_0$LM44$LM44$LM44$(mul$this$10, new M44$0(mul$this$10), M44$setTranslation_0$LM44$NNN(new M44(), 0, 0, -0.7))), M44$mul_0$LM44$LM44$LM44$(mul$this$11, new M44$0(mul$this$11), M44$setRotation_0$LM44$NNNN(new M44(), s / 2, 0, 1, 0)));
-	gl.uniformMatrix4fv(modelMatLoc, false, M44$array_0$LM44$(tfinMat));
-	Kingyo$_drawPart_0$LKingyo$L_Part$(this, Kingyo.tfin);
+	this$25 = (this$4 = (this$2 = (this$1 = new M44(), v$0 = this._pos, x$0$0 = v$0.x, y$0$0 = v$0.y, z$0$0 = v$0.z, M44$set$LM44$N(this$1, 1), this$1.m14 = x$0$0, this$1.m24 = y$0$0, this$1.m34 = z$0$0, this$1), m$1 = this._spinMat, M44$mul$LM44$LM44$LM44$(this$2, new M44$0(this$2), m$1)), m$2 = (this$3 = new M44(), rad$0 = this._vangle - s / 10, M44$setRotation$LM44$NNNN(this$3, rad$0, 0, 0, 1)), M44$mul$LM44$LM44$LM44$(this$4, new M44$0(this$4), m$2));
+	m$17 = (this$5 = new M44(), M44$setRotation$LM44$NNNN(this$5, 1.5707963267948966, 1, 0, 0));
+	this$0 = M44$mul$LM44$LM44$LM44$(this$25, new M44$0(this$25), m$17);
+	this$27 = new M44();
+	m$0 = M44$setRotation$LM44$NNNN(this$27, 1.5707963267948966, 0, 1, 0);
+	bodyMat = M44$mul$LM44$LM44$LM44$(this$0, new M44$0(this$0), m$0);
+	gl.uniformMatrix4fv(modelMatLoc, false, M44$array$LM44$(bodyMat));
+	Kingyo$_drawPart$LKingyo$L_Part$(this, Kingyo.body);
+	this$29 = new M44$0(bodyMat);
+	m$19 = (this$10 = new M44(), M44$set$LM44$N(this$10, 1), this$10.m14 = 0.5, this$10.m24 = -0.3, this$10.m34 = 0, this$10);
+	this$9 = M44$mul$LM44$LM44$LM44$(this$29, new M44$0(this$29), m$19);
+	m$5 = M44$setRotation$LM44$NNNN(new M44(), 1 + s / 2, 0.2, 1, -0.5);
+	lfinMat = M44$mul$LM44$LM44$LM44$(this$9, new M44$0(this$9), m$5);
+	gl.uniformMatrix4fv(modelMatLoc, false, M44$array$LM44$(lfinMat));
+	Kingyo$_drawPart$LKingyo$L_Part$(this, Kingyo.lfin);
+	this$31 = new M44$0(bodyMat);
+	m$21 = (this$14 = new M44(), M44$set$LM44$N(this$14, 1), this$14.m14 = -0.5, this$14.m24 = -0.3, this$14.m34 = 0, this$14);
+	this$13 = M44$mul$LM44$LM44$LM44$(this$31, new M44$0(this$31), m$21);
+	m$8 = M44$setRotation$LM44$NNNN(new M44(), -1 - s / 2, -0.2, 1, -0.5);
+	rfinMat = M44$mul$LM44$LM44$LM44$(this$13, new M44$0(this$13), m$8);
+	gl.uniformMatrix4fv(modelMatLoc, false, M44$array$LM44$(rfinMat));
+	Kingyo$_drawPart$LKingyo$L_Part$(this, Kingyo.rfin);
+	this$33 = new M44$0(bodyMat);
+	m$23 = (this$18 = new M44(), M44$set$LM44$N(this$18, 1), this$18.m14 = 0, this$18.m24 = 0.7, this$18.m34 = 0, this$18);
+	this$17 = M44$mul$LM44$LM44$LM44$(this$33, new M44$0(this$33), m$23);
+	m$11 = M44$setRotation$LM44$NNNN(new M44(), s / 2, 0, 1, 1);
+	bfinMat = M44$mul$LM44$LM44$LM44$(this$17, new M44$0(this$17), m$11);
+	gl.uniformMatrix4fv(modelMatLoc, false, M44$array$LM44$(bfinMat));
+	Kingyo$_drawPart$LKingyo$L_Part$(this, Kingyo.bfin);
+	this$35 = new M44$0(bodyMat);
+	m$25 = (this$22 = new M44(), M44$set$LM44$N(this$22, 1), this$22.m14 = 0, this$22.m24 = 0, this$22.m34 = -0.7, this$22);
+	this$21 = M44$mul$LM44$LM44$LM44$(this$35, new M44$0(this$35), m$25);
+	m$14 = M44$setRotation$LM44$NNNN(new M44(), s / 2, 0, 1, 0);
+	tfinMat = M44$mul$LM44$LM44$LM44$(this$21, new M44$0(this$21), m$14);
+	gl.uniformMatrix4fv(modelMatLoc, false, M44$array$LM44$(tfinMat));
+	Kingyo$_drawPart$LKingyo$L_Part$(this, Kingyo.tfin);
 };
 
 
-function Kingyo$_draw_0$LKingyo$($this) {
+function Kingyo$_draw$LKingyo$($this) {
 	var gl;
 	var modelMatLoc;
 	var s;
@@ -8152,42 +8317,88 @@ function Kingyo$_draw_0$LKingyo$($this) {
 	var rfinMat;
 	var bfinMat;
 	var tfinMat;
-	var mul$this$0;
-	var mul$this$1;
-	var mul$this$2;
-	var mul$this$3;
-	var mul$this$4;
-	var mul$this$5;
-	var mul$this$6;
-	var mul$this$7;
-	var mul$this$8;
-	var mul$this$9;
-	var mul$this$10;
-	var mul$this$11;
+	var this$0;
+	var m$0;
+	var this$1;
+	var v$0;
+	var x$0$0;
+	var y$0$0;
+	var z$0$0;
+	var this$2;
+	var m$1;
+	var this$3;
+	var rad$0;
+	var this$4;
+	var m$2;
+	var this$5;
+	var this$9;
+	var m$5;
+	var this$10;
+	var this$13;
+	var m$8;
+	var this$14;
+	var this$17;
+	var m$11;
+	var this$18;
+	var this$21;
+	var m$14;
+	var this$22;
+	var this$25;
+	var m$17;
+	var this$27;
+	var this$29;
+	var m$19;
+	var this$31;
+	var m$21;
+	var this$33;
+	var m$23;
+	var this$35;
+	var m$25;
 	gl = Kingyo.gl;
 	gl.uniform3fv(Kingyo.ulocs.color, $this._color);
 	gl.uniform3fv(Kingyo.ulocs.color2, $this._color2);
 	gl.uniform4fv(Kingyo.ulocs.color2pos, $this._color2pos);
 	modelMatLoc = Kingyo.ulocs.modelMatrix;
 	s = Math.sin($this._anim * 5);
-	bodyMat = (mul$this$3 = (mul$this$2 = (mul$this$1 = (mul$this$0 = M44$setTranslation_0$LM44$LV3$(new M44(), $this._pos), M44$mul_0$LM44$LM44$LM44$(mul$this$0, new M44$0(mul$this$0), $this._spinMat)), M44$mul_0$LM44$LM44$LM44$(mul$this$1, new M44$0(mul$this$1), M44$setRotation_0$LM44$NNNN(new M44(), $this._vangle - s / 10, 0, 0, 1))), M44$mul_0$LM44$LM44$LM44$(mul$this$2, new M44$0(mul$this$2), M44$setRotation_0$LM44$NNNN(new M44(), 1.5707963267948966, 1, 0, 0))), M44$mul_0$LM44$LM44$LM44$(mul$this$3, new M44$0(mul$this$3), M44$setRotation_0$LM44$NNNN(new M44(), 1.5707963267948966, 0, 1, 0)));
-	gl.uniformMatrix4fv(modelMatLoc, false, M44$array_0$LM44$(bodyMat));
-	Kingyo$_drawPart_0$LKingyo$L_Part$($this, Kingyo.body);
-	lfinMat = (mul$this$5 = (mul$this$4 = new M44$0(bodyMat), M44$mul_0$LM44$LM44$LM44$(mul$this$4, new M44$0(mul$this$4), M44$setTranslation_0$LM44$NNN(new M44(), 0.5, -0.3, 0))), M44$mul_0$LM44$LM44$LM44$(mul$this$5, new M44$0(mul$this$5), M44$setRotation_0$LM44$NNNN(new M44(), 1 + s / 2, 0.2, 1, -0.5)));
-	gl.uniformMatrix4fv(modelMatLoc, false, M44$array_0$LM44$(lfinMat));
-	Kingyo$_drawPart_0$LKingyo$L_Part$($this, Kingyo.lfin);
-	rfinMat = (mul$this$7 = (mul$this$6 = new M44$0(bodyMat), M44$mul_0$LM44$LM44$LM44$(mul$this$6, new M44$0(mul$this$6), M44$setTranslation_0$LM44$NNN(new M44(), -0.5, -0.3, 0))), M44$mul_0$LM44$LM44$LM44$(mul$this$7, new M44$0(mul$this$7), M44$setRotation_0$LM44$NNNN(new M44(), -1 - s / 2, -0.2, 1, -0.5)));
-	gl.uniformMatrix4fv(modelMatLoc, false, M44$array_0$LM44$(rfinMat));
-	Kingyo$_drawPart_0$LKingyo$L_Part$($this, Kingyo.rfin);
-	bfinMat = (mul$this$9 = (mul$this$8 = new M44$0(bodyMat), M44$mul_0$LM44$LM44$LM44$(mul$this$8, new M44$0(mul$this$8), M44$setTranslation_0$LM44$NNN(new M44(), 0, 0.7, 0))), M44$mul_0$LM44$LM44$LM44$(mul$this$9, new M44$0(mul$this$9), M44$setRotation_0$LM44$NNNN(new M44(), s / 2, 0, 1, 1)));
-	gl.uniformMatrix4fv(modelMatLoc, false, M44$array_0$LM44$(bfinMat));
-	Kingyo$_drawPart_0$LKingyo$L_Part$($this, Kingyo.bfin);
-	tfinMat = (mul$this$11 = (mul$this$10 = new M44$0(bodyMat), M44$mul_0$LM44$LM44$LM44$(mul$this$10, new M44$0(mul$this$10), M44$setTranslation_0$LM44$NNN(new M44(), 0, 0, -0.7))), M44$mul_0$LM44$LM44$LM44$(mul$this$11, new M44$0(mul$this$11), M44$setRotation_0$LM44$NNNN(new M44(), s / 2, 0, 1, 0)));
-	gl.uniformMatrix4fv(modelMatLoc, false, M44$array_0$LM44$(tfinMat));
-	Kingyo$_drawPart_0$LKingyo$L_Part$($this, Kingyo.tfin);
+	this$25 = (this$4 = (this$2 = (this$1 = new M44(), v$0 = $this._pos, x$0$0 = v$0.x, y$0$0 = v$0.y, z$0$0 = v$0.z, M44$set$LM44$N(this$1, 1), this$1.m14 = x$0$0, this$1.m24 = y$0$0, this$1.m34 = z$0$0, this$1), m$1 = $this._spinMat, M44$mul$LM44$LM44$LM44$(this$2, new M44$0(this$2), m$1)), m$2 = (this$3 = new M44(), rad$0 = $this._vangle - s / 10, M44$setRotation$LM44$NNNN(this$3, rad$0, 0, 0, 1)), M44$mul$LM44$LM44$LM44$(this$4, new M44$0(this$4), m$2));
+	m$17 = (this$5 = new M44(), M44$setRotation$LM44$NNNN(this$5, 1.5707963267948966, 1, 0, 0));
+	this$0 = M44$mul$LM44$LM44$LM44$(this$25, new M44$0(this$25), m$17);
+	this$27 = new M44();
+	m$0 = M44$setRotation$LM44$NNNN(this$27, 1.5707963267948966, 0, 1, 0);
+	bodyMat = M44$mul$LM44$LM44$LM44$(this$0, new M44$0(this$0), m$0);
+	gl.uniformMatrix4fv(modelMatLoc, false, M44$array$LM44$(bodyMat));
+	Kingyo$_drawPart$LKingyo$L_Part$($this, Kingyo.body);
+	this$29 = new M44$0(bodyMat);
+	m$19 = (this$10 = new M44(), M44$set$LM44$N(this$10, 1), this$10.m14 = 0.5, this$10.m24 = -0.3, this$10.m34 = 0, this$10);
+	this$9 = M44$mul$LM44$LM44$LM44$(this$29, new M44$0(this$29), m$19);
+	m$5 = M44$setRotation$LM44$NNNN(new M44(), 1 + s / 2, 0.2, 1, -0.5);
+	lfinMat = M44$mul$LM44$LM44$LM44$(this$9, new M44$0(this$9), m$5);
+	gl.uniformMatrix4fv(modelMatLoc, false, M44$array$LM44$(lfinMat));
+	Kingyo$_drawPart$LKingyo$L_Part$($this, Kingyo.lfin);
+	this$31 = new M44$0(bodyMat);
+	m$21 = (this$14 = new M44(), M44$set$LM44$N(this$14, 1), this$14.m14 = -0.5, this$14.m24 = -0.3, this$14.m34 = 0, this$14);
+	this$13 = M44$mul$LM44$LM44$LM44$(this$31, new M44$0(this$31), m$21);
+	m$8 = M44$setRotation$LM44$NNNN(new M44(), -1 - s / 2, -0.2, 1, -0.5);
+	rfinMat = M44$mul$LM44$LM44$LM44$(this$13, new M44$0(this$13), m$8);
+	gl.uniformMatrix4fv(modelMatLoc, false, M44$array$LM44$(rfinMat));
+	Kingyo$_drawPart$LKingyo$L_Part$($this, Kingyo.rfin);
+	this$33 = new M44$0(bodyMat);
+	m$23 = (this$18 = new M44(), M44$set$LM44$N(this$18, 1), this$18.m14 = 0, this$18.m24 = 0.7, this$18.m34 = 0, this$18);
+	this$17 = M44$mul$LM44$LM44$LM44$(this$33, new M44$0(this$33), m$23);
+	m$11 = M44$setRotation$LM44$NNNN(new M44(), s / 2, 0, 1, 1);
+	bfinMat = M44$mul$LM44$LM44$LM44$(this$17, new M44$0(this$17), m$11);
+	gl.uniformMatrix4fv(modelMatLoc, false, M44$array$LM44$(bfinMat));
+	Kingyo$_drawPart$LKingyo$L_Part$($this, Kingyo.bfin);
+	this$35 = new M44$0(bodyMat);
+	m$25 = (this$22 = new M44(), M44$set$LM44$N(this$22, 1), this$22.m14 = 0, this$22.m24 = 0, this$22.m34 = -0.7, this$22);
+	this$21 = M44$mul$LM44$LM44$LM44$(this$35, new M44$0(this$35), m$25);
+	m$14 = M44$setRotation$LM44$NNNN(new M44(), s / 2, 0, 1, 0);
+	tfinMat = M44$mul$LM44$LM44$LM44$(this$21, new M44$0(this$21), m$14);
+	gl.uniformMatrix4fv(modelMatLoc, false, M44$array$LM44$(tfinMat));
+	Kingyo$_drawPart$LKingyo$L_Part$($this, Kingyo.tfin);
 };
 
-Kingyo._draw_0$LKingyo$ = Kingyo$_draw_0$LKingyo$;
+Kingyo._draw$LKingyo$ = Kingyo$_draw$LKingyo$;
 
 Kingyo.prototype._drawPart$L_Part$ = function (p) {
 	var gl;
@@ -8201,7 +8412,7 @@ Kingyo.prototype._drawPart$L_Part$ = function (p) {
 };
 
 
-function Kingyo$_drawPart_0$LKingyo$L_Part$($this, p) {
+function Kingyo$_drawPart$LKingyo$L_Part$($this, p) {
 	var gl;
 	gl = Kingyo.gl;
 	gl.bindBuffer(gl.ARRAY_BUFFER, p.vbuf);
@@ -8212,48 +8423,84 @@ function Kingyo$_drawPart_0$LKingyo$L_Part$($this, p) {
 	gl.drawElements(gl.TRIANGLES, p.numi, gl.UNSIGNED_SHORT, 0);
 };
 
-Kingyo._drawPart_0$LKingyo$L_Part$ = Kingyo$_drawPart_0$LKingyo$L_Part$;
+Kingyo._drawPart$LKingyo$L_Part$ = Kingyo$_drawPart$LKingyo$L_Part$;
 
 Kingyo.prototype._drawEyes$ = function () {
 	var gl;
 	var ulocs;
 	var s;
 	var bodyMat;
-	var mul$this$0;
-	var mul$this$1;
-	var mul$this$2;
-	var mul$this$3;
+	var this$0;
+	var m$0;
+	var this$1;
+	var v$0;
+	var x$0$0;
+	var y$0$0;
+	var z$0$0;
+	var this$2;
+	var m$1;
+	var this$3;
+	var rad$0;
+	var this$4;
+	var m$2;
+	var this$5;
+	var this$9;
+	var m$5;
+	var this$11;
 	gl = Kingyo.gl;
 	ulocs = Kingyo.eyeULocs;
 	gl.uniform3fv(ulocs.color, this._color);
 	s = Math.sin(this._anim * 5);
-	bodyMat = (mul$this$3 = (mul$this$2 = (mul$this$1 = (mul$this$0 = M44$setTranslation_0$LM44$LV3$(new M44(), this._pos), M44$mul_0$LM44$LM44$LM44$(mul$this$0, new M44$0(mul$this$0), this._spinMat)), M44$mul_0$LM44$LM44$LM44$(mul$this$1, new M44$0(mul$this$1), M44$setRotation_0$LM44$NNNN(new M44(), this._vangle - s / 10, 0, 0, 1))), M44$mul_0$LM44$LM44$LM44$(mul$this$2, new M44$0(mul$this$2), M44$setRotation_0$LM44$NNNN(new M44(), 1.5707963267948966, 1, 0, 0))), M44$mul_0$LM44$LM44$LM44$(mul$this$3, new M44$0(mul$this$3), M44$setRotation_0$LM44$NNNN(new M44(), 1.5707963267948966, 0, 1, 0)));
-	gl.uniformMatrix4fv(ulocs.modelMatrix, false, M44$array_0$LM44$(bodyMat));
+	this$9 = (this$4 = (this$2 = (this$1 = new M44(), v$0 = this._pos, x$0$0 = v$0.x, y$0$0 = v$0.y, z$0$0 = v$0.z, M44$set$LM44$N(this$1, 1), this$1.m14 = x$0$0, this$1.m24 = y$0$0, this$1.m34 = z$0$0, this$1), m$1 = this._spinMat, M44$mul$LM44$LM44$LM44$(this$2, new M44$0(this$2), m$1)), m$2 = (this$3 = new M44(), rad$0 = this._vangle - s / 10, M44$setRotation$LM44$NNNN(this$3, rad$0, 0, 0, 1)), M44$mul$LM44$LM44$LM44$(this$4, new M44$0(this$4), m$2));
+	m$5 = (this$5 = new M44(), M44$setRotation$LM44$NNNN(this$5, 1.5707963267948966, 1, 0, 0));
+	this$0 = M44$mul$LM44$LM44$LM44$(this$9, new M44$0(this$9), m$5);
+	this$11 = new M44();
+	m$0 = M44$setRotation$LM44$NNNN(this$11, 1.5707963267948966, 0, 1, 0);
+	bodyMat = M44$mul$LM44$LM44$LM44$(this$0, new M44$0(this$0), m$0);
+	gl.uniformMatrix4fv(ulocs.modelMatrix, false, M44$array$LM44$(bodyMat));
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, Kingyo.eyes.ibuf);
 	gl.drawElements(gl.TRIANGLES, 12, gl.UNSIGNED_SHORT, 0);
 };
 
 
-function Kingyo$_drawEyes_0$LKingyo$($this) {
+function Kingyo$_drawEyes$LKingyo$($this) {
 	var gl;
 	var ulocs;
 	var s;
 	var bodyMat;
-	var mul$this$0;
-	var mul$this$1;
-	var mul$this$2;
-	var mul$this$3;
+	var this$0;
+	var m$0;
+	var this$1;
+	var v$0;
+	var x$0$0;
+	var y$0$0;
+	var z$0$0;
+	var this$2;
+	var m$1;
+	var this$3;
+	var rad$0;
+	var this$4;
+	var m$2;
+	var this$5;
+	var this$9;
+	var m$5;
+	var this$11;
 	gl = Kingyo.gl;
 	ulocs = Kingyo.eyeULocs;
 	gl.uniform3fv(ulocs.color, $this._color);
 	s = Math.sin($this._anim * 5);
-	bodyMat = (mul$this$3 = (mul$this$2 = (mul$this$1 = (mul$this$0 = M44$setTranslation_0$LM44$LV3$(new M44(), $this._pos), M44$mul_0$LM44$LM44$LM44$(mul$this$0, new M44$0(mul$this$0), $this._spinMat)), M44$mul_0$LM44$LM44$LM44$(mul$this$1, new M44$0(mul$this$1), M44$setRotation_0$LM44$NNNN(new M44(), $this._vangle - s / 10, 0, 0, 1))), M44$mul_0$LM44$LM44$LM44$(mul$this$2, new M44$0(mul$this$2), M44$setRotation_0$LM44$NNNN(new M44(), 1.5707963267948966, 1, 0, 0))), M44$mul_0$LM44$LM44$LM44$(mul$this$3, new M44$0(mul$this$3), M44$setRotation_0$LM44$NNNN(new M44(), 1.5707963267948966, 0, 1, 0)));
-	gl.uniformMatrix4fv(ulocs.modelMatrix, false, M44$array_0$LM44$(bodyMat));
+	this$9 = (this$4 = (this$2 = (this$1 = new M44(), v$0 = $this._pos, x$0$0 = v$0.x, y$0$0 = v$0.y, z$0$0 = v$0.z, M44$set$LM44$N(this$1, 1), this$1.m14 = x$0$0, this$1.m24 = y$0$0, this$1.m34 = z$0$0, this$1), m$1 = $this._spinMat, M44$mul$LM44$LM44$LM44$(this$2, new M44$0(this$2), m$1)), m$2 = (this$3 = new M44(), rad$0 = $this._vangle - s / 10, M44$setRotation$LM44$NNNN(this$3, rad$0, 0, 0, 1)), M44$mul$LM44$LM44$LM44$(this$4, new M44$0(this$4), m$2));
+	m$5 = (this$5 = new M44(), M44$setRotation$LM44$NNNN(this$5, 1.5707963267948966, 1, 0, 0));
+	this$0 = M44$mul$LM44$LM44$LM44$(this$9, new M44$0(this$9), m$5);
+	this$11 = new M44();
+	m$0 = M44$setRotation$LM44$NNNN(this$11, 1.5707963267948966, 0, 1, 0);
+	bodyMat = M44$mul$LM44$LM44$LM44$(this$0, new M44$0(this$0), m$0);
+	gl.uniformMatrix4fv(ulocs.modelMatrix, false, M44$array$LM44$(bodyMat));
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, Kingyo.eyes.ibuf);
 	gl.drawElements(gl.TRIANGLES, 12, gl.UNSIGNED_SHORT, 0);
 };
 
-Kingyo._drawEyes_0$LKingyo$ = Kingyo$_drawEyes_0$LKingyo$;
+Kingyo._drawEyes$LKingyo$ = Kingyo$_drawEyes$LKingyo$;
 
 function Poi() {
 	this._x = 0;
@@ -8339,17 +8586,40 @@ function Poi$draw$LPoi$LM44$LM44$($this, projMat, viewMat) {
 	var mvMat;
 	var vloc;
 	var tloc;
-	var mul$this$0;
-	var mul$this$1;
+	var this$0;
+	var m$0;
+	var this$3;
+	var m$2;
+	var this$4;
+	var this$7;
+	var x$1;
+	var y$1;
+	var z$1;
+	var m$5;
+	var this$9;
 	gl = Poi.gl;
 	prog = Poi.prog;
 	gl.useProgram(prog);
-	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, M44$array_0$LM44$(projMat));
-	mvMat = (mul$this$0 = new M44$0(viewMat), M44$mul_0$LM44$LM44$LM44$(mul$this$0, new M44$0(mul$this$0), M44$setTranslation_0$LM44$NNN(new M44(), $this._x, $this._y, $this._z)));
+	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, M44$array$LM44$(projMat));
+	this$0 = new M44$0(viewMat);
+	this$7 = new M44();
+	x$1 = $this._x;
+	y$1 = $this._y;
+	z$1 = $this._z;
+	M44$set$LM44$N(this$7, 1);
+	this$7.m14 = x$1;
+	this$7.m24 = y$1;
+	this$7.m34 = z$1;
+	m$0 = this$7;
+	mvMat = M44$mul$LM44$LM44$LM44$(this$0, new M44$0(this$0), m$0);
 	if ($this._down) {
-		(mul$this$1 = M44$mul_0$LM44$LM44$LM44$(mvMat, new M44$0(mvMat), M44$setTranslation_0$LM44$NNN(new M44(), 0, 0, -7)), M44$mul_0$LM44$LM44$LM44$(mul$this$1, new M44$0(mul$this$1), M44$setRotation_0$LM44$NNNN(new M44(), -0.1, 1, 0, 0)));
+		m$5 = (this$4 = new M44(), M44$set$LM44$N(this$4, 1), this$4.m14 = 0, this$4.m24 = 0, this$4.m34 = -7, this$4);
+		this$3 = M44$mul$LM44$LM44$LM44$(mvMat, new M44$0(mvMat), m$5);
+		this$9 = new M44();
+		m$2 = M44$setRotation$LM44$NNNN(this$9, -0.1, 1, 0, 0);
+		M44$mul$LM44$LM44$LM44$(this$3, new M44$0(this$3), m$2);
 	}
-	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'modelviewMatrix'), false, M44$array_0$LM44$(mvMat));
+	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'modelviewMatrix'), false, M44$array$LM44$(mvMat));
 	gl.bindBuffer(gl.ARRAY_BUFFER, Poi.vtbuf);
 	vloc = gl.getAttribLocation(prog, 'vertex');
 	tloc = gl.getAttribLocation(prog, 'texcoord');
@@ -8456,7 +8726,7 @@ Water.prototype.destroy$ = function () {
 };
 
 
-function Water$destroy_0$LWater$($this) {
+function Water$destroy$LWater$($this) {
 	var gl;
 	gl = Water.gl;
 	gl.deleteFramebuffer($this.framebuffer);
@@ -8465,7 +8735,7 @@ function Water$destroy_0$LWater$($this) {
 	gl.deleteTexture($this.texture);
 };
 
-Water.destroy_0$LWater$ = Water$destroy_0$LWater$;
+Water.destroy$LWater$ = Water$destroy$LWater$;
 
 Water.prototype.step$N = function (t) {
 	var gl;
@@ -8492,8 +8762,8 @@ Water.prototype.step$N = function (t) {
 	}
 	gl.disable(gl.BLEND);
 	gl.disable(gl.DEPTH_TEST);
-	Water$_step_0$LWater$LWebGLProgram$(this, Water.progDisp);
-	Water$_step_0$LWater$LWebGLProgram$(this, Water.progVelo);
+	Water$_step$LWater$LWebGLProgram$(this, Water.progDisp);
+	Water$_step$LWater$LWebGLProgram$(this, Water.progVelo);
 	gl.viewport(vp[0], vp[1], vp[2], vp[3]);
 	gl.enable(gl.BLEND);
 	gl.enable(gl.DEPTH_TEST);
@@ -8503,7 +8773,7 @@ Water.prototype.step$N = function (t) {
 };
 
 
-function Water$step_0$LWater$N($this, t) {
+function Water$step$LWater$N($this, t) {
 	var gl;
 	var vp;
 	var tmp_vp;
@@ -8528,8 +8798,8 @@ function Water$step_0$LWater$N($this, t) {
 	}
 	gl.disable(gl.BLEND);
 	gl.disable(gl.DEPTH_TEST);
-	Water$_step_0$LWater$LWebGLProgram$($this, Water.progDisp);
-	Water$_step_0$LWater$LWebGLProgram$($this, Water.progVelo);
+	Water$_step$LWater$LWebGLProgram$($this, Water.progDisp);
+	Water$_step$LWater$LWebGLProgram$($this, Water.progVelo);
 	gl.viewport(vp[0], vp[1], vp[2], vp[3]);
 	gl.enable(gl.BLEND);
 	gl.enable(gl.DEPTH_TEST);
@@ -8538,7 +8808,7 @@ function Water$step_0$LWater$N($this, t) {
 	}
 };
 
-Water.step_0$LWater$N = Water$step_0$LWater$N;
+Water.step$LWater$N = Water$step$LWater$N;
 
 Water.prototype._step$LWebGLProgram$ = function (prog) {
 	var gl;
@@ -8554,7 +8824,7 @@ Water.prototype._step$LWebGLProgram$ = function (prog) {
 	if (impLoc) {
 		gl.uniform4f(impLoc, this._ix, this._iy, this._iz, this._ir);
 	}
-	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, M44$array_0$LM44$(M44$setOrtho_0$LM44$NNNNNN(new M44(), 0, 1, 0, 1, -1, 1)));
+	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, M44$array$LM44$(M44$setOrtho$LM44$NNNNNN(new M44(), 0, 1, 0, 1, -1, 1)));
 	gl.uniform2f(gl.getUniformLocation(prog, 'sampleStep'), 1 / this.width, 1 / this.height);
 	gl.bindTexture(gl.TEXTURE_2D, this.texture);
 	gl.bindBuffer(gl.ARRAY_BUFFER, Water.vbuf);
@@ -8571,7 +8841,7 @@ Water.prototype._step$LWebGLProgram$ = function (prog) {
 };
 
 
-function Water$_step_0$LWater$LWebGLProgram$($this, prog) {
+function Water$_step$LWater$LWebGLProgram$($this, prog) {
 	var gl;
 	var vloc;
 	var impLoc;
@@ -8585,7 +8855,7 @@ function Water$_step_0$LWater$LWebGLProgram$($this, prog) {
 	if (impLoc) {
 		gl.uniform4f(impLoc, $this._ix, $this._iy, $this._iz, $this._ir);
 	}
-	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, M44$array_0$LM44$(M44$setOrtho_0$LM44$NNNNNN(new M44(), 0, 1, 0, 1, -1, 1)));
+	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, M44$array$LM44$(M44$setOrtho$LM44$NNNNNN(new M44(), 0, 1, 0, 1, -1, 1)));
 	gl.uniform2f(gl.getUniformLocation(prog, 'sampleStep'), 1 / $this.width, 1 / $this.height);
 	gl.bindTexture(gl.TEXTURE_2D, $this.texture);
 	gl.bindBuffer(gl.ARRAY_BUFFER, Water.vbuf);
@@ -8601,7 +8871,7 @@ function Water$_step_0$LWater$LWebGLProgram$($this, prog) {
 	$this.texture = tmpTex;
 };
 
-Water._step_0$LWater$LWebGLProgram$ = Water$_step_0$LWater$LWebGLProgram$;
+Water._step$LWater$LWebGLProgram$ = Water$_step$LWater$LWebGLProgram$;
 
 Water.prototype.debugDraw$ = function () {
 	var gl;
@@ -8611,7 +8881,7 @@ Water.prototype.debugDraw$ = function () {
 	prog = Water.progDisp;
 	vloc = gl.getAttribLocation(prog, 'vertex');
 	gl.useProgram(prog);
-	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, M44$array_0$LM44$(M44$setOrtho_0$LM44$NNNNNN(new M44(), 0, 1, 0, 1, -1, 1)));
+	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, M44$array$LM44$(M44$setOrtho$LM44$NNNNNN(new M44(), 0, 1, 0, 1, -1, 1)));
 	gl.uniform2f(gl.getUniformLocation(prog, 'sampleStep'), 1 / this.width, 1 / this.height);
 	gl.bindTexture(gl.TEXTURE_2D, this.texture);
 	gl.bindBuffer(gl.ARRAY_BUFFER, Water.vbuf);
@@ -8622,7 +8892,7 @@ Water.prototype.debugDraw$ = function () {
 };
 
 
-function Water$debugDraw_0$LWater$($this) {
+function Water$debugDraw$LWater$($this) {
 	var gl;
 	var prog;
 	var vloc;
@@ -8630,7 +8900,7 @@ function Water$debugDraw_0$LWater$($this) {
 	prog = Water.progDisp;
 	vloc = gl.getAttribLocation(prog, 'vertex');
 	gl.useProgram(prog);
-	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, M44$array_0$LM44$(M44$setOrtho_0$LM44$NNNNNN(new M44(), 0, 1, 0, 1, -1, 1)));
+	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, M44$array$LM44$(M44$setOrtho$LM44$NNNNNN(new M44(), 0, 1, 0, 1, -1, 1)));
 	gl.uniform2f(gl.getUniformLocation(prog, 'sampleStep'), 1 / $this.width, 1 / $this.height);
 	gl.bindTexture(gl.TEXTURE_2D, $this.texture);
 	gl.bindBuffer(gl.ARRAY_BUFFER, Water.vbuf);
@@ -8640,7 +8910,7 @@ function Water$debugDraw_0$LWater$($this) {
 	gl.disableVertexAttribArray(vloc);
 };
 
-Water.debugDraw_0$LWater$ = Water$debugDraw_0$LWater$;
+Water.debugDraw$LWater$ = Water$debugDraw$LWater$;
 
 Water.prototype.draw$LM44$LM44$LWebGLTexture$NN = function (projMat, viewMat, bgTex, w, h) {
 	var gl;
@@ -8652,8 +8922,8 @@ Water.prototype.draw$LM44$LM44$LWebGLTexture$NN = function (projMat, viewMat, bg
 	vloc = gl.getAttribLocation(prog, 'vertex');
 	tloc = gl.getAttribLocation(prog, 'texcoord');
 	gl.useProgram(prog);
-	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, M44$array_0$LM44$(projMat));
-	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'modelviewMatrix'), false, M44$array_0$LM44$(viewMat));
+	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, M44$array$LM44$(projMat));
+	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'modelviewMatrix'), false, M44$array$LM44$(viewMat));
 	gl.uniform2f(gl.getUniformLocation(prog, 'texSize'), w, h);
 	gl.activeTexture(gl.TEXTURE1);
 	gl.bindTexture(gl.TEXTURE_2D, this.texture);
@@ -8673,7 +8943,7 @@ Water.prototype.draw$LM44$LM44$LWebGLTexture$NN = function (projMat, viewMat, bg
 };
 
 
-function Water$draw_0$LWater$LM44$LM44$LWebGLTexture$NN($this, projMat, viewMat, bgTex, w, h) {
+function Water$draw$LWater$LM44$LM44$LWebGLTexture$NN($this, projMat, viewMat, bgTex, w, h) {
 	var gl;
 	var prog;
 	var vloc;
@@ -8683,8 +8953,8 @@ function Water$draw_0$LWater$LM44$LM44$LWebGLTexture$NN($this, projMat, viewMat,
 	vloc = gl.getAttribLocation(prog, 'vertex');
 	tloc = gl.getAttribLocation(prog, 'texcoord');
 	gl.useProgram(prog);
-	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, M44$array_0$LM44$(projMat));
-	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'modelviewMatrix'), false, M44$array_0$LM44$(viewMat));
+	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'projectionMatrix'), false, M44$array$LM44$(projMat));
+	gl.uniformMatrix4fv(gl.getUniformLocation(prog, 'modelviewMatrix'), false, M44$array$LM44$(viewMat));
 	gl.uniform2f(gl.getUniformLocation(prog, 'texSize'), w, h);
 	gl.activeTexture(gl.TEXTURE1);
 	gl.bindTexture(gl.TEXTURE_2D, $this.texture);
@@ -8703,7 +8973,7 @@ function Water$draw_0$LWater$LM44$LM44$LWebGLTexture$NN($this, projMat, viewMat,
 	gl.disableVertexAttribArray(tloc);
 };
 
-Water.draw_0$LWater$LM44$LM44$LWebGLTexture$NN = Water$draw_0$LWater$LM44$LM44$LWebGLTexture$NN;
+Water.draw$LWater$LM44$LM44$LWebGLTexture$NN = Water$draw$LWater$LM44$LM44$LWebGLTexture$NN;
 
 Water.prototype.setImpulse$NNNN = function (x, y, r, z) {
 	this._ix = x;
@@ -8713,14 +8983,14 @@ Water.prototype.setImpulse$NNNN = function (x, y, r, z) {
 };
 
 
-function Water$setImpulse_0$LWater$NNNN($this, x, y, r, z) {
+function Water$setImpulse$LWater$NNNN($this, x, y, r, z) {
 	$this._ix = x;
 	$this._iy = y;
 	$this._ir = r;
 	$this._iz = z;
 };
 
-Water.setImpulse_0$LWater$NNNN = Water$setImpulse_0$LWater$NNNN;
+Water.setImpulse$LWater$NNNN = Water$setImpulse$LWater$NNNN;
 
 function RenderTexture(w, h) {
 	var gl;
@@ -8769,7 +9039,7 @@ RenderTexture.prototype.destroy$ = function () {
 };
 
 
-function RenderTexture$destroy_0$LRenderTexture$($this) {
+function RenderTexture$destroy$LRenderTexture$($this) {
 	var gl;
 	gl = RenderTexture.gl;
 	gl.deleteFramebuffer($this.framebuffer);
@@ -8777,7 +9047,7 @@ function RenderTexture$destroy_0$LRenderTexture$($this) {
 	gl.deleteRenderbuffer($this.depthbuffer);
 };
 
-RenderTexture.destroy_0$LRenderTexture$ = RenderTexture$destroy_0$LRenderTexture$;
+RenderTexture.destroy$LRenderTexture$ = RenderTexture$destroy$LRenderTexture$;
 
 RenderTexture.prototype.begin$ = function () {
 	var gl;
@@ -8796,7 +9066,7 @@ RenderTexture.prototype.begin$ = function () {
 };
 
 
-function RenderTexture$begin_0$LRenderTexture$($this) {
+function RenderTexture$begin$LRenderTexture$($this) {
 	var gl;
 	var tmp_vp;
 	gl = RenderTexture.gl;
@@ -8812,7 +9082,7 @@ function RenderTexture$begin_0$LRenderTexture$($this) {
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 };
 
-RenderTexture.begin_0$LRenderTexture$ = RenderTexture$begin_0$LRenderTexture$;
+RenderTexture.begin$LRenderTexture$ = RenderTexture$begin$LRenderTexture$;
 
 RenderTexture.prototype.end$ = function () {
 	var gl;
@@ -8824,7 +9094,7 @@ RenderTexture.prototype.end$ = function () {
 };
 
 
-function RenderTexture$end_0$LRenderTexture$($this) {
+function RenderTexture$end$LRenderTexture$($this) {
 	var gl;
 	var vp;
 	gl = RenderTexture.gl;
@@ -8833,18 +9103,18 @@ function RenderTexture$end_0$LRenderTexture$($this) {
 	gl.viewport(vp[0], vp[1], vp[2], vp[3]);
 };
 
-RenderTexture.end_0$LRenderTexture$ = RenderTexture$end_0$LRenderTexture$;
+RenderTexture.end$LRenderTexture$ = RenderTexture$end$LRenderTexture$;
 
 RenderTexture.prototype.texture$ = function () {
 	return this.texturebuffer;
 };
 
 
-function RenderTexture$texture_0$LRenderTexture$($this) {
+function RenderTexture$texture$LRenderTexture$($this) {
 	return $this.texturebuffer;
 };
 
-RenderTexture.texture_0$LRenderTexture$ = RenderTexture$texture_0$LRenderTexture$;
+RenderTexture.texture$LRenderTexture$ = RenderTexture$texture$LRenderTexture$;
 
 Game.viewDistance = 80;
 Game.viewLean = 0.2;
@@ -8854,10 +9124,10 @@ Game.fovh = 0.2;
 Game.fovv = 0.2;
 Game.gl = null;
 $__jsx_lazy_init(Game, "projMat", function () {
-	return M44$setFrustum_0$LM44$NNNNNN(new M44(), - Game.near * Game.fovh, Game.near * Game.fovh, - Game.near * Game.fovv, Game.near * Game.fovv, Game.near, Game.far);
+	return M44$setFrustum$LM44$NNNNNN(new M44(), - Game.near * Game.fovh, Game.near * Game.fovh, - Game.near * Game.fovv, Game.near * Game.fovv, Game.near, Game.far);
 });
 $__jsx_lazy_init(Game, "viewMat", function () {
-	return M44$mul_0$LM44$LM44$(M44$setTranslation_0$LM44$NNN(new M44(), 0, 0, - Game.viewDistance), M44$setRotationX_0$LM44$N(new M44(), - Game.viewLean));
+	return M44$mul$LM44$LM44$(M44$setTranslation$LM44$NNN(new M44(), 0, 0, - Game.viewDistance), M44$setRotationX$LM44$N(new M44(), - Game.viewLean));
 });
 Game.poi = null;
 Game.water = null;
@@ -8874,12 +9144,11 @@ Game.life_bar = null;
 Game.life_bar_width = 100;
 Game.status_text = null;
 Game.startTime = 0;
-var js = { global: function () { return this; }() };
 $__jsx_lazy_init(dom, "window", function () {
-	return js.global.window;
+	return js$0.global.window;
 });
 $__jsx_lazy_init(dom, "document", function () {
-	return js.global.document;
+	return js$0.global.document;
 });
 $__jsx_lazy_init(Timer, "_requestAnimationFrame", function () {
 	return Timer$_getRequestAnimationFrameImpl$B(true);
@@ -8925,8 +9194,8 @@ RenderTexture.gl = null;
 
 var $__jsx_classMap = {
 	"system:lib/built-in.jsx": {
-		g_StopIteration: g_StopIteration,
-		g_StopIteration$: g_StopIteration
+		StopIteration: StopIteration,
+		StopIteration$: StopIteration
 	},
 	"./game.jsx": {
 		_Main: _Main,
