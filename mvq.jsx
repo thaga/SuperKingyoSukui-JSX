@@ -1,4 +1,3 @@
-import 'js/web.jsx';
 
 class MVQ {
 	static const EQUAL_EPSILON = 0.000001;
@@ -566,6 +565,11 @@ class M22 {
 		this.m11 -= m.m11; this.m21 -= m.m21; this.m12 -= m.m12; this.m22 -= m.m22;
 		return this;
 	}
+	function mul(s:number) : M22 {
+		this.m11 *= s; this.m21 *= s;
+		this.m12 *= s; this.m22 *= s;
+		return this;
+	}
 	function mul(m:M22) : M22 {
 		return this.mul(this.clone(), m);
 	}
@@ -748,6 +752,12 @@ class M33 {
 		this.m13 -= m.m13; this.m23 -= m.m23; this.m33 -= m.m33;
 		return this;
 	}
+	function mul(s:number) : M33 {
+		this.m11 *= s; this.m21 *= s; this.m31 *= s;
+		this.m12 *= s; this.m22 *= s; this.m32 *= s;
+		this.m13 *= s; this.m23 *= s; this.m33 *= s;
+		return this;
+	}
 	function mul(m:M33) : M33 {
 		return this.mul(this.clone(), m);
 	}
@@ -834,7 +844,6 @@ class M33 {
 		x *= il;
 		y *= il;
 		z *= il;
-		var a = this.array();
 		var c = Math.cos(rad), s = Math.sin(rad);
 		var _c = 1-c;
 		this.m11 = x*x*_c+c;
@@ -1005,6 +1014,13 @@ class M44 {
 		this.m14 -= m.m14; this.m24 -= m.m24; this.m34 -= m.m34; this.m44 -= m.m44;
 		return this;
 	}
+	function mul(s:number) : M44 {
+		this.m11 *= s; this.m21 *= s; this.m31 *= s; this.m41 *= s;
+		this.m12 *= s; this.m22 *= s; this.m32 *= s; this.m42 *= s;
+		this.m13 *= s; this.m23 *= s; this.m33 *= s; this.m43 *= s;
+		this.m14 *= s; this.m24 *= s; this.m34 *= s; this.m44 *= s;
+		return this;
+	}
 	function mul(m:M44) : M44 {
 		return this.mul(this.clone(), m);
 	}
@@ -1150,6 +1166,7 @@ class M44 {
 	function setScale(v:V3) : M44 {return this.setScale(v.x, v.y, v.z);}
 	function setScale(v:number[]) : M44 {return this.setScale(v[0], v[1], v[2]);}
 	function setScale(v:Float32Array) : M44 {return this.setScale(v[0], v[1], v[2]);}
+	static function scale(s:number) : M44 {return new M44().setScale(s);}
 	static function scale(x:number, y:number, z:number) : M44 {return new M44().setScale(x, y, z);}
 	static function scale(v:V3) : M44 {return new M44().setScale(v);}
 	static function scale(v:number[]) : M44 {return new M44().setScale(v);}
@@ -1162,7 +1179,6 @@ class M44 {
 		x *= il;
 		y *= il;
 		z *= il;
-		var a = this.array();
 		var c = Math.cos(rad), s = Math.sin(rad);
 		var _c = 1-c;
 		this.m11 = x*x*_c+c;
@@ -1194,7 +1210,6 @@ class M44 {
 	static function rotationZ(rad:number) : M44 {return new M44().setRotationZ(rad);}
 
 	function setFrustum(l:number, r:number, b:number, t:number, n:number, f:number) : M44 {
-		var a = this.array();
 		var rl = r-l, tb = t-b, fn = f-n;
 		this.m11 = 2 * n / rl;
 		this.m22 = 2 * n / tb;
@@ -1209,7 +1224,6 @@ class M44 {
 	static function frustum(l:number, r:number, b:number, t:number, n:number, f:number) : M44 {return new M44().setFrustum(l,r,b,t,n,f);}
 
 	function setOrtho(l:number, r:number, b:number, t:number, n:number, f:number) : M44 {
-		var a = this.array();
 		var rl = r-l, tb = t-b, fn = f-n;
 		this.m11 = 2 / rl;
 		this.m22 = 2 / tb;
