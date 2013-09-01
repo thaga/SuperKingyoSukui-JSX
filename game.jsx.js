@@ -1,4 +1,4 @@
-// generatedy by JSX compiler 0.9.57 (2013-07-25 12:58:38 -0700; 60ffff2f25991e8eb3a32fc16969bc8914039102)
+// generatedy by JSX compiler 0.9.63 (2013-09-01 14:53:38 +0900; b8d73a00b5921afdac86c7c75dd58b18a88550ef)
 var JSX = {};
 (function (JSX) {
 /**
@@ -103,6 +103,8 @@ JSX.resetProfileResults = function () {
 JSX.DEBUG = false;
 function StopIteration() {
 	Error.call(this);
+	this.name = "StopIteration";
+	if (Error.captureStackTrace) Error.captureStackTrace(this, StopIteration);
 };
 
 $__jsx_extend([StopIteration], Error);
@@ -174,12 +176,10 @@ function Game$main$SS(canvas_id, life_id) {
 			me = e;
 			px = me.clientX;
 			py = me.clientY;
-		} else {
-			if (e instanceof TouchEvent) {
-				te = e;
-				px = te.touches[0].pageX;
-				py = te.touches[0].pageY;
-			}
+		} else if (e instanceof TouchEvent) {
+			te = e;
+			px = te.touches[0].pageX;
+			py = te.touches[0].pageY;
 		}
 		return [ px, py ];
 	});
@@ -693,6 +693,13 @@ function XMLHttpRequestOptions() {
 };
 
 $__jsx_extend([XMLHttpRequestOptions], Object);
+function ScrollOptions() {
+	this.x = 0;
+	this.y = 0;
+	this.behavior = "";
+};
+
+$__jsx_extend([ScrollOptions], Object);
 function TrackEventInit() {
 	this.bubbles = false;
 	this.cancelable = false;
@@ -722,26 +729,22 @@ function PageTransitionEventInit() {
 };
 
 $__jsx_extend([PageTransitionEventInit], EventInit);
-function DragEventInit() {
+function ErrorEventInit() {
 	this.bubbles = false;
 	this.cancelable = false;
-	this.view = null;
-	this.detail = 0;
-	this.screenX = 0;
-	this.screenY = 0;
-	this.clientX = 0;
-	this.clientY = 0;
-	this.ctrlKey = false;
-	this.shiftKey = false;
-	this.altKey = false;
-	this.metaKey = false;
-	this.button = 0;
-	this.buttons = 0;
-	this.relatedTarget = null;
+	this.message = "";
+	this.filename = "";
+	this.lineno = 0;
+	this.column = 0;
+};
+
+$__jsx_extend([ErrorEventInit], EventInit);
+function DragEventInit() {
+	MouseEventInit.call(this);
 	this.dataTransfer = null;
 };
 
-$__jsx_extend([DragEventInit], EventInit);
+$__jsx_extend([DragEventInit], MouseEventInit);
 function CloseEventInit() {
 	this.bubbles = false;
 	this.cancelable = false;
@@ -773,15 +776,6 @@ function MessageEventInit() {
 };
 
 $__jsx_extend([MessageEventInit], EventInit);
-function ErrorEventInit() {
-	this.bubbles = false;
-	this.cancelable = false;
-	this.message = "";
-	this.filename = "";
-	this.lineno = 0;
-};
-
-$__jsx_extend([ErrorEventInit], EventInit);
 function EventSourceInit() {
 	this.withCredentials = false;
 };
@@ -974,35 +968,19 @@ function Timer$useNativeRAF$B(enable) {
 Timer.useNativeRAF$B = Timer$useNativeRAF$B;
 
 function Timer$_getRequestAnimationFrameImpl$B(useNativeImpl) {
+	var prefixes;
+	var i;
+	var name;
 	var lastTime;
+	var prefixes$len$0;
 	if (useNativeImpl) {
-		if (js$0.global.requestAnimationFrame) {
-			return (function (callback) {
-				return js$0.global.requestAnimationFrame(callback);
-			});
-		} else {
-			if (js$0.global.webkitRequestAnimationFrame) {
+		prefixes = [ "r", "webkitR", "mozR", "oR", "msR" ];
+		for ((i = 0, prefixes$len$0 = prefixes.length); i < prefixes$len$0; ++ i) {
+			name = prefixes[i] + "equestAnimationFrame";
+			if (js$0.global[name] instanceof Function) {
 				return (function (callback) {
-					return js$0.global.webkitRequestAnimationFrame(callback);
+					return js$0.global[name](callback);
 				});
-			} else {
-				if (js$0.global.mozRequestAnimationFrame) {
-					return (function (callback) {
-						return js$0.global.mozRequestAnimationFrame(callback);
-					});
-				} else {
-					if (js$0.global.oRequestAnimationFrame) {
-						return (function (callback) {
-							return js$0.global.oRequestAnimationFrame(callback);
-						});
-					} else {
-						if (js$0.global.msRequestAnimationFrame) {
-							return (function (callback) {
-								return js$0.global.msRequestAnimationFrame(callback);
-							});
-						}
-					}
-				}
 			}
 		}
 	}
@@ -1024,34 +1002,18 @@ function Timer$_getRequestAnimationFrameImpl$B(useNativeImpl) {
 Timer._getRequestAnimationFrameImpl$B = Timer$_getRequestAnimationFrameImpl$B;
 
 function Timer$_getCancelAnimationFrameImpl$B(useNativeImpl) {
+	var prefixes;
+	var i;
+	var name;
+	var prefixes$len$0;
 	if (useNativeImpl) {
-		if (js$0.global.cancelAnimationFrame) {
-			return (function (timer) {
-				js$0.global.cancelAnimationFrame(timer);
-			});
-		} else {
-			if (js$0.global.webkitCancelAnimationFrame) {
+		prefixes = [ "c", "webkitC", "mozC", "oC", "msC" ];
+		for ((i = 0, prefixes$len$0 = prefixes.length); i < prefixes$len$0; ++ i) {
+			name = prefixes[i] + "ancelAnimationFrame";
+			if (js$0.global[name] instanceof Function) {
 				return (function (timer) {
-					js$0.global.webkitCancelAnimationFrame(timer);
+					js$0.global[name](timer);
 				});
-			} else {
-				if (js$0.global.mozCancelAnimationFrame) {
-					return (function (timer) {
-						js$0.global.mozCancelAnimationFrame(timer);
-					});
-				} else {
-					if (js$0.global.oCancelAnimationFrame) {
-						return (function (timer) {
-							js$0.global.oCancelAnimationFrame(timer);
-						});
-					} else {
-						if (js$0.global.msCancelAnimationFrame) {
-							return (function (timer) {
-								js$0.global.msCancelAnimationFrame(timer);
-							});
-						}
-					}
-				}
 			}
 		}
 	}
@@ -1079,7 +1041,7 @@ function Util$getWebGL$S(canvas_id) {
 	canvas = dom.document.getElementById(canvas_id);
 	ctx_names = [ 'webgl', 'experimental-webgl', 'moz-webgl', 'webkit-3d' ];
 	ctx = null;
-	for (ni in ctx_names) {
+	for (ni in ctx_names) { ni |= 0;
 		try {
 			ctx = canvas.getContext(ctx_names[ni]);
 		} catch ($__jsx_catch_0) {
@@ -4133,6 +4095,25 @@ function M22$sub$LM22$LM22$($this, m) {
 
 M22.sub$LM22$LM22$ = M22$sub$LM22$LM22$;
 
+M22.prototype.mul$N = function (s) {
+	this.m11 *= s;
+	this.m21 *= s;
+	this.m12 *= s;
+	this.m22 *= s;
+	return this;
+};
+
+
+function M22$mul$LM22$N($this, s) {
+	$this.m11 *= s;
+	$this.m21 *= s;
+	$this.m12 *= s;
+	$this.m22 *= s;
+	return $this;
+};
+
+M22.mul$LM22$N = M22$mul$LM22$N;
+
 M22.prototype.mul$LM22$ = function (m) {
 	return M22$mul$LM22$LM22$LM22$(this, new M22$0(this), m);
 };
@@ -4929,6 +4910,35 @@ function M33$sub$LM33$LM33$($this, m) {
 };
 
 M33.sub$LM33$LM33$ = M33$sub$LM33$LM33$;
+
+M33.prototype.mul$N = function (s) {
+	this.m11 *= s;
+	this.m21 *= s;
+	this.m31 *= s;
+	this.m12 *= s;
+	this.m22 *= s;
+	this.m32 *= s;
+	this.m13 *= s;
+	this.m23 *= s;
+	this.m33 *= s;
+	return this;
+};
+
+
+function M33$mul$LM33$N($this, s) {
+	$this.m11 *= s;
+	$this.m21 *= s;
+	$this.m31 *= s;
+	$this.m12 *= s;
+	$this.m22 *= s;
+	$this.m32 *= s;
+	$this.m13 *= s;
+	$this.m23 *= s;
+	$this.m33 *= s;
+	return $this;
+};
+
+M33.mul$LM33$N = M33$mul$LM33$N;
 
 M33.prototype.mul$LM33$ = function (m) {
 	return M33$mul$LM33$LM33$LM33$(this, new M33$0(this), m);
@@ -6078,6 +6088,49 @@ function M44$sub$LM44$LM44$($this, m) {
 
 M44.sub$LM44$LM44$ = M44$sub$LM44$LM44$;
 
+M44.prototype.mul$N = function (s) {
+	this.m11 *= s;
+	this.m21 *= s;
+	this.m31 *= s;
+	this.m41 *= s;
+	this.m12 *= s;
+	this.m22 *= s;
+	this.m32 *= s;
+	this.m42 *= s;
+	this.m13 *= s;
+	this.m23 *= s;
+	this.m33 *= s;
+	this.m43 *= s;
+	this.m14 *= s;
+	this.m24 *= s;
+	this.m34 *= s;
+	this.m44 *= s;
+	return this;
+};
+
+
+function M44$mul$LM44$N($this, s) {
+	$this.m11 *= s;
+	$this.m21 *= s;
+	$this.m31 *= s;
+	$this.m41 *= s;
+	$this.m12 *= s;
+	$this.m22 *= s;
+	$this.m32 *= s;
+	$this.m42 *= s;
+	$this.m13 *= s;
+	$this.m23 *= s;
+	$this.m33 *= s;
+	$this.m43 *= s;
+	$this.m14 *= s;
+	$this.m24 *= s;
+	$this.m34 *= s;
+	$this.m44 *= s;
+	return $this;
+};
+
+M44.mul$LM44$N = M44$mul$LM44$N;
+
 M44.prototype.mul$LM44$ = function (m) {
 	return M44$mul$LM44$LM44$LM44$(this, new M44$0(this), m);
 };
@@ -6751,6 +6804,19 @@ function M44$setScale$LM44$LFloat32Array$($this, v) {
 
 M44.setScale$LM44$LFloat32Array$ = M44$setScale$LM44$LFloat32Array$;
 
+function M44$scale$N(s) {
+	var this$0;
+	this$0 = new M44();
+	M44$set$LM44$N(this$0, 0);
+	this$0.m11 = s;
+	this$0.m22 = s;
+	this$0.m33 = s;
+	this$0.m44 = 1;
+	return this$0;
+};
+
+M44.scale$N = M44$scale$N;
+
 function M44$scale$NNN(x, y, z) {
 	var this$0;
 	this$0 = new M44();
@@ -6796,7 +6862,6 @@ M44.prototype.setRotation$NNNN = function (rad, x, y, z) {
 	x *= il;
 	y *= il;
 	z *= il;
-	M44$array$LM44$(this);
 	(c = Math.cos(rad), s = Math.sin(rad));
 	_c = 1 - c;
 	this.m11 = x * x * _c + c;
@@ -6828,7 +6893,6 @@ function M44$setRotation$LM44$NNNN($this, rad, x, y, z) {
 	x *= il;
 	y *= il;
 	z *= il;
-	M44$array$LM44$($this);
 	(c = Math.cos(rad), s = Math.sin(rad));
 	_c = 1 - c;
 	$this.m11 = x * x * _c + c;
@@ -6971,7 +7035,6 @@ M44.prototype.setFrustum$NNNNNN = function (l, r, b, t, n, f) {
 	var rl;
 	var tb;
 	var fn;
-	M44$array$LM44$(this);
 	(rl = r - l, tb = t - b, fn = f - n);
 	this.m11 = 2 * n / rl;
 	this.m22 = 2 * n / tb;
@@ -6989,7 +7052,6 @@ function M44$setFrustum$LM44$NNNNNN($this, l, r, b, t, n, f) {
 	var rl;
 	var tb;
 	var fn;
-	M44$array$LM44$($this);
 	(rl = r - l, tb = t - b, fn = f - n);
 	$this.m11 = 2 * n / rl;
 	$this.m22 = 2 * n / tb;
@@ -7014,7 +7076,6 @@ M44.prototype.setOrtho$NNNNNN = function (l, r, b, t, n, f) {
 	var rl;
 	var tb;
 	var fn;
-	M44$array$LM44$(this);
 	(rl = r - l, tb = t - b, fn = f - n);
 	this.m11 = 2 / rl;
 	this.m22 = 2 / tb;
@@ -7032,7 +7093,6 @@ function M44$setOrtho$LM44$NNNNNN($this, l, r, b, t, n, f) {
 	var rl;
 	var tb;
 	var fn;
-	M44$array$LM44$($this);
 	(rl = r - l, tb = t - b, fn = f - n);
 	$this.m11 = 2 / rl;
 	$this.m22 = 2 / tb;
@@ -7734,12 +7794,10 @@ function Kingyo() {
 	if (Math.random() < 0.3) {
 		this._color2 = [ 0.7, 0.7, 0.8 ];
 		this._color2pos = [ 2 * Math.random() - 1, 2 * Math.random() - 1, 2 * Math.random() - 1, 0.5 * Math.random() + 0.5 ];
-	} else {
-		if (Math.random() < 0.5) {
-			this._color = [ 0.15, 0.1, 0.2 ];
-			this._color2 = [ 0.15, 0.1, 0.2 ];
-			this._color2pos = [ 0, 0, 0, 0 ];
-		}
+	} else if (Math.random() < 0.5) {
+		this._color = [ 0.15, 0.1, 0.2 ];
+		this._color2 = [ 0.15, 0.1, 0.2 ];
+		this._color2pos = [ 0, 0, 0, 0 ];
 	}
 };
 
@@ -9230,6 +9288,8 @@ var $__jsx_classMap = {
 		ProgressEventInit$: ProgressEventInit,
 		XMLHttpRequestOptions: XMLHttpRequestOptions,
 		XMLHttpRequestOptions$: XMLHttpRequestOptions,
+		ScrollOptions: ScrollOptions,
+		ScrollOptions$: ScrollOptions,
 		TrackEventInit: TrackEventInit,
 		TrackEventInit$: TrackEventInit,
 		PopStateEventInit: PopStateEventInit,
@@ -9238,6 +9298,8 @@ var $__jsx_classMap = {
 		HashChangeEventInit$: HashChangeEventInit,
 		PageTransitionEventInit: PageTransitionEventInit,
 		PageTransitionEventInit$: PageTransitionEventInit,
+		ErrorEventInit: ErrorEventInit,
+		ErrorEventInit$: ErrorEventInit,
 		DragEventInit: DragEventInit,
 		DragEventInit$: DragEventInit,
 		CloseEventInit: CloseEventInit,
@@ -9246,8 +9308,6 @@ var $__jsx_classMap = {
 		StorageEventInit$: StorageEventInit,
 		MessageEventInit: MessageEventInit,
 		MessageEventInit$: MessageEventInit,
-		ErrorEventInit: ErrorEventInit,
-		ErrorEventInit$: ErrorEventInit,
 		EventSourceInit: EventSourceInit,
 		EventSourceInit$: EventSourceInit,
 		IDBObjectStoreParameters: IDBObjectStoreParameters,
