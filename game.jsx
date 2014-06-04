@@ -48,6 +48,9 @@ class Game {
 	static const damage_per_second = 0.5;
 	static var life_bar = null:HTMLDivElement;
 	static var life_bar_width = 100;
+	
+	static var sound_fish = null:HTMLAudioElement;
+	static var sound_tear = null:HTMLAudioElement;
 
 	static var status_text = null:HTMLDivElement;
 	static var startTime = 0;
@@ -64,6 +67,11 @@ class Game {
 		Game.life_bar = dom.id(life_id) as HTMLDivElement;
 		var lbw = Game.life_bar.style.width;
 		Game.life_bar_width = lbw.substring(0, lbw.length - 2) as int;
+		
+		Game.sound_fish = dom.document.createElement('audio') as HTMLAudioElement;
+		Game.sound_fish.src = 'fish.mp3';
+		Game.sound_tear = dom.document.createElement('audio') as HTMLAudioElement;
+		Game.sound_tear.src = 'tear.mp3';
 
 		var gl = Util.getWebGL(canvas_id);
 		Game.gl = gl;
@@ -136,7 +144,9 @@ class Game {
 				var hit = Kingyo.hit(pos[0], pos[1]);
 				if (hit.length > 0) {
 					Game.poi.tear(true);
-					Game.playSound('tear.mp3');
+					//Game.playSound('tear.mp3');
+					Game.sound_tear.currentTime = 0;
+					Game.sound_tear.play();
 					Game.startTime = 0;
 				}
 
@@ -160,7 +170,11 @@ class Game {
 				if (!Game.poi.tearing()) {
 					var hit = Kingyo.hit(pos[0], pos[1]);
 					Kingyo.fish(hit);
-					if (hit.length > 0) Game.playSound('fish.mp3');
+					if (hit.length > 0) {
+						//Game.playSound('fish.mp3');
+						Game.sound_fish.currentTime = 0;
+						Game.sound_fish.play();
+					}
 					if (Kingyo.numRests() == 0) Game.startTime = 0;
 				}
 
@@ -250,7 +264,9 @@ class Game {
 			if (Game.life < 0 && !Game.poi.tearing()) {
 				Game.life = 0;
 				Game.poi.tear(true);
-				Game.playSound('tear.mp3');
+				//Game.playSound('tear.mp3');
+				Game.sound_tear.currentTime = 0;
+				Game.sound_tear.play();
 				Game.startTime = 0;
 			}
 			Game.life_bar.style.width = (Game.life*Game.life_bar_width).toString()+"px";
