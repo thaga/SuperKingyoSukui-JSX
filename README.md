@@ -9,8 +9,8 @@ Notes
 This application uses `requestAnimationFrame()` emulation.
 If you want to use native RAF, add `#raf` to the end of the URL.
 
-* http://thaga.github.com/SuperKingyoSukui-JSX/ (emulated RAF)
-* http://thaga.github.com/SuperKingyoSukui-JSX/#raf (native RAF)
+* https://thaga.github.com/SuperKingyoSukui-JSX/ (emulated RAF)
+* https://thaga.github.com/SuperKingyoSukui-JSX/#raf (native RAF)
 
 Author
 ======================================
